@@ -2,9 +2,12 @@ package shaderpkg;
 
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.ARBShaderObjects.glUniformMatrix4fARB;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
 
 class BasicProgram extends AProgram implements IProgram{
 
@@ -35,9 +38,10 @@ class BasicProgram extends AProgram implements IProgram{
 
     public void useProgram(int mode, int count, int type, ByteBuffer indicies) {
         glUseProgram(programIdentifier);
-        glUniformMatrix4f(modelMatrixUnif, 1, false, modelMatrixBuff);
+        FloatBuffer buf;
+        glUniformMatrix4fARB(modelMatrixUnif, 1, false, buf);
         glUniformMatrix4f(cameraMatrixUnif, 1, false, cameraMatrixBuff);
-        glUniformMatrix4f(colorVectorUnif, 1, false, colorVectorBuff);
+        glUniform4f(colorVectorUnif, 1, colorVectorBuff);
 
         glDrawElements(mode, count, type, indicies);
         

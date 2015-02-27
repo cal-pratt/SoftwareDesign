@@ -1,10 +1,55 @@
 package shaderpkg;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
+import org.lwjgl.util.vector;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
 abstract class AProgram {
     
+	private abstract class Uniformf{
+	    private ByteBuffer buff;
+	    private int unif;
+	    private int size;
+	    
+	    public Uniformf(int size, int unif){
+	    	buff = ByteBuffer.allocate(size * 4);
+	    	this.unif = unif;
+	    	this.size = size;
+	    }
+	    
+	    protected void setBuffer(FloatBuffer floatBuffer){
+
+			if (floatBuffer.capacity() == 4){
+		    	buff.clear();
+		    	buff.asFloatBuffer().put(floatBuffer);
+		        buff.position(0);
+			}
+	    }
+	    
+	    public ByteBuffer getBuffer(){
+	    	return buff;
+	    }
+	    
+	    public int getUnif(){
+	    	return unif;
+	    }
+	}
+	protected class UniformVector4f extends Uniformf{
+		public UniformVector4f(int unif){
+			super(4, unif);
+		}
+		public void setBuffer(Vector4f floatBuffer){
+			if (floatBuffer.capacity() == 4){
+				
+			}
+		}
+	}
+	
+	
     protected int programIdentifier;
     
     protected abstract void bindAttribLocations();
