@@ -1,13 +1,16 @@
 package mainpkg;
 
 // Local Project Imports ----------------------------------------------------------------------- //
+import shaderpkg.BasicProgram;
 import inputpkg.IKeyboardInput;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glClear;
 
 // Class definition ---------------------------------------------------------------------------- //
 public class GameCore extends ACore {
@@ -32,11 +35,13 @@ public class GameCore extends ACore {
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
         prevInput = inputreader.getKeyBoardInput();
         currentColor = 0f;
+        
+        new BasicProgram();
     }
 
     @Override
     protected void teardown() {
-        
+    	
     }
 
     @Override

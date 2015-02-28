@@ -4,13 +4,17 @@ package mainpkg;
 import inputpkg.InputReader;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
-import java.nio.ByteBuffer;
-import static org.lwjgl.glfw.Callbacks.*;
+import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryUtil.*;
-import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
+import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.opengl.GL11.GL_TRUE;
+import static org.lwjgl.system.MemoryUtil.NULL;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWvidmode;
+import org.lwjgl.opengl.GLContext;
+
+import java.nio.ByteBuffer;
 
 // Class definition ---------------------------------------------------------------------------- //
 public abstract class ACore {
@@ -61,7 +65,7 @@ public abstract class ACore {
     // Load OpenGl and populate window --------------------------------------------------------- //
     private void createWindow() {
         glfwSetErrorCallback(errorCallback = errorCallbackPrint(System.err));
-        if ( glfwInit() != GL11.GL_TRUE ){
+        if ( glfwInit() != GL_TRUE ){
             throw new IllegalStateException("Unable to initialize GLFW");
         }
         
@@ -118,7 +122,7 @@ public abstract class ACore {
     private void mainLoop() {
         startup();
         
-        double reference = GLFW.glfwGetTime();
+        double reference = glfwGetTime();
         
         while(isRunning() && glfwWindowShouldClose(windowIdentifier) == GL_FALSE){
             resizeViewport();
@@ -129,11 +133,11 @@ public abstract class ACore {
             glfwSwapBuffers(windowIdentifier);
             glfwPollEvents();
             try { 
-                Thread.sleep(threadSleepDuration - (long)(GLFW.glfwGetTime() - reference)/1000l);
+                Thread.sleep(threadSleepDuration - (long)(glfwGetTime() - reference)/1000l);
             } catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
-            reference = GLFW.glfwGetTime();
+            reference = glfwGetTime();
         }
         teardown();
 
