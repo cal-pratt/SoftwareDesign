@@ -2,16 +2,13 @@ package shaderpkg;
 
 import utilpkg.Converter;
 import utilpkg.FileInterpreter;
+import silvertiger.tutorial.lwjgl.math.*;
 
 import static org.lwjgl.opengl.GL20.glUniformMatrix3f;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4f;
 import static org.lwjgl.opengl.GL20.glUniform3f;
 import static org.lwjgl.opengl.GL20.glUniform4f;
 
-import com.joml.vector.Vector3f;
-import com.joml.vector.Vector4f;
-import com.joml.matrix.Matrix3f;
-import com.joml.matrix.Matrix4f;
 
 import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL20.GL_VALIDATE_STATUS;
@@ -21,6 +18,7 @@ import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
 import static org.lwjgl.opengl.GL20.glGetProgrami;
 import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
+import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL20.glValidateProgram;
 import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 import static org.lwjgl.opengl.GL20.glCreateProgram;
@@ -32,6 +30,8 @@ import static org.lwjgl.opengl.GL20.glGetShaderi;
 import static org.lwjgl.opengl.GL20.glCreateShader;
 
 import java.nio.ByteBuffer;
+
+import org.lwjgl.BufferUtils;
 
 abstract class AProgram { 
     
@@ -64,7 +64,11 @@ abstract class AProgram {
 			super(unif, ByteBuffer.allocate(12));
 		}
 		public void setData(Vector3f data){
-			setData(Converter.toByteBuffer(data));
+		    ByteBuffer buf = BufferUtils.createByteBuffer(36);
+		    buf.asFloatBuffer().put(data.getBuffer());
+            buf.flip();
+            buf.rewind();
+            setData(buf);
 		}
 		@Override
 		public void updateUniform() {
@@ -77,7 +81,9 @@ abstract class AProgram {
 			super(unif, ByteBuffer.allocate(16));
 		}
 		public void setData(Vector4f data){
-			setData(Converter.toByteBuffer(data));
+		    ByteBuffer buf = Converter.toByteBuffer(data);
+            buf.flip();
+            setData(buf);
 		}
 		@Override
 		public void updateUniform() {
@@ -90,7 +96,9 @@ abstract class AProgram {
 			super(unif, ByteBuffer.allocate(36));
 		}
 		public void setData(Matrix3f data){
-			setData(Converter.toByteBuffer(data));
+		    ByteBuffer buf = Converter.toByteBuffer(data);
+            buf.flip();
+            setData(buf);
 		}
 		@Override
 		public void updateUniform() {
@@ -103,28 +111,33 @@ abstract class AProgram {
 			super(unif, ByteBuffer.allocate(64));
 		}
 		public void setData(Matrix4f data){
-			setData(Converter.toByteBuffer(data));
+		    ByteBuffer buf = Converter.toByteBuffer(data);
+		    buf.rewind();
+            //buf.flip();
+			setData(buf);
 		}
 		@Override
 		public void updateUniform() {
-			glUniformMatrix4f(getUnif(), 1, false, getBuffer());
+		    int g = getUnif();
+		    ByteBuffer b =  getBuffer();
+			glUniformMatrix4f(g, 1, false, b);
 		}
 	}
-	
-	
-	
 	
     protected int programIdentifier;
     
     protected abstract void bindAttribLocations();
-    public abstract void draw(int mode, int count, int type, ByteBuffer indicies);
+    
+    public void use(){
+        glUseProgram(programIdentifier);
+    }
     
     protected void createProgram(String vShaderFilename, String fShaderFilename) {       
         // Load the vertex shader
-        int vShaderIdentifier = AProgram.loadShader(
+        int vShaderIdentifier = loadShader(
             FileInterpreter.fileToString(vShaderFilename),
             GL_VERTEX_SHADER );
-        int fShaderIdentifier = AProgram.loadShader(
+        int fShaderIdentifier = loadShader(
             FileInterpreter.fileToString(fShaderFilename),
             GL_FRAGMENT_SHADER );
         
@@ -164,6 +177,7 @@ abstract class AProgram {
          
         if (glGetShaderi(shaderIdentifier, GL_COMPILE_STATUS) != GL_TRUE) {
             System.err.println(glGetShaderInfoLog(shaderIdentifier));
+            
             return 0;
         }
          

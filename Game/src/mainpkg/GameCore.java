@@ -1,7 +1,9 @@
 package mainpkg;
 
 // Local Project Imports ----------------------------------------------------------------------- //
-import shaderpkg.BasicProgram;
+//import shaderpkg.PcProgram;
+//import vaopkg.PcVao;
+import shaderpkg.PcProgram;
 import inputpkg.IKeyboardInput;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
@@ -12,9 +14,11 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glClear;
 
+
 // Class definition ---------------------------------------------------------------------------- //
 public class GameCore extends ACore {
     
+
     // Game state ------------------------------------------------------------------------------ //
     private IKeyboardInput prevInput;
     private float currentColor;
@@ -34,9 +38,9 @@ public class GameCore extends ACore {
     protected void startup() {
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
         prevInput = inputreader.getKeyBoardInput();
-        currentColor = 0f;
+        new PcProgram();
         
-        new BasicProgram();
+        
     }
 
     @Override
@@ -52,24 +56,6 @@ public class GameCore extends ACore {
     @Override
     protected void updateLogic(long timePassed) {
         IKeyboardInput currInput = inputreader.getKeyBoardInput();
-        
-        currentColor += timePassed;
-        glClearColor(
-                1 - .5f*(float)Math.sin(Math.toRadians(currentColor*1.1/10.0)),
-                1 - .5f*(float)Math.sin(Math.toRadians(currentColor/10.0)), 
-                1 - .5f*(float)Math.sin(1.23 + Math.toRadians(currentColor*1.2/10.0)),
-                0.0f);
-        
-        if( prevInput.getAction(GLFW_KEY_A) == GLFW_REPEAT 
-                && currInput.getAction(GLFW_KEY_A) == GLFW_RELEASE ){
-            
-            glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
-        }
-        if( prevInput.getAction(GLFW_KEY_A) == GLFW_PRESS
-                && currInput.getAction(GLFW_KEY_A) == GLFW_RELEASE ){
-            
-            glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
-        }
         
         prevInput = currInput;
     }

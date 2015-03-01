@@ -6,14 +6,14 @@ import inputpkg.InputReader;
 // 3rd Part Imports ---------------------------------------------------------------------------- //
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_FALSE;
-import static org.lwjgl.opengl.GL11.GL_TRUE;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GLContext;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 // Class definition ---------------------------------------------------------------------------- //
@@ -56,7 +56,9 @@ public abstract class ACore {
             System.out.println("Exiting window: " + windowTitle);
             glfwDestroyWindow(windowIdentifier);
             keyCallback.release();
-        } finally {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
             glfwTerminate();
             errorCallback.release();
         }
@@ -70,12 +72,14 @@ public abstract class ACore {
         }
         
         glfwDefaultWindowHints();
-        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-        glfwWindowHint(GLFW_RESIZABLE, windowFullscreen == GL_TRUE ? GL_FALSE : GL_TRUE );
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, windowFullscreen == GL_TRUE ? GL_FALSE : GL_TRUE );
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         if (windowFullscreen == GL_TRUE){
             windowIdentifier = glfwCreateWindow(windowWidth, windowHeight, windowTitle, 
                     glfwGetPrimaryMonitor(), NULL);
