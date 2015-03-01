@@ -1,0 +1,52 @@
+package creaturepkg;
+
+public abstract class ACreature {
+	//Creature variables
+	private int maxHealth, currHealth, attackLvl, defenseLvl, attackType;
+	
+	//behaviour
+	public void die(){}
+	
+	public void attack(int attackType) {}
+
+	//Getters and Setters
+	public int getMaxHealth(){
+		return maxHealth;
+	}
+	
+	public int getCurrentHealth() {
+		return currHealth;
+	}
+	
+	public int getAttackLvl() {
+		return attackLvl;
+	}
+	
+	public int getDefenseLvl() {
+		return defenseLvl;
+	}
+	
+	public int getAttackType() {
+		return attackType;
+	}
+	
+	public void setMaxHealth(int maxHealth){
+		this.maxHealth = maxHealth;
+	}
+	
+	public void setCurrentHealth(int currHealth) {
+		this.currHealth = currHealth;
+	}
+	
+	public void setAttackLvl(int attackLvl) {
+		this.attackLvl = attackLvl;
+	}
+	
+	public void setDefenseLvl(int defenseLvl) {
+		this.defenseLvl = defenseLvl;
+	}
+	
+	public void setAttackType(int attackType) {
+		this.attackType = attackType;
+	}
+}
