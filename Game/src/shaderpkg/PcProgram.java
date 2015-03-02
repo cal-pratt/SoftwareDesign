@@ -1,41 +1,35 @@
 package shaderpkg;
 
-import static org.lwjgl.opengl.GL11.glDrawElements;
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUseProgram;
-
-import java.nio.ByteBuffer;
-
 import silvertiger.tutorial.lwjgl.math.*;
+import utilpkg.FileInterpreter;
 
 
-public class PcProgram extends AProgram{
-
-    private UniformMatrix4f modelMatrixUniform;
-    private UniformMatrix4f cameraMatrixUniform;
+public class PcProgram extends ADefinedProgram{
+    
+    int uniModel;
+    int uniView;
+    int uniProjection;
     
     public PcProgram(){
-        createProgram("shaders/basicprogram.vert", "shaders/basicprogram.frag");
+        createProgram(FileInterpreter.fileToString("shaders/basicprogram.vert"),
+                FileInterpreter.fileToString("shaders/basicprogram.frag"));
     }
     
+
     @Override
-    protected void bindAttribLocations() {
-    	modelMatrixUniform = new UniformMatrix4f(
-    			glGetUniformLocation(programIdentifier, "modelToCameraMatrix"));
-        cameraMatrixUniform = new UniformMatrix4f(
-        		glGetUniformLocation(programIdentifier, "cameraToClipMatrix"));
+    protected void bindUniformLocations() {
+        uniModel = getUniformLocation("model");
+        uniView = getUniformLocation("view");
+        uniProjection = getUniformLocation("projection");
     }
     
-    public void updateUniforms(){
-        modelMatrixUniform.updateUniform();
-        cameraMatrixUniform.updateUniform();
+    public void setModel(Matrix4f model){
+        setUniform(uniModel, model);
     }
-    
-    public void setModelMatrix(Matrix4f modelMatrix){
-    	modelMatrixUniform.setData(modelMatrix);
+    public void setView(Matrix4f view){
+        setUniform(uniView, view);
     }
-    
-    public void setCameraMatrix(Matrix4f cameraMatrix){
-    	cameraMatrixUniform.setData(cameraMatrix);
+    public void setProjection(Matrix4f projection){
+        setUniform(uniProjection, projection);
     }
 }

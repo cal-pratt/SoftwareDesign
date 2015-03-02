@@ -8,6 +8,8 @@ import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWvidmode;
@@ -15,6 +17,7 @@ import org.lwjgl.opengl.GLContext;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 // Class definition ---------------------------------------------------------------------------- //
 public abstract class ACore {
@@ -25,10 +28,11 @@ public abstract class ACore {
     protected int windowFullscreen = GL_FALSE;
     protected String windowTitle = "Default ACore";
     protected int exitKey = GLFW_KEY_ESCAPE;
-    protected long threadSleepDuration = 20l;
+    protected long threadSleepDuration = 20l; 
     
     // Major components ------------------------------------------------------------------------- //
     protected InputReader inputreader;
+    protected float windowRatio;
     private GLFWErrorCallback errorCallback;
     private GLFWKeyCallback keyCallback;
     private long windowIdentifier; 
@@ -75,7 +79,7 @@ public abstract class ACore {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, windowFullscreen == GL_TRUE ? GL_FALSE : GL_TRUE );
@@ -104,6 +108,13 @@ public abstract class ACore {
         glfwMakeContextCurrent(windowIdentifier);
         glfwSwapInterval(1);
         glfwShowWindow(windowIdentifier);
+        
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        glfwGetFramebufferSize(windowIdentifier, width, height);
+        windowRatio = width.get() / (float) height.get();
+        
+        
     }
     
     // Link OpenGl input callback to input-reader ---------------------------------------------- //

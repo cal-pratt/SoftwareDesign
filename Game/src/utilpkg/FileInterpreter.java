@@ -62,7 +62,7 @@ public class FileInterpreter {
     public static void readPlyFile(String filename, 
             ArrayList<Vector4f> verticies,
             ArrayList<Vector4f> colors,
-            ArrayList<Short> indicies) throws IOException {
+            ArrayList<Integer> indicies) {
         
         verticies.clear();
         colors.clear();
@@ -107,9 +107,9 @@ public class FileInterpreter {
                         1
                 ));
                 colors.add(new Vector4f(
-                        Float.parseFloat(vertexComponents[3]),
-                        Float.parseFloat(vertexComponents[4]),
-                        Float.parseFloat(vertexComponents[5]),
+                        Float.parseFloat(vertexComponents[3])/255f,
+                        Float.parseFloat(vertexComponents[4])/255f,
+                        Float.parseFloat(vertexComponents[5])/255f,
                         1
                 ));
             }
@@ -119,26 +119,23 @@ public class FileInterpreter {
                 }
                 String[] faceComponents = line.split(" "); 
                 if(Integer.parseInt(faceComponents[0]) == 3){
-                    indicies.add(Short.parseShort(faceComponents[1]));
-                    indicies.add(Short.parseShort(faceComponents[2]));
-                    indicies.add(Short.parseShort(faceComponents[3]));
+                    indicies.add(Integer.parseInt(faceComponents[1]));
+                    indicies.add(Integer.parseInt(faceComponents[2]));
+                    indicies.add(Integer.parseInt(faceComponents[3]));
                 }
                 else if(Integer.parseInt(faceComponents[0]) == 4){
-                    indicies.add(Short.parseShort(faceComponents[1]));
-                    indicies.add(Short.parseShort(faceComponents[2]));
-                    indicies.add(Short.parseShort(faceComponents[3]));
-                    indicies.add(Short.parseShort(faceComponents[1]));
-                    indicies.add(Short.parseShort(faceComponents[3]));
-                    indicies.add(Short.parseShort(faceComponents[4]));
+                    indicies.add(Integer.parseInt(faceComponents[1]));
+                    indicies.add(Integer.parseInt(faceComponents[2]));
+                    indicies.add(Integer.parseInt(faceComponents[3]));
+                    indicies.add(Integer.parseInt(faceComponents[1]));
+                    indicies.add(Integer.parseInt(faceComponents[3]));
+                    indicies.add(Integer.parseInt(faceComponents[4]));
                 }
             }
             reader.close();
         } catch (IOException e) {
             System.err.println("Could not read file: " + filename);
             e.printStackTrace();
-            throw e;
         }
     }
-    
-    
 }
