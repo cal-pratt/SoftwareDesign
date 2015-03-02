@@ -1,8 +1,8 @@
-package layerpkg;
+package objectpkg;
 
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
-public abstract class APcObject3D {
+public abstract class APcObject3D implements IObject3D {
 	protected final String FILENAME;
 	
 	protected Matrix4f model;

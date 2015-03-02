@@ -2,15 +2,10 @@ package mainpkg;
 
 import java.nio.IntBuffer;
 
-import layerpkg.Cube;
-import layerpkg.Triangle;
-
-import org.lwjgl.BufferUtils;
-
-import shaderpkg.GraphicsManager;
-import shaderpkg.PcMesh;
-import shaderpkg.PcProgram;
+import objectpkg.APcObject3D;
+import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
+import graphicspkg.GraphicsManager;
 import inputpkg.IKeyboardInput;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
@@ -21,8 +16,8 @@ import static org.lwjgl.glfw.GLFW.*;
 // Class definition ---------------------------------------------------------------------------- //
 public class GmExampleCore extends ACore {
   
-    Cube cube;
-    Triangle tri;
+    APcObject3D cube;
+    APcObject3D tri;
     GraphicsManager gm;
     
     private float previousAngle = 0f;
@@ -53,8 +48,8 @@ public class GmExampleCore extends ACore {
     	glCullFace(GL_FRONT);
     	glFrontFace(GL_CCW);
     	
-        gm.addBasicProgramObject(cube = new Cube());
-        gm.addBasicProgramObject(tri = new Triangle());
+        gm.add(cube = Object3DFactory.getCube());
+        gm.add(tri = Object3DFactory.getTriangle());
         
         cube.setView(new Matrix4f());
         cube.setProjection(Matrix4f.orthographic(-windowRatio, windowRatio, -1f, 1f, -1f, 1f));
@@ -100,7 +95,7 @@ public class GmExampleCore extends ACore {
 
         float lerpAngle = (1f - timePassed) * previousAngle + timePassed * angle;
         Matrix4f model = Matrix4f.rotate(lerpAngle, 0f, 0f, 1f);
-        model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle/10, .6f, 1f, 1f));
+        model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle, .6f, 1f, 1f));
         
         cube.setModel( Matrix4f.translate(.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
         tri.setModel( Matrix4f.translate(-.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));

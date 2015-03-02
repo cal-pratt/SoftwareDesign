@@ -1,13 +1,13 @@
-package shaderpkg;
+package graphicspkg;
 
-import layerpkg.APcObject3D;
+import objectpkg.APcObject3D;
 
-public class PcModelManager {
-	private PcMesh mesh;
+class PcGraphicLinker implements IGraphicLinker {
+	private PcGraphicsBuffer mesh;
 	private APcObject3D object;
 	private PcProgram program;
 	
-	public PcModelManager(APcObject3D object, PcMesh mesh, PcProgram program){
+	public PcGraphicLinker(APcObject3D object, PcGraphicsBuffer mesh, PcProgram program){
 		this.object = object;
 		this.mesh = mesh;
 		this.program = program;

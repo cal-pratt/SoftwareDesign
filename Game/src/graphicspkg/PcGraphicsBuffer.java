@@ -1,4 +1,4 @@
-package shaderpkg;
+package graphicspkg;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
@@ -18,7 +18,7 @@ import silvertiger.tutorial.lwjgl.graphic.VertexBufferObject;
 import silvertiger.tutorial.lwjgl.math.Vector4f;
 import utilpkg.FileInterpreter;
 
-public class PcMesh implements IMesh {
+class PcGraphicsBuffer implements IGraphicsBuffer {
 
     private VertexArrayObject vao;
     private VertexBufferObject vbo;
@@ -27,9 +27,7 @@ public class PcMesh implements IMesh {
     private int vertexCount;
     private int drawCount;
     
-    public PcMesh(PcProgram program, String plyFilename){
-        
-        
+    public PcGraphicsBuffer(PcProgram program, String plyFilename){
         vao = new VertexArrayObject();
         vao.bind();
         

@@ -1,6 +1,6 @@
-package layerpkg;
+package objectpkg;
 
-public class Triangle extends APcObject3D {
+class Triangle extends APcObject3D {
 
 	public Triangle() {
 		super("meshdata/triangle.ply");

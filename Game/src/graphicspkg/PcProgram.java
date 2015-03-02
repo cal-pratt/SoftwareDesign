@@ -1,10 +1,10 @@
-package shaderpkg;
+package graphicspkg;
 
 import silvertiger.tutorial.lwjgl.math.*;
 import utilpkg.FileInterpreter;
 
 
-public class PcProgram extends ADefinedProgram{
+class PcProgram extends ADefinedProgram{
     
     int uniModel;
     int uniView;

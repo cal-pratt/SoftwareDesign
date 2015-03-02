@@ -1,6 +1,6 @@
-package shaderpkg;
+package graphicspkg;
 
-public interface IMesh {
+public interface IGraphicsBuffer {
 	public void delete();
     
     public void bindVertexArrayObject();

@@ -13,9 +13,7 @@ public class Launcher {
     private static ACore concreteCore() {
         return new GameCore();
     }
-    private static ACore cubeCore() {
-        return new CubeExampleCore();
-    }
+    
     private static ACore gmCore() {
         return new GmExampleCore();
     }

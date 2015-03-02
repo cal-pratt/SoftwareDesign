@@ -1,4 +1,4 @@
-package shaderpkg;
+package graphicspkg;
 
 import utilpkg.FileInterpreter;
 import silvertiger.tutorial.lwjgl.graphic.Shader;
