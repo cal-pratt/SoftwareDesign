@@ -6,12 +6,18 @@ package mainpkg;
 public class Launcher {
     // Main program method --------------------------------------------------------------------- //
     public static void main(String[] args) {
-        concreteCore().run();
+    	gmCore().run();
     }
     
     // Core abstraction ------------------------------------------------------------------------ //
     private static ACore concreteCore() {
         return new GameCore();
+    }
+    private static ACore cubeCore() {
+        return new CubeExampleCore();
+    }
+    private static ACore gmCore() {
+        return new GmExampleCore();
     }
 }
 // --------------------------------------------------------------------------------------------- //

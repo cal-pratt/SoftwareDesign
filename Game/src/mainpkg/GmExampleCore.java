@@ -1,5 +1,16 @@
 package mainpkg;
 
+import java.nio.IntBuffer;
+
+import layerpkg.Cube;
+import layerpkg.Triangle;
+
+import org.lwjgl.BufferUtils;
+
+import shaderpkg.GraphicsManager;
+import shaderpkg.PcMesh;
+import shaderpkg.PcProgram;
+import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import inputpkg.IKeyboardInput;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
@@ -8,13 +19,22 @@ import static org.lwjgl.glfw.GLFW.*;
 
 
 // Class definition ---------------------------------------------------------------------------- //
-public class GameCore extends ACore {
+public class GmExampleCore extends ACore {
+  
+    Cube cube;
+    Triangle tri;
+    GraphicsManager gm;
+    
+    private float previousAngle = 0f;
+    private float angle = 0f;
+    private final float angelPerSecond = 50f;
+    
     
     // Game state ------------------------------------------------------------------------------ //
     private IKeyboardInput prevInput;
     
     // Customize core setup -------------------------------------------------------------------- //
-    public GameCore(){
+    public GmExampleCore(){
         windowWidth = 300;
         windowHeight = 300;
         windowFullscreen = GL_FALSE;
@@ -27,6 +47,20 @@ public class GameCore extends ACore {
     @Override
     protected void startup() {
         prevInput = inputreader.getKeyBoardInput();
+        gm = new GraphicsManager();
+        
+    	glEnable(GL_CULL_FACE);
+    	glCullFace(GL_FRONT);
+    	glFrontFace(GL_CCW);
+    	
+        gm.addBasicProgramObject(cube = new Cube());
+        gm.addBasicProgramObject(tri = new Triangle());
+        
+        cube.setView(new Matrix4f());
+        cube.setProjection(Matrix4f.orthographic(-windowRatio, windowRatio, -1f, 1f, -1f, 1f));
+        tri.setView(new Matrix4f());
+        tri.setProjection(Matrix4f.orthographic(-windowRatio, windowRatio, -1f, 1f, -1f, 1f));
+        
     }
 
     @Override
@@ -53,12 +87,26 @@ public class GameCore extends ACore {
     @Override
     protected void updateLogic(long timePassed) {
         IKeyboardInput currInput = inputreader.getKeyBoardInput();
+        previousAngle = angle;
+        angle += timePassed * angelPerSecond/1000.0;
+        
         prevInput = currInput;
     }
 
     @Override
     protected void draw(long timePassed) {
         glClear(GL_COLOR_BUFFER_BIT);
+
+
+        float lerpAngle = (1f - timePassed) * previousAngle + timePassed * angle;
+        Matrix4f model = Matrix4f.rotate(lerpAngle, 0f, 0f, 1f);
+        model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle/10, .6f, 1f, 1f));
+        
+        cube.setModel( Matrix4f.translate(.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
+        tri.setModel( Matrix4f.translate(-.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
+        
+
+        gm.draw();
     }
 }
 //---------------------------------------------------------------------------------------------- //

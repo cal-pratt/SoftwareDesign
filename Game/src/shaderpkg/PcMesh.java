@@ -18,7 +18,7 @@ import silvertiger.tutorial.lwjgl.graphic.VertexBufferObject;
 import silvertiger.tutorial.lwjgl.math.Vector4f;
 import utilpkg.FileInterpreter;
 
-public class PcMesh {
+public class PcMesh implements IMesh {
 
     private VertexArrayObject vao;
     private VertexBufferObject vbo;

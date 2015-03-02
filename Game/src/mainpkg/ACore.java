@@ -15,7 +15,6 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GLContext;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -43,7 +42,7 @@ public abstract class ACore {
     // Abstract functions ---------------------------------------------------------------------- //
     protected abstract void startup();
     protected abstract void teardown();
-    protected abstract void resizeViewport();
+    protected abstract void resizeViewport(int width, int height);
     protected abstract void updateLogic(long timePassed);
     protected abstract void draw(long timePassed);
     
@@ -140,7 +139,12 @@ public abstract class ACore {
         double reference = glfwGetTime();
         
         while(isRunning() && glfwWindowShouldClose(windowIdentifier) == GL_FALSE){
-            resizeViewport();
+        	IntBuffer width = BufferUtils.createIntBuffer(1);
+        	IntBuffer height = BufferUtils.createIntBuffer(1);
+        	glfwGetFramebufferSize(windowIdentifier, width, height);
+        	int w = width.get(); int h = height.get();
+            windowRatio = w / (float) h;
+            resizeViewport(w, h);
             
             updateLogic(threadSleepDuration);
             draw(threadSleepDuration);
