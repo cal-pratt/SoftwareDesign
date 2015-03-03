@@ -15,8 +15,8 @@ abstract class ADefinedProgram extends ShaderProgram {
     
     
     protected void createProgram(CharSequence vShaderFilename, CharSequence fShaderFilename) {
-        vertexShader = new Shader(GL_VERTEX_SHADER, FileInterpreter.fileToString("shaders/basicprogram.vert"));
-        fragmentShader = new Shader(GL_FRAGMENT_SHADER, FileInterpreter.fileToString("shaders/basicprogram.frag"));
+        vertexShader = new Shader(GL_VERTEX_SHADER, vShaderFilename);
+        fragmentShader = new Shader(GL_FRAGMENT_SHADER, fShaderFilename);
 
         attachShader(vertexShader);
         attachShader(fragmentShader);

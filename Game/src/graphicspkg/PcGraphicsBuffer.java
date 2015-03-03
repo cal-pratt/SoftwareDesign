@@ -81,7 +81,7 @@ class PcGraphicsBuffer implements IGraphicsBuffer {
         vbo.delete();
     }
     
-    public void bindVertexArrayObject(){
+    public void bind(){
         vao.bind();
     }
     
