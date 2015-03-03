@@ -87,6 +87,14 @@ class TexGraphicsBuffer implements IGraphicsBuffer {
         
     }
     
+    public float getWidth(){
+    	return texture.getWidth();
+    }
+    
+    public float getHeight(){
+    	return texture.getHeight();
+    }
+    
     public void delete(){
         vao.delete();
         ebo.delete();

@@ -1,6 +1,6 @@
 package mainpkg;
 
-import inputpkg.IKeyboardInput;
+import inputpkg.IUserInput;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
 import static org.lwjgl.opengl.GL11.*;
@@ -11,7 +11,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class GameCore extends ACore {
     
     // Game state ------------------------------------------------------------------------------ //
-    private IKeyboardInput prevInput;
+    private IUserInput prevInput;
     
     // Customize core setup -------------------------------------------------------------------- //
     public GameCore(){
@@ -52,7 +52,7 @@ public class GameCore extends ACore {
 
     @Override
     protected void updateLogic(long timePassed) {
-        IKeyboardInput currInput = inputreader.getKeyBoardInput();
+        IUserInput currInput = inputreader.getKeyBoardInput();
         prevInput = currInput;
     }
 

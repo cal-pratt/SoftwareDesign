@@ -4,20 +4,28 @@ package inputpkg;
 public class InputReader {
     
     // Private copy of input state ------------------------------------------------------------- //
-    private KeyboardInput keyboardInput;
+    private UserInput userInput;
     
     // Initialize default input ---------------------------------------------------------------- //
     public InputReader(){
-        keyboardInput = new KeyboardInput();
+        userInput = new UserInput();
     }
     
     // Accessors and Mutators ------------------------------------------------------------------ //
     synchronized public void keyInvoke(int key, int scancode, int action, int mods){
-        keyboardInput.keyInvoke(key, scancode, action, mods);
+        userInput.keyInvoke(key, scancode, action, mods);
     }
     
-    synchronized public KeyboardInput getKeyBoardInput(){
-        return keyboardInput.clone();
+    public void mouseButtonInvoke(int button, int action, int mods) {
+    	 userInput.keyInvoke(button, 0, action, mods);
+	}
+    
+    public void cursorPosInvoke(double x, double y) {
+    	userInput.cursorPosInvoke((float)x, (float)y);
+	}
+    
+    synchronized public UserInput getKeyBoardInput(){
+        return userInput.clone();
     }
 }
 // --------------------------------------------------------------------------------------------- //

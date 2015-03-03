@@ -11,7 +11,7 @@ import objectpkg.Object2DFactory;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import graphicspkg.GraphicsManager;
-import inputpkg.IKeyboardInput;
+import inputpkg.IUserInput;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
 import static org.lwjgl.opengl.GL11.*;
@@ -30,7 +30,7 @@ public class TexExampleCore extends ACore {
     
     
     // Game state ------------------------------------------------------------------------------ //
-    private IKeyboardInput prevInput;
+    private IUserInput prevInput;
     
     // Customize core setup -------------------------------------------------------------------- //
     public TexExampleCore(){
@@ -86,7 +86,7 @@ public class TexExampleCore extends ACore {
 
     @Override
     protected void updateLogic(long timePassed) {
-        IKeyboardInput currInput = inputreader.getKeyBoardInput();
+        IUserInput currInput = inputreader.getKeyBoardInput();
         previousAngle = angle;
         angle += timePassed * angelPerSecond/1000.0;
         

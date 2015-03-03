@@ -2,11 +2,12 @@ package inputpkg;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
 import static org.lwjgl.glfw.GLFW.*;
+
 import java.util.Map;
 import java.util.HashMap;
 
 // Class definition ---------------------------------------------------------------------------- //
-class KeyboardInput implements IKeyboardInput {
+class UserInput implements IUserInput {
     
     // Keyboard key construct ------------------------------------------------------------------ //
     private class Key{
@@ -21,19 +22,19 @@ class KeyboardInput implements IKeyboardInput {
 
     // Keyboard data container ----------------------------------------------------------------- //
     private Map<Integer, Key> keyMap;
-
+    private float mouseX, mouseY;
     // Constructors ---------------------------------------------------------------------------- //
-    public KeyboardInput(){
+    public UserInput(){
         this.keyMap = defaultKeyMap();
     }
     
-    public KeyboardInput(Map<Integer, Key> keyMap){
+    public UserInput(Map<Integer, Key> keyMap){
         this.keyMap = new HashMap<Integer, Key>();
         this.keyMap.putAll(keyMap);
     }
     
-    public KeyboardInput clone(){
-        return new KeyboardInput(this.keyMap);
+    public UserInput clone(){
+        return new UserInput(this.keyMap);
     }
     
     // Accessors and Mutators ------------------------------------------------------------------ //
@@ -41,9 +42,23 @@ class KeyboardInput implements IKeyboardInput {
         keyMap.put(key, new Key(action));
     }
     
-    public int getAction(int key){
+    public void cursorPosInvoke(float x, float y){
+        mouseX = x;
+        mouseY = y;
+    }
+    
+	public float getMouseX(){
+        return mouseX;
+    }
+	
+	public float getMouseY(){
+        return mouseY;
+    }
+	
+	public int get(int key){
         return keyMap.get(key).action;
     }
+	
     
     // Default keyboard data ------------------------------------------------------------------- //
     private Map<Integer, Key> defaultKeyMap(){
@@ -170,6 +185,14 @@ class KeyboardInput implements IKeyboardInput {
         defaultMap.put(GLFW_KEY_RIGHT_ALT, new Key());
         defaultMap.put(GLFW_KEY_RIGHT_SUPER, new Key());
         defaultMap.put(GLFW_KEY_MENU, new Key());
+        defaultMap.put(GLFW_MOUSE_BUTTON_1, new Key());
+        defaultMap.put(GLFW_MOUSE_BUTTON_2, new Key());
+        defaultMap.put(GLFW_MOUSE_BUTTON_3, new Key());
+        defaultMap.put(GLFW_MOUSE_BUTTON_4, new Key());
+        defaultMap.put(GLFW_MOUSE_BUTTON_5, new Key());
+        defaultMap.put(GLFW_MOUSE_BUTTON_6, new Key());
+        defaultMap.put(GLFW_MOUSE_BUTTON_7, new Key());
+        defaultMap.put(GLFW_MOUSE_BUTTON_8, new Key());
         
         return defaultMap;
     }

@@ -3,24 +3,25 @@ package graphicspkg;
 import objectpkg.ATexObject2D;
 
 class TexGraphicLinker implements IGraphicLinker {
-    private TexGraphicsBuffer mesh;
+    private TexGraphicsBuffer buffer;
     private ATexObject2D object;
     private TexProgram program;
     
-    public TexGraphicLinker(ATexObject2D object, TexGraphicsBuffer mesh, TexProgram program){
+    public TexGraphicLinker(ATexObject2D object, TexGraphicsBuffer buffer, TexProgram program){
         this.object = object;
-        this.mesh = mesh;
+        this.buffer = buffer;
+        this.object.setRawSize(buffer.getWidth(), buffer.getHeight());
         this.program = program;
     }
     
     public void set(){
-        mesh.bind();
+    	buffer.bind();
         program.use();
         program.setModel(object.getModel());
         program.setView(object.getView());
         program.setProjection(object.getProjection());
     }
     public void draw(){
-        mesh.draw();
+        buffer.draw();
     }
 }

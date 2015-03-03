@@ -2,6 +2,8 @@ package mainpkg;
 
 import java.nio.IntBuffer;
 
+import menupkg.Menu;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 
@@ -11,7 +13,7 @@ import objectpkg.Object2DFactory;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import graphicspkg.GraphicsManager;
-import inputpkg.IKeyboardInput;
+import inputpkg.IUserInput;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
 import static org.lwjgl.opengl.GL11.*;
@@ -21,11 +23,12 @@ import static org.lwjgl.glfw.GLFW.*;
 // Class definition ---------------------------------------------------------------------------- //
 public class MultiProgramExampleCore extends ACore {
   
-    ATexObject2D continuetex;
+    Menu menu;
     APcObject3D cube;
     GraphicsManager gm;
     
     float xplace = 0;
+    float yplace = 0;
     
     private float previousAngle = 0f;
     private float angle = 0f;
@@ -33,7 +36,7 @@ public class MultiProgramExampleCore extends ACore {
     
     
     // Game state ------------------------------------------------------------------------------ //
-    private IKeyboardInput prevInput;
+    private IUserInput prevInput;
     
     // Customize core setup -------------------------------------------------------------------- //
     public MultiProgramExampleCore(){
@@ -55,7 +58,6 @@ public class MultiProgramExampleCore extends ACore {
     	
         gm = new GraphicsManager();
         
-        gm.add(continuetex = Object2DFactory.getContinue());
         gm.add(cube = Object3DFactory.getCube());
         
         long window = GLFW.glfwGetCurrentContext();
@@ -65,13 +67,10 @@ public class MultiProgramExampleCore extends ACore {
         int width = widthBuffer.get();
         int height = heightBuffer.get();
         
-        
-        continuetex.setView(new Matrix4f());
-        Matrix4f m = Matrix4f.orthographic(0, width, 0f, height, -1f, 10f);
-        continuetex.setProjection(m);
-        continuetex.setProjection(continuetex.getProjection().multiply(Matrix4f.translate(100,0,0)));
-        //continuetex.setProjection(Matrix4f.orthographic(0f, width, 0f, height, -1f, 1f));
-        
+
+        menu = new Menu(gm, 0, 0, width, height);
+        menu.addMenuItem(Object2DFactory.getContinue(), 0, 0, 10, 100);
+        menu.addMenuItem(Object2DFactory.getContinue(), 100, 100, 100, 100);
 
         cube.setView(new Matrix4f());
         cube.setProjection(Matrix4f.orthographic(-windowRatio, windowRatio, -1f, 1f, -1f, 1f));
@@ -111,17 +110,25 @@ public class MultiProgramExampleCore extends ACore {
 
     @Override
     protected void updateLogic(long timePassed) {
-        IKeyboardInput currInput = inputreader.getKeyBoardInput();
+        IUserInput currInput = inputreader.getKeyBoardInput();
         previousAngle = angle;
         angle += timePassed * angelPerSecond/1000.0;
         
-        if(currInput.getAction(GLFW_KEY_A) == GLFW_PRESS || currInput.getAction(GLFW_KEY_A) == GLFW_REPEAT){
+        if(currInput.get(GLFW_KEY_A) == GLFW_PRESS || currInput.get(GLFW_KEY_A) == GLFW_REPEAT){
         	xplace -= .05f;
         	if (xplace < -windowRatio) xplace = -windowRatio;
         }
-        if(currInput.getAction(GLFW_KEY_D) == GLFW_PRESS || currInput.getAction(GLFW_KEY_D) == GLFW_REPEAT){
+        if(currInput.get(GLFW_KEY_D) == GLFW_PRESS || currInput.get(GLFW_KEY_D) == GLFW_REPEAT){
         	xplace += .05f;
         	if (xplace > windowRatio) xplace = windowRatio;
+        }
+        if(currInput.get(GLFW_KEY_S) == GLFW_PRESS || currInput.get(GLFW_KEY_S) == GLFW_REPEAT){
+        	yplace -= .05f;
+        	if (yplace < -1) yplace = -1;
+        }
+        if(currInput.get(GLFW_KEY_W) == GLFW_PRESS || currInput.get(GLFW_KEY_W) == GLFW_REPEAT){
+        	yplace += .05f;
+        	if (yplace > 1) yplace = 1;
         }
         
         prevInput = currInput;
@@ -140,16 +147,9 @@ public class MultiProgramExampleCore extends ACore {
         Matrix4f model = Matrix4f.rotate(lerpAngle, 0f, 0f, 1f);
         model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle, .6f, 1f, 1f));
         
-        //cube.setModel( Matrix4f.translate(.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
-        //tri.setModel( Matrix4f.translate(-.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
-        continuetex.setModel(new Matrix4f());
+        cube.setModel( Matrix4f.translate(xplace, yplace, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
+        menu.update();
         
-        cube.setModel( Matrix4f.translate(xplace, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
-        
-        Matrix4f m = Matrix4f.orthographic(0, 1920/2, 0f, 1080/2, -1f, 10f);
-        continuetex.setProjection(m);
-        continuetex.setProjection(continuetex.getProjection().multiply(Matrix4f.translate(1200/2, 500/2,1)));
-
         gm.draw();
     }
 }
