@@ -7,7 +7,14 @@ public abstract class ACreature {
 	//behaviour
 	public void die(){}
 	
-	public void attack(int attackType, int attackLvl) {}
+	public void attack(int attackType, int attackLvl, ACreature attacker, ACreature target ) {
+		int attackerAttack = attacker.getAttackLvl();
+		int tgtDefense = target.getDefenseLvl();
+		int damage = attackerAttack - tgtDefense;
+		if (damage >0 ) {
+			target.setCurrentHealth(target.getCurrentHealth() - damage);
+		}
+	}
 	
 	//When a player is attacked they should automatically defend and lose 
 	//appropriate health
