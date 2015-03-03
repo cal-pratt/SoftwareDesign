@@ -46,10 +46,10 @@ class TexGraphicsBuffer implements IGraphicsBuffer {
 
         /* Vertex data */
         FloatBuffer vertices = BufferUtils.createFloatBuffer(4 * 7);
-        vertices.put(x1).put(y1).put(1f).put(1f).put(1f).put(0f).put(0f);
-        vertices.put(x2).put(y1).put(1f).put(1f).put(1f).put(1f).put(0f);
-        vertices.put(x2).put(y2).put(1f).put(1f).put(1f).put(1f).put(1f);
-        vertices.put(x1).put(y2).put(1f).put(1f).put(1f).put(0f).put(1f);
+        vertices.put(0).put(0).put(1f).put(1f).put(1f).put(0f).put(0f);
+        vertices.put(texture.getWidth()).put(0).put(1f).put(1f).put(1f).put(1f).put(0f);
+        vertices.put(texture.getWidth()).put(texture.getHeight()).put(1f).put(1f).put(1f).put(1f).put(1f);
+        vertices.put(0).put(texture.getHeight()).put(1f).put(1f).put(1f).put(0f).put(1f);
         vertices.flip();
 
         /* Generate Vertex Buffer Object */
@@ -59,8 +59,8 @@ class TexGraphicsBuffer implements IGraphicsBuffer {
 
         /* Element data */
         IntBuffer elements = BufferUtils.createIntBuffer(2 * 3);
-        elements.put(0).put(1).put(2);
-        elements.put(2).put(3).put(0);
+        elements.put(2).put(1).put(0);
+        elements.put(0).put(3).put(2);
         elements.flip();
 
         /* Generate Element Buffer Object */

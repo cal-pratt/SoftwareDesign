@@ -152,6 +152,7 @@ public abstract class ACore {
             glfwSwapBuffers(windowIdentifier);
             glfwPollEvents();
             try { 
+            	System.out.println(threadSleepDuration - (long)(glfwGetTime() - reference)/1000l);
                 Thread.sleep(threadSleepDuration - (long)(glfwGetTime() - reference)/1000l);
             } catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();

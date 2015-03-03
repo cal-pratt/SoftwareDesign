@@ -6,7 +6,7 @@ package mainpkg;
 public class Launcher {
     // Main program method --------------------------------------------------------------------- //
     public static void main(String[] args) {
-        texCore().run();
+    	multiProgCore().run();
     }
     
     // Core abstraction ------------------------------------------------------------------------ //
@@ -20,6 +20,10 @@ public class Launcher {
 
     private static ACore texCore() {
         return new TexExampleCore();
+    }
+    
+    private static ACore multiProgCore() {
+        return new MultiProgramExampleCore();
     }
 }
 // --------------------------------------------------------------------------------------------- //
