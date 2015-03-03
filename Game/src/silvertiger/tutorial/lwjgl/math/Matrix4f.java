@@ -272,7 +272,24 @@ public class Matrix4f {
         buffer.flip();
         return buffer;
     }
+    
+    public static Matrix4f cameraToClip(float windowRatio, float fFovDeg, float fzNear, float fzFar) {
+        Matrix4f ctc = new Matrix4f();
+        
+        final float degToRad = 3.14159f * 2.0f / 360.0f;
+        float fFovRad = fFovDeg * degToRad;
+        float fFrustumScale = 1.0f / (float)Math.tan(fFovRad / 2.0f);
+        
+        ctc.m00 = fFrustumScale / windowRatio;
+        ctc.m11 = fFrustumScale;
+        ctc.m22 = (fzFar + fzNear) / (fzNear - fzFar);
+        ctc.m23 = -1.0f;
+        ctc.m32 = (2 * fzFar * fzNear) / (fzNear - fzFar);
+        ctc.m33 = 0;
 
+        return ctc;
+    }
+    
     /**
      * Creates a orthographic projection matrix. Similar to
      * <code>glOrtho(left, right, bottom, top, near, far)</code>.

@@ -18,7 +18,7 @@ class PcGraphicLinker implements IGraphicLinker {
     	program.setModel(object.getModel());
     	program.setView(object.getView());
     	program.setProjection(object.getProjection());
-    	mesh.bindVertexArrayObject();
+    	mesh.bind();
     }
     public void draw(){
     	mesh.draw();
