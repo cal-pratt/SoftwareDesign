@@ -7,7 +7,11 @@ public abstract class ACreature {
 	//behaviour
 	public void die(){}
 	
-	public void attack(int attackType) {}
+	public void attack(int attackType, int attackLvl) {}
+	
+	//When a player is attacked they should automatically defend and lose 
+	//appropriate health
+	public void defend(int defenseLvl){}
 
 	//Getters and Setters
 	public int getMaxHealth(){
