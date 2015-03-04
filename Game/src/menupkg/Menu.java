@@ -9,54 +9,81 @@ import objectpkg.ATexObject2D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
 public class Menu {
-	GraphicsManager gm;
-	float width;
-	float height;
-	float posX;
-	float posY;
+	float actualWidth;
+	float actualHeight;
+	float actualPosX;
+	float actualPosY;
+	
+	float repWidth;
+	float repHeight;
+	float repPosX;
+	float repPosY;
 
-    List<MenuItem> items;
+    List<IMenuItem> items;
     
-    public Menu(GraphicsManager gm, float posX, float posY, float width, float height ){
-    	items = new ArrayList<MenuItem>();
-    	this.gm = gm;
-    	this.width = width;
-    	this.height = height;
-    	this.posX = posX;
-    	this.posY = posY;
+    public Menu(float actualPosX, float actualPosY, float actualWidth, float actualHeight,
+    		float repPosX, float repPosY, float repWidth, float repHeight ){
+    	
+    	items = new ArrayList<IMenuItem>();
+    	
+    	this.actualWidth = actualWidth;
+    	this.actualHeight = actualHeight;
+    	this.actualPosX = actualPosX;
+    	this.actualPosY = actualPosY;
+    	
+    	this.repWidth = repWidth;
+    	this.repHeight = repHeight;
+    	this.repPosX = repPosX;
+    	this.repPosY = repPosY;
     }
     
-    public void addMenuItem(ATexObject2D sprite,
-    		float posX, float posY,
-    		float width, float height){
-    	items.add(new MenuItem(sprite, posX, posY, width, height));
-    	gm.add(sprite);
+    public void add(IMenuItem item){
+    	items.add(item);
     }
     
-    public void clear(){
-    	for(MenuItem item : items){
-    		item.getSprite();
+    public void remove(IMenuItem item){
+    	items.remove(item);
+    }
+    
+    public void delete(){
+    	for(IMenuItem item : items){
+    		item.delete();
     	}
+    	items.clear();
     }
     
     public void update(){
-        Matrix4f m = Matrix4f.orthographic(posX, width, posY, height, -1f, 10f);
-    	for(MenuItem item : items){
-    		item.updateProjection(m);
+    	Matrix4f m = Matrix4f.translate(
+    			actualPosX/actualWidth, 
+    			actualPosY/actualHeight, 
+    			0);
+        m = m.multiply(Matrix4f.orthographic(
+        		0, repWidth*repWidth/actualWidth, 
+        		0, actualHeight*(actualHeight/repHeight), 
+        		-1f, 10f));
+		m = m.multiply(Matrix4f.translate(
+				repPosX, 
+				repPosY,
+				0));
+    	for(IMenuItem item : items){
+    		item.update(m);
     	}
     }
     
     public float getWidth(){
-    	return width;
+    	return actualWidth;
     }
+    
     public float getHeight(){
-    	return height;
+    	return actualHeight;
     }
+    
     public float getX(){
-    	return posX;
+    	return actualPosX;
     }
+    
     public float getY(){
-    	return posY;
+    	return actualPosY;
     }
     
 }

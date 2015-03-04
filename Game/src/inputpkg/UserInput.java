@@ -3,8 +3,12 @@ package inputpkg;
 // 3rd Part Imports ---------------------------------------------------------------------------- //
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.nio.IntBuffer;
 import java.util.Map;
 import java.util.HashMap;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFW;
 
 import eventpkg.KeyEventPublisher;
 
@@ -30,8 +34,14 @@ public class UserInput {
     }
     
     public void cursorPosInvoke(float x, float y){
+        long window = GLFW.glfwGetCurrentContext();
+        IntBuffer widthBuffer = BufferUtils.createIntBuffer(1);
+        IntBuffer heightBuffer = BufferUtils.createIntBuffer(1);
+        GLFW.glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
+        int height = heightBuffer.get();
+        
         mouseX = x;
-        mouseY = y;
+        mouseY = height - y;
     }
     
 	public float getMouseX(){

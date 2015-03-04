@@ -1,16 +1,21 @@
 package mainpkg;
 
+import inputpkg.UserInput;
+
 import java.nio.IntBuffer;
 
 import menupkg.Menu;
+import menupkg.MenuButton;
+import menupkg.MenuSprite;
+import menupkg.StartMenu;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 
 import eventpkg.IKeyEventListener;
 import eventpkg.KeyEventPublisher;
-
 import objectpkg.APcObject3D;
+import objectpkg.ATexObject2D;
 import objectpkg.Object2DFactory;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
@@ -24,7 +29,7 @@ import static org.lwjgl.glfw.GLFW.*;
 // Class definition ---------------------------------------------------------------------------- //
 public class MultiProgramExampleCore extends ACore {
     
-    Menu menu;
+    StartMenu menu;
     APcObject3D cube;
     GraphicsManager gm;
     
@@ -42,7 +47,7 @@ public class MultiProgramExampleCore extends ACore {
     public MultiProgramExampleCore(){
         windowWidth = 1920;
         windowHeight = 1080;
-        windowFullscreen = GL_TRUE;
+        windowFullscreen = GL_FALSE;
         windowTitle = "Game Core";
         exitKey = GLFW_KEY_ESCAPE;
         threadSleepDuration = 10l;
@@ -97,33 +102,39 @@ public class MultiProgramExampleCore extends ACore {
         glDepthRange(0.0f, 1.0f);
     	
         gm = new GraphicsManager();
-        
+        cube = Object3DFactory.getCube();
         gm.add(cube = Object3DFactory.getCube());
         
         long window = GLFW.glfwGetCurrentContext();
         IntBuffer widthBuffer = BufferUtils.createIntBuffer(1);
         IntBuffer heightBuffer = BufferUtils.createIntBuffer(1);
         GLFW.glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
-        int width = widthBuffer.get()/2;
-        int height = heightBuffer.get()/2;
+        float width = widthBuffer.get();
+        float height = heightBuffer.get();
 
-        menu = new Menu(gm, 0, 0, width, height);
-        menu.addMenuItem(Object2DFactory.getBanner(), 0, 0, width, height);
-        menu.addMenuItem(Object2DFactory.getNewgame(),  100, height/2 - 150, 150, 75);
-        menu.addMenuItem(Object2DFactory.getContinue(), 100, height/2, 150, 75);
+        menu = new StartMenu(gm, input, 
+        		0, 0, width, height,
+        		0, 0, width, height);
 
-        cube.setView(new Matrix4f());
-        cube.setProjection(Matrix4f.perspective(20, windowRatio, 1, 600));
+        cube.setView(Matrix4f.scale(0, 0, 0));
+        cube.setProjection(Matrix4f.scale(0, 0, 0));
         
     }
 
     @Override
     protected void teardown() {
+    	menu.delete();
     }
 
     @Override
     protected void resizeViewport(int width, int height) {
         glViewport(0, 0, width, height);
+        if(menu.isNewPressed()){
+        	menu.delete();
+            cube.setProjection(Matrix4f.perspective(20, windowRatio, 1, 600));
+        	menu.add(new MenuSprite(gm, Object2DFactory.getBanner(), 0, 0, width, height));
+        	menu.clearNewPressed();
+        }
     }
 
     @Override
@@ -147,6 +158,7 @@ public class MultiProgramExampleCore extends ACore {
         model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle, .6f, 1f, 1f));
         
         cube.setModel(Matrix4f.translate(xplace, 0, yplace).multiply(Matrix4f.scale(.5f, .5f, .5f).multiply(model)));
+        
         menu.update();
         
         gm.draw();

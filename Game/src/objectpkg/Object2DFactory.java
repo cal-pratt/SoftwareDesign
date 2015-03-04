@@ -10,4 +10,7 @@ public class Object2DFactory {
     public static ATexObject2D getNewgame(){
         return new Newgame();
     }
+    public static ATexObject2D getSpace(){
+        return new Space();
+    }
 }
