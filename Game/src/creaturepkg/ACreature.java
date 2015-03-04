@@ -7,18 +7,24 @@ public abstract class ACreature {
 	//behaviour
 	public void die(){}
 	
-	public void attack(int attackType, int attackLvl, ACreature attacker, ACreature target ) {
-		int attackerAttack = attacker.getAttackLvl();
-		int tgtDefense = target.getDefenseLvl();
-		int damage = attackerAttack - tgtDefense;
-		if (damage >0 ) {
-			target.setCurrentHealth(target.getCurrentHealth() - damage);
-		}
+	public int attack(int attackType, ACreature attacker ) {
+		//When different attacks are made, insert different attack types here
+		int atkDamage = attacker.getAttackLvl();
+		//Fire projectile
+		
+		return atkDamage;
 	}
 	
 	//When a player is attacked they should automatically defend and lose 
 	//appropriate health
-	public void defend(int defenseLvl){}
+	public void defend(ACreature target, Projectile attack){
+		int tgtDefense = target.getDefenseLvl();
+		int atkDamage = attack.power;
+		int damage = atkDamage - tgtDefense;
+		if (damage >0 ) {
+			target.setCurrentHealth(target.getCurrentHealth() - damage);
+		}
+	}
 
 	//Getters and Setters
 	public int getMaxHealth(){
