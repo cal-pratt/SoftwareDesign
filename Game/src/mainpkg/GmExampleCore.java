@@ -1,13 +1,9 @@
 package mainpkg;
 
-import java.nio.IntBuffer;
-
 import objectpkg.APcObject3D;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import graphicspkg.GraphicsManager;
-import inputpkg.IKeyboardInput;
-
 // 3rd Part Imports ---------------------------------------------------------------------------- //
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -26,7 +22,6 @@ public class GmExampleCore extends ACore {
     
     
     // Game state ------------------------------------------------------------------------------ //
-    private IKeyboardInput prevInput;
     
     // Customize core setup -------------------------------------------------------------------- //
     public GmExampleCore(){
@@ -41,7 +36,6 @@ public class GmExampleCore extends ACore {
     // Core implementation --------------------------------------------------------------------- //
     @Override
     protected void startup() {
-        prevInput = inputreader.getKeyBoardInput();
         gm = new GraphicsManager();
         
     	glEnable(GL_CULL_FACE);
@@ -83,11 +77,9 @@ public class GmExampleCore extends ACore {
 
     @Override
     protected void updateLogic(long timePassed) {
-        IKeyboardInput currInput = inputreader.getKeyBoardInput();
         previousAngle = angle;
         angle += timePassed * angelPerSecond/1000.0;
         
-        prevInput = currInput;
     }
 
     @Override

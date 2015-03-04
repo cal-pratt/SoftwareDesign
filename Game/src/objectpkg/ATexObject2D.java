@@ -2,7 +2,6 @@ package objectpkg;
 
 
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
-import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
 public abstract class ATexObject2D implements IObject3D {
     protected final String FILENAME;
@@ -10,6 +9,8 @@ public abstract class ATexObject2D implements IObject3D {
     protected Matrix4f model;
     protected Matrix4f view;
     protected Matrix4f projection;
+    
+    protected float width, height;
     
     public ATexObject2D(String filename){
         this.FILENAME = filename;
@@ -35,5 +36,17 @@ public abstract class ATexObject2D implements IObject3D {
     }
     public Matrix4f getProjection(){
         return this.projection;
+    }
+    public void setRawSize(float width, float height){
+    	this.width = width;
+    	this.height = height;
+    }
+
+    public float getWidth(){
+    	return width;
+    }
+    
+    public float getHeight(){
+    	return height;
     }
 }

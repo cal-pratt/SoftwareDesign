@@ -1,7 +1,7 @@
 package mainpkg;
 
 // Local Project Imports ----------------------------------------------------------------------- //
-import inputpkg.InputReader;
+import inputpkg.UserInput;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
@@ -12,6 +12,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWMouseButtonCallback;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWvidmode;
 import org.lwjgl.opengl.GLContext;
 
@@ -27,13 +29,18 @@ public abstract class ACore {
     protected int windowFullscreen = GL_FALSE;
     protected String windowTitle = "Default ACore";
     protected int exitKey = GLFW_KEY_ESCAPE;
-    protected long threadSleepDuration = 20l; 
+    protected long threadSleepDuration = 20l;
     
     // Major components ------------------------------------------------------------------------- //
-    protected InputReader inputreader;
+    protected UserInput input;
+    
     protected float windowRatio;
     private GLFWErrorCallback errorCallback;
+    
     private GLFWKeyCallback keyCallback;
+    private GLFWMouseButtonCallback mouseCallback;
+    private GLFWCursorPosCallback cursorCallback;
+    
     private long windowIdentifier; 
 
     // State ----------------------------------------------------------------------------------- //
@@ -59,6 +66,8 @@ public abstract class ACore {
             System.out.println("Exiting window: " + windowTitle);
             glfwDestroyWindow(windowIdentifier);
             keyCallback.release();
+            mouseCallback.release();
+            cursorCallback.release();
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
@@ -118,17 +127,33 @@ public abstract class ACore {
     
     // Link OpenGl input callback to input-reader ---------------------------------------------- //
     private void createInput() {
-        inputreader = new InputReader();
+        input = new UserInput();
         glfwSetKeyCallback(windowIdentifier, keyCallback = new GLFWKeyCallback() {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
                 if ( key == exitKey && action == GLFW_RELEASE ){
                     glfwSetWindowShouldClose(window, GL_TRUE);
                 }
-                else {
-                    inputreader.keyInvoke(key, scancode, action, mods);
+                else if (window == windowIdentifier) {
+                    input.keyInvoke(key, scancode, action, mods);
                 }
             }
+        });
+        glfwSetMouseButtonCallback(windowIdentifier, mouseCallback = new GLFWMouseButtonCallback() {
+			@Override
+			public void invoke(long window, int button, int action, int mods) {
+				if (window == windowIdentifier){
+				    input.keyInvoke(button, 0, action, mods);
+				}
+			}
+        });
+        glfwSetCursorPosCallback(windowIdentifier, cursorCallback = new GLFWCursorPosCallback() {
+			@Override
+			public void invoke(long window, double x, double y) {
+				if (window == windowIdentifier){
+					input.cursorPosInvoke((float)x, (float)y);
+				}
+			}
         });
     }
     
@@ -152,6 +177,7 @@ public abstract class ACore {
             glfwSwapBuffers(windowIdentifier);
             glfwPollEvents();
             try { 
+            	//System.out.println(threadSleepDuration - (long)(glfwGetTime() - reference)/1000l);
                 Thread.sleep(threadSleepDuration - (long)(glfwGetTime() - reference)/1000l);
             } catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();

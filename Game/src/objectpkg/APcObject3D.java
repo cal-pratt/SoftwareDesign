@@ -12,7 +12,6 @@ public abstract class APcObject3D implements IObject3D {
 	public APcObject3D(String filename){
 		this.FILENAME = filename;
 	}
-	
 	public void setModel(Matrix4f model){
 		this.model = model;
 	}

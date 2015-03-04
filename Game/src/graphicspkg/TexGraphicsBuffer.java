@@ -35,21 +35,13 @@ class TexGraphicsBuffer implements IGraphicsBuffer {
         IntBuffer widthBuffer = BufferUtils.createIntBuffer(1);
         IntBuffer heightBuffer = BufferUtils.createIntBuffer(1);
         GLFW.glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
-        int width = widthBuffer.get();
-        int height = heightBuffer.get();
-
-        /* Get coordinates for centering the texture on screen */
-        float x1 = (width - texture.getWidth()) / 2f;
-        float y1 = (height - texture.getHeight()) / 2f;
-        float x2 = x1 + texture.getWidth();
-        float y2 = y1 + texture.getHeight();
 
         /* Vertex data */
         FloatBuffer vertices = BufferUtils.createFloatBuffer(4 * 7);
-        vertices.put(x1).put(y1).put(1f).put(1f).put(1f).put(0f).put(0f);
-        vertices.put(x2).put(y1).put(1f).put(1f).put(1f).put(1f).put(0f);
-        vertices.put(x2).put(y2).put(1f).put(1f).put(1f).put(1f).put(1f);
-        vertices.put(x1).put(y2).put(1f).put(1f).put(1f).put(0f).put(1f);
+        vertices.put(0).put(0).put(1f).put(1f).put(1f).put(0f).put(0f);
+        vertices.put(texture.getWidth()).put(0).put(1f).put(1f).put(1f).put(1f).put(0f);
+        vertices.put(texture.getWidth()).put(texture.getHeight()).put(1f).put(1f).put(1f).put(1f).put(1f);
+        vertices.put(0).put(texture.getHeight()).put(1f).put(1f).put(1f).put(0f).put(1f);
         vertices.flip();
 
         /* Generate Vertex Buffer Object */
@@ -59,8 +51,8 @@ class TexGraphicsBuffer implements IGraphicsBuffer {
 
         /* Element data */
         IntBuffer elements = BufferUtils.createIntBuffer(2 * 3);
-        elements.put(0).put(1).put(2);
-        elements.put(2).put(3).put(0);
+        elements.put(2).put(1).put(0);
+        elements.put(0).put(3).put(2);
         elements.flip();
 
         /* Generate Element Buffer Object */
@@ -85,6 +77,14 @@ class TexGraphicsBuffer implements IGraphicsBuffer {
         program.enableVertexAttribute(texAttrib);
         program.pointVertexAttribute(texAttrib, 2, 7 * 4, 5 * 4);
         
+    }
+    
+    public float getWidth(){
+    	return texture.getWidth();
+    }
+    
+    public float getHeight(){
+    	return texture.getHeight();
     }
     
     public void delete(){

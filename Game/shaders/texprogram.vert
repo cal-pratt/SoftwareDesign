@@ -14,5 +14,5 @@ void main() {
     vertexColor = color;
     textureCoord = texcoord;
     mat4 mvp = projection * view * model;
-    gl_Position = mvp * vec4(position, 0.0, 1.0);
+    gl_Position = mvp * vec4(position, -1.0, 1.0);
 }
