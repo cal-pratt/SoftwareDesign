@@ -2,7 +2,6 @@ package objectpkg;
 
 
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
-import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
 public abstract class ATexObject2D implements IObject3D {
     protected final String FILENAME;

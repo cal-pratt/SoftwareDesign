@@ -5,13 +5,10 @@ import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 
-import objectpkg.APcObject3D;
 import objectpkg.ATexObject2D;
 import objectpkg.Object2DFactory;
-import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import graphicspkg.GraphicsManager;
-import inputpkg.IUserInput;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
 import static org.lwjgl.opengl.GL11.*;
@@ -30,7 +27,6 @@ public class TexExampleCore extends ACore {
     
     
     // Game state ------------------------------------------------------------------------------ //
-    private IUserInput prevInput;
     
     // Customize core setup -------------------------------------------------------------------- //
     public TexExampleCore(){
@@ -45,7 +41,6 @@ public class TexExampleCore extends ACore {
     // Core implementation --------------------------------------------------------------------- //
     @Override
     protected void startup() {
-        prevInput = inputreader.getKeyBoardInput();
         
         gm = new GraphicsManager();
         
@@ -86,11 +81,9 @@ public class TexExampleCore extends ACore {
 
     @Override
     protected void updateLogic(long timePassed) {
-        IUserInput currInput = inputreader.getKeyBoardInput();
         previousAngle = angle;
         angle += timePassed * angelPerSecond/1000.0;
         
-        prevInput = currInput;
     }
 
     @Override

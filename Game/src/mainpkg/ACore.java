@@ -1,7 +1,7 @@
 package mainpkg;
 
 // Local Project Imports ----------------------------------------------------------------------- //
-import inputpkg.InputReader;
+import inputpkg.UserInput;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
@@ -32,12 +32,15 @@ public abstract class ACore {
     protected long threadSleepDuration = 20l;
     
     // Major components ------------------------------------------------------------------------- //
-    protected InputReader inputreader;
+    protected UserInput input;
+    
     protected float windowRatio;
     private GLFWErrorCallback errorCallback;
+    
     private GLFWKeyCallback keyCallback;
     private GLFWMouseButtonCallback mouseCallback;
     private GLFWCursorPosCallback cursorCallback;
+    
     private long windowIdentifier; 
 
     // State ----------------------------------------------------------------------------------- //
@@ -63,6 +66,8 @@ public abstract class ACore {
             System.out.println("Exiting window: " + windowTitle);
             glfwDestroyWindow(windowIdentifier);
             keyCallback.release();
+            mouseCallback.release();
+            cursorCallback.release();
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
@@ -122,7 +127,7 @@ public abstract class ACore {
     
     // Link OpenGl input callback to input-reader ---------------------------------------------- //
     private void createInput() {
-        inputreader = new InputReader();
+        input = new UserInput();
         glfwSetKeyCallback(windowIdentifier, keyCallback = new GLFWKeyCallback() {
             @Override
             public void invoke(long window, int key, int scancode, int action, int mods) {
@@ -130,7 +135,7 @@ public abstract class ACore {
                     glfwSetWindowShouldClose(window, GL_TRUE);
                 }
                 else if (window == windowIdentifier) {
-                    inputreader.keyInvoke(key, scancode, action, mods);
+                    input.keyInvoke(key, scancode, action, mods);
                 }
             }
         });
@@ -138,7 +143,7 @@ public abstract class ACore {
 			@Override
 			public void invoke(long window, int button, int action, int mods) {
 				if (window == windowIdentifier){
-					inputreader.mouseButtonInvoke(button, action, mods);
+				    input.keyInvoke(button, 0, action, mods);
 				}
 			}
         });
@@ -146,7 +151,7 @@ public abstract class ACore {
 			@Override
 			public void invoke(long window, double x, double y) {
 				if (window == windowIdentifier){
-					inputreader.cursorPosInvoke( x, y);
+					input.cursorPosInvoke((float)x, (float)y);
 				}
 			}
         });

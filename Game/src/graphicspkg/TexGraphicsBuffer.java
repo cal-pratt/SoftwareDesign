@@ -35,14 +35,6 @@ class TexGraphicsBuffer implements IGraphicsBuffer {
         IntBuffer widthBuffer = BufferUtils.createIntBuffer(1);
         IntBuffer heightBuffer = BufferUtils.createIntBuffer(1);
         GLFW.glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
-        int width = widthBuffer.get();
-        int height = heightBuffer.get();
-
-        /* Get coordinates for centering the texture on screen */
-        float x1 = (width - texture.getWidth()) / 2f;
-        float y1 = (height - texture.getHeight()) / 2f;
-        float x2 = x1 + texture.getWidth();
-        float y2 = y1 + texture.getHeight();
 
         /* Vertex data */
         FloatBuffer vertices = BufferUtils.createFloatBuffer(4 * 7);

@@ -1,6 +1,5 @@
 package graphicspkg;
 
-import utilpkg.FileInterpreter;
 import silvertiger.tutorial.lwjgl.graphic.Shader;
 import silvertiger.tutorial.lwjgl.graphic.ShaderProgram;
 import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;

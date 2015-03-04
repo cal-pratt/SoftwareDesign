@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import objectpkg.ATexObject2D;
+import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
 public class Menu {
 	GraphicsManager gm;
@@ -28,7 +29,7 @@ public class Menu {
     public void addMenuItem(ATexObject2D sprite,
     		float posX, float posY,
     		float width, float height){
-    	items.add(new MenuItem(this, sprite, posX, posY, width, height));
+    	items.add(new MenuItem(sprite, posX, posY, width, height));
     	gm.add(sprite);
     }
     
@@ -39,8 +40,9 @@ public class Menu {
     }
     
     public void update(){
+        Matrix4f m = Matrix4f.orthographic(posX, width, posY, height, -1f, 10f);
     	for(MenuItem item : items){
-    		item.updateProjection();
+    		item.updateProjection(m);
     	}
     }
     

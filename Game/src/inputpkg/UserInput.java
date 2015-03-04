@@ -6,40 +6,27 @@ import static org.lwjgl.glfw.GLFW.*;
 import java.util.Map;
 import java.util.HashMap;
 
+import eventpkg.KeyEventPublisher;
+
+
 // Class definition ---------------------------------------------------------------------------- //
-class UserInput implements IUserInput {
-    
-    // Keyboard key construct ------------------------------------------------------------------ //
-    private class Key{
-        public int action; // GLFW_RELEASE or GLFW_PRESS or GLFW_REPEAT
-        public Key(){
-            this.action = GLFW_RELEASE;
-        }
-        public Key(int action){
-            this.action = action;
-        }
-    }
+public class UserInput {
 
     // Keyboard data container ----------------------------------------------------------------- //
     private Map<Integer, Key> keyMap;
     private float mouseX, mouseY;
     // Constructors ---------------------------------------------------------------------------- //
     public UserInput(){
-        this.keyMap = defaultKeyMap();
-    }
-    
-    public UserInput(Map<Integer, Key> keyMap){
-        this.keyMap = new HashMap<Integer, Key>();
-        this.keyMap.putAll(keyMap);
-    }
-    
-    public UserInput clone(){
-        return new UserInput(this.keyMap);
+        keyMap = new HashMap<Integer, Key>();
+        
+        for(int name : KEYNAMES){
+            keyMap.put(name, new Key());
+        }
     }
     
     // Accessors and Mutators ------------------------------------------------------------------ //
     public void keyInvoke(int key, int scancode, int action, int mods){
-        keyMap.put(key, new Key(action));
+        keyMap.get(key).set(action);
     }
     
     public void cursorPosInvoke(float x, float y){
@@ -55,147 +42,146 @@ class UserInput implements IUserInput {
         return mouseY;
     }
 	
-	public int get(int key){
-        return keyMap.get(key).action;
+	public int getAction(int key){
+        return keyMap.get(key).getAction();
     }
 	
-    
-    // Default keyboard data ------------------------------------------------------------------- //
-    private Map<Integer, Key> defaultKeyMap(){
-        Map<Integer, Key> defaultMap = new HashMap<Integer, Key>();
-        
-        defaultMap.put(GLFW_KEY_UNKNOWN, new Key());
-        defaultMap.put(GLFW_KEY_SPACE, new Key());
-        defaultMap.put(GLFW_KEY_APOSTROPHE, new Key());
-        defaultMap.put(GLFW_KEY_COMMA, new Key());
-        defaultMap.put(GLFW_KEY_MINUS, new Key());
-        defaultMap.put(GLFW_KEY_PERIOD, new Key());
-        defaultMap.put(GLFW_KEY_SLASH, new Key());
-        defaultMap.put(GLFW_KEY_0, new Key());
-        defaultMap.put(GLFW_KEY_1, new Key());
-        defaultMap.put(GLFW_KEY_2, new Key());
-        defaultMap.put(GLFW_KEY_3, new Key());
-        defaultMap.put(GLFW_KEY_4, new Key());
-        defaultMap.put(GLFW_KEY_5, new Key());
-        defaultMap.put(GLFW_KEY_6, new Key());
-        defaultMap.put(GLFW_KEY_7, new Key());
-        defaultMap.put(GLFW_KEY_8, new Key());
-        defaultMap.put(GLFW_KEY_9, new Key());
-        defaultMap.put(GLFW_KEY_SEMICOLON, new Key());
-        defaultMap.put(GLFW_KEY_EQUAL, new Key());
-        defaultMap.put(GLFW_KEY_A, new Key());
-        defaultMap.put(GLFW_KEY_B, new Key());
-        defaultMap.put(GLFW_KEY_C, new Key());
-        defaultMap.put(GLFW_KEY_D, new Key());
-        defaultMap.put(GLFW_KEY_E, new Key());
-        defaultMap.put(GLFW_KEY_F, new Key());
-        defaultMap.put(GLFW_KEY_G, new Key());
-        defaultMap.put(GLFW_KEY_H, new Key());
-        defaultMap.put(GLFW_KEY_I, new Key());
-        defaultMap.put(GLFW_KEY_J, new Key());
-        defaultMap.put(GLFW_KEY_K, new Key());
-        defaultMap.put(GLFW_KEY_L, new Key());
-        defaultMap.put(GLFW_KEY_M, new Key());
-        defaultMap.put(GLFW_KEY_N, new Key());
-        defaultMap.put(GLFW_KEY_O, new Key());
-        defaultMap.put(GLFW_KEY_P, new Key());
-        defaultMap.put(GLFW_KEY_Q, new Key());
-        defaultMap.put(GLFW_KEY_R, new Key());
-        defaultMap.put(GLFW_KEY_S, new Key());
-        defaultMap.put(GLFW_KEY_T, new Key());
-        defaultMap.put(GLFW_KEY_U, new Key());
-        defaultMap.put(GLFW_KEY_V, new Key());
-        defaultMap.put(GLFW_KEY_W, new Key());
-        defaultMap.put(GLFW_KEY_X, new Key());
-        defaultMap.put(GLFW_KEY_Y, new Key());
-        defaultMap.put(GLFW_KEY_Z, new Key());
-        defaultMap.put(GLFW_KEY_LEFT_BRACKET, new Key());
-        defaultMap.put(GLFW_KEY_BACKSLASH, new Key());
-        defaultMap.put(GLFW_KEY_RIGHT_BRACKET, new Key());
-        defaultMap.put(GLFW_KEY_GRAVE_ACCENT, new Key());
-        defaultMap.put(GLFW_KEY_WORLD_1, new Key());
-        defaultMap.put(GLFW_KEY_WORLD_2, new Key());
-        defaultMap.put(GLFW_KEY_ESCAPE, new Key());
-        defaultMap.put(GLFW_KEY_ENTER, new Key());
-        defaultMap.put(GLFW_KEY_TAB, new Key());
-        defaultMap.put(GLFW_KEY_BACKSPACE, new Key());
-        defaultMap.put(GLFW_KEY_INSERT, new Key());
-        defaultMap.put(GLFW_KEY_DELETE, new Key());
-        defaultMap.put(GLFW_KEY_RIGHT, new Key());
-        defaultMap.put(GLFW_KEY_LEFT, new Key());
-        defaultMap.put(GLFW_KEY_DOWN, new Key());
-        defaultMap.put(GLFW_KEY_UP, new Key());
-        defaultMap.put(GLFW_KEY_PAGE_UP, new Key());
-        defaultMap.put(GLFW_KEY_PAGE_DOWN, new Key());
-        defaultMap.put(GLFW_KEY_HOME, new Key());
-        defaultMap.put(GLFW_KEY_END, new Key());
-        defaultMap.put(GLFW_KEY_CAPS_LOCK, new Key());
-        defaultMap.put(GLFW_KEY_SCROLL_LOCK, new Key());
-        defaultMap.put(GLFW_KEY_NUM_LOCK, new Key());
-        defaultMap.put(GLFW_KEY_PRINT_SCREEN, new Key());
-        defaultMap.put(GLFW_KEY_PAUSE, new Key());
-        defaultMap.put(GLFW_KEY_F1, new Key());
-        defaultMap.put(GLFW_KEY_F2, new Key());
-        defaultMap.put(GLFW_KEY_F3, new Key());
-        defaultMap.put(GLFW_KEY_F4, new Key());
-        defaultMap.put(GLFW_KEY_F5, new Key());
-        defaultMap.put(GLFW_KEY_F6, new Key());
-        defaultMap.put(GLFW_KEY_F7, new Key());
-        defaultMap.put(GLFW_KEY_F8, new Key());
-        defaultMap.put(GLFW_KEY_F9, new Key());
-        defaultMap.put(GLFW_KEY_F10, new Key());
-        defaultMap.put(GLFW_KEY_F11, new Key());
-        defaultMap.put(GLFW_KEY_F12, new Key());
-        defaultMap.put(GLFW_KEY_F13, new Key());
-        defaultMap.put(GLFW_KEY_F14, new Key());
-        defaultMap.put(GLFW_KEY_F15, new Key());
-        defaultMap.put(GLFW_KEY_F16, new Key());
-        defaultMap.put(GLFW_KEY_F17, new Key());
-        defaultMap.put(GLFW_KEY_F18, new Key());
-        defaultMap.put(GLFW_KEY_F19, new Key());
-        defaultMap.put(GLFW_KEY_F20, new Key());
-        defaultMap.put(GLFW_KEY_F21, new Key());
-        defaultMap.put(GLFW_KEY_F22, new Key());
-        defaultMap.put(GLFW_KEY_F23, new Key());
-        defaultMap.put(GLFW_KEY_F24, new Key());
-        defaultMap.put(GLFW_KEY_F25, new Key());
-        defaultMap.put(GLFW_KEY_KP_0, new Key());
-        defaultMap.put(GLFW_KEY_KP_1, new Key());
-        defaultMap.put(GLFW_KEY_KP_2, new Key());
-        defaultMap.put(GLFW_KEY_KP_3, new Key());
-        defaultMap.put(GLFW_KEY_KP_4, new Key());
-        defaultMap.put(GLFW_KEY_KP_5, new Key());
-        defaultMap.put(GLFW_KEY_KP_6, new Key());
-        defaultMap.put(GLFW_KEY_KP_7, new Key());
-        defaultMap.put(GLFW_KEY_KP_8, new Key());
-        defaultMap.put(GLFW_KEY_KP_9, new Key());
-        defaultMap.put(GLFW_KEY_KP_DECIMAL, new Key());
-        defaultMap.put(GLFW_KEY_KP_DIVIDE, new Key());
-        defaultMap.put(GLFW_KEY_KP_MULTIPLY, new Key());
-        defaultMap.put(GLFW_KEY_KP_SUBTRACT, new Key());
-        defaultMap.put(GLFW_KEY_KP_ADD, new Key());
-        defaultMap.put(GLFW_KEY_KP_ENTER, new Key());
-        defaultMap.put(GLFW_KEY_KP_EQUAL, new Key());
-        defaultMap.put(GLFW_KEY_LEFT_SHIFT, new Key());
-        defaultMap.put(GLFW_KEY_LEFT_CONTROL, new Key());
-        defaultMap.put(GLFW_KEY_LEFT_ALT, new Key());
-        defaultMap.put(GLFW_KEY_LEFT_SUPER, new Key());
-        defaultMap.put(GLFW_KEY_RIGHT_SHIFT, new Key());
-        defaultMap.put(GLFW_KEY_RIGHT_CONTROL, new Key());
-        defaultMap.put(GLFW_KEY_RIGHT_ALT, new Key());
-        defaultMap.put(GLFW_KEY_RIGHT_SUPER, new Key());
-        defaultMap.put(GLFW_KEY_MENU, new Key());
-        defaultMap.put(GLFW_MOUSE_BUTTON_1, new Key());
-        defaultMap.put(GLFW_MOUSE_BUTTON_2, new Key());
-        defaultMap.put(GLFW_MOUSE_BUTTON_3, new Key());
-        defaultMap.put(GLFW_MOUSE_BUTTON_4, new Key());
-        defaultMap.put(GLFW_MOUSE_BUTTON_5, new Key());
-        defaultMap.put(GLFW_MOUSE_BUTTON_6, new Key());
-        defaultMap.put(GLFW_MOUSE_BUTTON_7, new Key());
-        defaultMap.put(GLFW_MOUSE_BUTTON_8, new Key());
-        
-        return defaultMap;
+	public KeyEventPublisher getInputEvent(int key){
+        return keyMap.get(key).getInputEvent();
     }
+    
+    private final int KEYNAMES[] = {
+            GLFW_KEY_UNKNOWN,
+            GLFW_KEY_SPACE,
+            GLFW_KEY_APOSTROPHE,
+            GLFW_KEY_COMMA,
+            GLFW_KEY_MINUS,
+            GLFW_KEY_PERIOD,
+            GLFW_KEY_SLASH,
+            GLFW_KEY_0,
+            GLFW_KEY_1,
+            GLFW_KEY_2,
+            GLFW_KEY_3,
+            GLFW_KEY_4,
+            GLFW_KEY_5,
+            GLFW_KEY_6,
+            GLFW_KEY_7,
+            GLFW_KEY_8,
+            GLFW_KEY_9,
+            GLFW_KEY_SEMICOLON,
+            GLFW_KEY_EQUAL,
+            GLFW_KEY_A,
+            GLFW_KEY_B,
+            GLFW_KEY_C,
+            GLFW_KEY_D,
+            GLFW_KEY_E,
+            GLFW_KEY_F,
+            GLFW_KEY_G,
+            GLFW_KEY_H,
+            GLFW_KEY_I,
+            GLFW_KEY_J,
+            GLFW_KEY_K,
+            GLFW_KEY_L,
+            GLFW_KEY_M,
+            GLFW_KEY_N,
+            GLFW_KEY_O,
+            GLFW_KEY_P,
+            GLFW_KEY_Q,
+            GLFW_KEY_R,
+            GLFW_KEY_S,
+            GLFW_KEY_T,
+            GLFW_KEY_U,
+            GLFW_KEY_V,
+            GLFW_KEY_W,
+            GLFW_KEY_X,
+            GLFW_KEY_Y,
+            GLFW_KEY_Z,
+            GLFW_KEY_LEFT_BRACKET,
+            GLFW_KEY_BACKSLASH,
+            GLFW_KEY_RIGHT_BRACKET,
+            GLFW_KEY_GRAVE_ACCENT,
+            GLFW_KEY_WORLD_1,
+            GLFW_KEY_WORLD_2,
+            GLFW_KEY_ESCAPE,
+            GLFW_KEY_ENTER,
+            GLFW_KEY_TAB,
+            GLFW_KEY_BACKSPACE,
+            GLFW_KEY_INSERT,
+            GLFW_KEY_DELETE,
+            GLFW_KEY_RIGHT,
+            GLFW_KEY_LEFT,
+            GLFW_KEY_DOWN,
+            GLFW_KEY_UP,
+            GLFW_KEY_PAGE_UP,
+            GLFW_KEY_PAGE_DOWN,
+            GLFW_KEY_HOME,
+            GLFW_KEY_END,
+            GLFW_KEY_CAPS_LOCK,
+            GLFW_KEY_SCROLL_LOCK,
+            GLFW_KEY_NUM_LOCK,
+            GLFW_KEY_PRINT_SCREEN,
+            GLFW_KEY_PAUSE,
+            GLFW_KEY_F1,
+            GLFW_KEY_F2,
+            GLFW_KEY_F3,
+            GLFW_KEY_F4,
+            GLFW_KEY_F5,
+            GLFW_KEY_F6,
+            GLFW_KEY_F7,
+            GLFW_KEY_F8,
+            GLFW_KEY_F9,
+            GLFW_KEY_F10,
+            GLFW_KEY_F11,
+            GLFW_KEY_F12,
+            GLFW_KEY_F13,
+            GLFW_KEY_F14,
+            GLFW_KEY_F15,
+            GLFW_KEY_F16,
+            GLFW_KEY_F17,
+            GLFW_KEY_F18,
+            GLFW_KEY_F19,
+            GLFW_KEY_F20,
+            GLFW_KEY_F21,
+            GLFW_KEY_F22,
+            GLFW_KEY_F23,
+            GLFW_KEY_F24,
+            GLFW_KEY_F25,
+            GLFW_KEY_KP_0,
+            GLFW_KEY_KP_1,
+            GLFW_KEY_KP_2,
+            GLFW_KEY_KP_3,
+            GLFW_KEY_KP_4,
+            GLFW_KEY_KP_5,
+            GLFW_KEY_KP_6,
+            GLFW_KEY_KP_7,
+            GLFW_KEY_KP_8,
+            GLFW_KEY_KP_9,
+            GLFW_KEY_KP_DECIMAL,
+            GLFW_KEY_KP_DIVIDE,
+            GLFW_KEY_KP_MULTIPLY,
+            GLFW_KEY_KP_SUBTRACT,
+            GLFW_KEY_KP_ADD,
+            GLFW_KEY_KP_ENTER,
+            GLFW_KEY_KP_EQUAL,
+            GLFW_KEY_LEFT_SHIFT,
+            GLFW_KEY_LEFT_CONTROL,
+            GLFW_KEY_LEFT_ALT,
+            GLFW_KEY_LEFT_SUPER,
+            GLFW_KEY_RIGHT_SHIFT,
+            GLFW_KEY_RIGHT_CONTROL,
+            GLFW_KEY_RIGHT_ALT,
+            GLFW_KEY_RIGHT_SUPER,
+            GLFW_KEY_MENU,
+            GLFW_MOUSE_BUTTON_1,
+            GLFW_MOUSE_BUTTON_2,
+            GLFW_MOUSE_BUTTON_3,
+            GLFW_MOUSE_BUTTON_4,
+            GLFW_MOUSE_BUTTON_5,
+            GLFW_MOUSE_BUTTON_6,
+            GLFW_MOUSE_BUTTON_7,
+            GLFW_MOUSE_BUTTON_8
+    };
+    
 }
 // --------------------------------------------------------------------------------------------- //
 

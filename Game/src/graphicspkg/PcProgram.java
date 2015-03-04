@@ -11,8 +11,8 @@ class PcProgram extends ADefinedProgram{
     int uniProjection;
     
     public PcProgram(){
-        createProgram(FileInterpreter.fileToString("shaders/basicprogram.vert"),
-                FileInterpreter.fileToString("shaders/basicprogram.frag"));
+        createProgram(FileInterpreter.fileToString("shaders/depthpc.vert"),
+                FileInterpreter.fileToString("shaders/depthpc.frag"));
     }
     
 
