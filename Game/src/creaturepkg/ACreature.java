@@ -11,7 +11,6 @@ public abstract class ACreature {
 		//When different attacks are made, insert different attack types here
 		int atkDamage = attacker.getAttackLvl();
 		//Fire projectile
-		
 		return atkDamage;
 	}
 	
