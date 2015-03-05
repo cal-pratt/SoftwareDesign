@@ -31,6 +31,7 @@ public class MultiProgramExampleCore extends ACore {
     float dy = 0;
     
     private IKeyEventListener inputCallback;
+    private IKeyEventListener testCallback;
     
     private float previousAngle = 0f;
     private float angle = 0f;
@@ -64,10 +65,19 @@ public class MultiProgramExampleCore extends ACore {
             }
         };
         
+        testCallback = new IKeyEventListener(){
+            @Override 
+            public void actionPerformed(KeyEventPublisher event, Object action) 
+            { 
+                menu.show();
+            }
+        };
+        
         input.getInputEvent(GLFW_KEY_A).subscribe(inputCallback);
         input.getInputEvent(GLFW_KEY_D).subscribe(inputCallback);
         input.getInputEvent(GLFW_KEY_S).subscribe(inputCallback);
         input.getInputEvent(GLFW_KEY_W).subscribe(inputCallback);
+        input.getInputEvent(GLFW_KEY_X).subscribe(testCallback);
     	
         gm = new GraphicsManager();
         
@@ -78,10 +88,13 @@ public class MultiProgramExampleCore extends ACore {
         menu = new StartMenu(gm, input, 
         		0, 0, windowWidth, windowHeight,
         		0, 0, windowWidth, windowHeight);
+        
+        menu.show();
 
         cube.setView(Matrix4f.scale(0, 0, 0));
         skyCube.setView(Matrix4f.scale(0, 0, 0));
         floor.setView(Matrix4f.scale(0, 0, 0));
+        
         cube.setProjection(Matrix4f.scale(0, 0, 0));
         skyCube.setProjection(Matrix4f.scale(0, 0, 0));
         floor.setProjection(Matrix4f.scale(0, 0, 0));
@@ -95,6 +108,7 @@ public class MultiProgramExampleCore extends ACore {
         input.getInputEvent(GLFW_KEY_D).unsubscribe(inputCallback);
         input.getInputEvent(GLFW_KEY_S).unsubscribe(inputCallback);
         input.getInputEvent(GLFW_KEY_W).unsubscribe(inputCallback);
+        input.getInputEvent(GLFW_KEY_X).unsubscribe(testCallback);
     }
 
     @Override
@@ -110,14 +124,13 @@ public class MultiProgramExampleCore extends ACore {
         updateCube();
         
         if(menu.isNewPressed()){
-            menu.delete();
-            cube.setProjection(Matrix4f.perspective(20, windowRatio, 1, 600));
-            skyCube.setProjection(Matrix4f.perspective(20, windowRatio, 1, 600));
-            
-            floor.setProjection(Matrix4f.perspective(20, windowRatio, 1, 600));
-            menu.add(new MenuSprite(gm, Object2DFactory.getBanner(), 0, 0, windowWidth, windowHeight));
-            menu.clearNewPressed();
+        	Matrix4f perspective = Matrix4f.perspective(20, windowRatio, 1, 600);
+            cube.setProjection(perspective);
+            skyCube.setProjection(perspective);
+            floor.setProjection(perspective);
+            menu.hide();
         }
+        menu.reset();
     }
 
     @Override
@@ -128,13 +141,12 @@ public class MultiProgramExampleCore extends ACore {
         glEnable(GL_DEPTH_TEST);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
         float lerpAngle = (1f - timePassed) * previousAngle + timePassed * angle;
         Matrix4f model = Matrix4f.rotate(lerpAngle, 0f, 0f, 1f);
         model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle, .6f, 1f, 1f));
         
         cube.setModel(Matrix4f.translate(0, 0, -10).multiply(Matrix4f.scale(.5f, .5f, .5f).multiply(model)));
-        skyCube.setModel(Matrix4f.translate(10, -1.3f, 10).multiply(Matrix4f.scale(.5f, .5f, .5f).multiply(model)));
+        skyCube.setModel(Matrix4f.translate(30, 5f, 10).multiply(Matrix4f.scale(6f, 6f, 6f).multiply(model)));
         floor.setModel(Matrix4f.translate(0f, -1, -10f).multiply(Matrix4f.rotate(90, 1f, 0f, 0f).multiply(Matrix4f.scale(10f,1000f,1f))));
         
         Matrix4f projection = Matrix4f.perspective(20, windowRatio, 1, 10000).multiply(Matrix4f.rotate(xplace*60, 0, 1, 0));
@@ -149,7 +161,6 @@ public class MultiProgramExampleCore extends ACore {
         
         gm.draw();
     }
-    
     
 
     

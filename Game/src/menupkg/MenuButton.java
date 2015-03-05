@@ -1,6 +1,5 @@
 package menupkg;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_REPEAT;
@@ -23,7 +22,8 @@ public class MenuButton implements IMenuItem{
 	private float posX, posY;
 	private float width, height;
 	
-	private boolean pressed;
+	private boolean pressed = false;
+	private boolean hidden = true;
 	
 	public MenuButton(GraphicsManager gm, UserInput input,
 			ATexObject2D release, ATexObject2D press,
@@ -35,32 +35,25 @@ public class MenuButton implements IMenuItem{
 		this.posY = posY;
 		this.width = width;
 		this.height = height;
-		
 		this.gm = gm;
 		this.input = input;
-		
 		this.release = release;
+		this.press = press;
+		
 		release.setView(new Matrix4f());
-		release.setModel(new Matrix4f());
-
+		press.setView(new Matrix4f());
+		release.setModel(Matrix4f.scale(0, 0, 0));
+		press.setModel(Matrix4f.scale(0, 0, 0));
 
 		gm.add(release);
 		gm.add(press);
-		
-		
-		this.press = press;
-		press.setView(new Matrix4f());
-		press.setModel(Matrix4f.scale(0, 0, 0));
-		
-		pressed = false;
-		
-		input.getInputEvent(GLFW_MOUSE_BUTTON_1).subscribe(callBack = new IKeyEventListener(){
+				
+		callBack = new IKeyEventListener(){
 			@Override
 			public void actionPerformed(KeyEventPublisher sender, Object e) {
 				checkInput((int)e);
 			}
-		});
-		
+		};
 	}
 	
 	private void checkInput(int action){
@@ -99,6 +92,18 @@ public class MenuButton implements IMenuItem{
 			}
 		}
 	}
+	
+	private void forcePressed(boolean pressed){
+		this.pressed = pressed;
+		if(this.pressed){
+			press.setModel(new Matrix4f());
+			release.setModel(Matrix4f.scale(0, 0, 0));
+		}
+		else{
+			release.setModel(new Matrix4f());
+			press.setModel(Matrix4f.scale(0, 0, 0));
+		}
+	}
 
 	@Override
 	public void setPosition(float posX, float posY){
@@ -113,7 +118,7 @@ public class MenuButton implements IMenuItem{
 	}
 
 	@Override
-	public void update(Matrix4f m){
+	public void updateOrthographic(Matrix4f m){
 		m = m.multiply(Matrix4f.translate(posX, posY,0));
 		press.setProjection(m.multiply(Matrix4f.scale(width/press.getWidth(), height/press.getHeight(), 1)));
 		release.setProjection(m.multiply(Matrix4f.scale(width/release.getWidth(), height/release.getHeight(), 1)));
@@ -130,6 +135,48 @@ public class MenuButton implements IMenuItem{
 		gm.remove(press);
 		input.getInputEvent(GLFW_MOUSE_BUTTON_1).unsubscribe(callBack);
 	}
-	
-	
+
+	@Override
+	public float getWidth() {
+		return width;
+	}
+
+	@Override
+	public float getHeight() {
+		return height;
+	}
+
+	@Override
+	public float getX() {
+		return posX;
+	}
+
+	@Override
+	public float getY() {
+		return posY;
+	}
+
+	@Override
+	public void reset() {
+		forcePressed(false);
+	}
+
+	@Override
+	public void hide() {
+		if(!hidden){
+			hidden = true;
+			press.setModel(Matrix4f.scale(0, 0, 0));
+			release.setModel(Matrix4f.scale(0, 0, 0));
+			input.getInputEvent(GLFW_MOUSE_BUTTON_1).unsubscribe(callBack);
+		}
+	}
+
+	@Override
+	public void show() {
+		if(hidden){
+			hidden = false;
+			forcePressed(false);
+			input.getInputEvent(GLFW_MOUSE_BUTTON_1).subscribe(callBack);
+		}
+	}
 }

@@ -1,14 +1,12 @@
 package menupkg;
 
-import graphicspkg.GraphicsManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import objectpkg.ATexObject2D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
-public class Menu {
+public abstract class AMenu implements IMenuItem{
 	float actualWidth;
 	float actualHeight;
 	float actualPosX;
@@ -21,7 +19,7 @@ public class Menu {
 
     List<IMenuItem> items;
     
-    public Menu(float actualPosX, float actualPosY, float actualWidth, float actualHeight,
+    public AMenu(float actualPosX, float actualPosY, float actualWidth, float actualHeight,
     		float repPosX, float repPosY, float repWidth, float repHeight ){
     	
     	items = new ArrayList<IMenuItem>();
@@ -51,12 +49,13 @@ public class Menu {
     	}
     	items.clear();
     }
-    
-    public void update(){
-    	Matrix4f m = Matrix4f.translate(
+	
+	@Override
+	public void updateOrthographic(Matrix4f m) {
+    	m = m.multiply(Matrix4f.translate(
     			actualPosX/actualWidth, 
     			actualPosY/actualHeight, 
-    			0);
+    			0));
         m = m.multiply(Matrix4f.orthographic(
         		0, repWidth*repWidth/actualWidth, 
         		0, actualHeight*(actualHeight/repHeight), 
@@ -66,7 +65,7 @@ public class Menu {
 				repPosY,
 				0));
     	for(IMenuItem item : items){
-    		item.update(m);
+    		item.updateOrthographic(m);
     	}
     }
     
@@ -85,5 +84,22 @@ public class Menu {
     public float getY(){
     	return actualPosY;
     }
+
+	@Override
+	public void setPosition(float posX, float posY) {
+		actualPosX = posX;
+		actualPosY = posY;
+	}
+
+	@Override
+	public void setSize(float width, float height) {
+		actualWidth = width;
+		actualHeight = height;
+	}
+
+	@Override
+	public ATexObject2D getSprite() {
+		return null;
+	}
     
 }
