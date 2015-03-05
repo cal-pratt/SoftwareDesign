@@ -30,7 +30,7 @@ public class StartMenu extends AMenu {
 		this.input = input;
 		
 		newgame = new MenuButton(gm, input,
-        		Object2DFactory.getNewgame(), Object2DFactory.getContinue(),
+        		Object2DFactory.getNewgame(), Object2DFactory.getNewgameClicked(),
         		repWidth/2 - repHeight/7, repHeight/2, repWidth/5, repHeight/5);
 		
 		newCallback = new IButtonEventListener(){
@@ -41,7 +41,7 @@ public class StartMenu extends AMenu {
 		};
 		
 		continuegame = new MenuButton(gm, input,
-        		Object2DFactory.getContinue(), Object2DFactory.getNewgame(),
+        		Object2DFactory.getContinue(), Object2DFactory.getContinueClicked(),
         		repWidth/2 - repHeight/7, repHeight/2 - repHeight/5, repWidth/5, repHeight/5);
 		
 		continueCallback = new IButtonEventListener(){
