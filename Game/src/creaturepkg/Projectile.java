@@ -1,9 +1,18 @@
 package creaturepkg;
 
-public class Projectile {
+import graphicspkg.GraphicsManager;
+import objectpkg.Object3DFactory;
+
+public class Projectile extends MapElement{
 	int power = 0;
-	public Projectile(ACreature attacker) {
+	float dx;
+	float dy;
+	
+	public Projectile(GraphicsManager gm, ACreature attacker) {
+		super(gm, Object3DFactory.getCube(), attacker.x, attacker.y);
 		power = attacker.getAttackLvl();
+		dx = 0.2f;
+		dy = 0.1f;
 	}
 	
 	/* public int getPower(ACreature attacker) {
@@ -12,10 +21,11 @@ public class Projectile {
 		return power;
 	} */
 	
-	public void fireProjectile() {
-		//projectile should move forward in direction shot
-		//if a creature is hit, call creatureCollision
-		
+
+	//projectile should move forward in direction shot
+	public void movingProjectile() {
+		x += dx;
+		y += dy;
 	}
 	
 	//If a projectile hits a creature, there is a collision

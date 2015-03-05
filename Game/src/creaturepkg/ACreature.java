@@ -1,27 +1,44 @@
 package creaturepkg;
 
-public abstract class ACreature {
+import graphicspkg.GraphicsManager;
+import objectpkg.APcObject3D;
+import silvertiger.tutorial.lwjgl.math.Matrix4f;
+
+public abstract class ACreature extends MapElement {
 	//Creature variables
 	private int maxHealth, currHealth, attackLvl, defenseLvl, attackType;
 	
+	protected ACreature(GraphicsManager gm, APcObject3D creatureMesh, int maxHealth, int attackLvl, int defenseLvl, int attackType) {
+		super(gm, creatureMesh, 0, 0);
+		this.maxHealth = maxHealth;
+		this.attackLvl = attackLvl;
+		this.defenseLvl = defenseLvl;
+		this.attackType = attackType;
+		
+		gm.add(creatureMesh);
+		creatureMesh.setView(new Matrix4f());
+	}
 	//behaviour
 	public void die(){}
 	
-	public int attack(int attackType, ACreature attacker ) {
+	//Triggered as player begins to attack
+	public int attack() {
 		//When different attacks are made, insert different attack types here
-		int atkDamage = attacker.getAttackLvl();
+		int atkDamage = this.getAttackLvl();
 		//Fire projectile
 		return atkDamage;
 	}
 	
-	//When a player is attacked they should automatically defend and lose 
-	//appropriate health
+	//When a player is attacked they should automatically defend and lose appropriate health
 	public void defend(ACreature target, Projectile attack){
 		int tgtDefense = target.getDefenseLvl();
 		int atkDamage = attack.power;
 		int damage = atkDamage - tgtDefense;
 		if (damage >0 ) {
 			target.setCurrentHealth(target.getCurrentHealth() - damage);
+		}
+		if (target.getCurrentHealth() <= 0) {
+			target.die();
 		}
 	}
 

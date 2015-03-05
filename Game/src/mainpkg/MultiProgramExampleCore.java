@@ -1,8 +1,9 @@
 package mainpkg;
 
+import creaturepkg.MonkeyEnemy;
+import creaturepkg.Player;
 import menupkg.MenuSprite;
 import menupkg.StartMenu;
-
 import eventpkg.IKeyEventListener;
 import eventpkg.KeyEventPublisher;
 import objectpkg.APcObject3D;
@@ -24,6 +25,8 @@ public class MultiProgramExampleCore extends ACore {
     APcObject3D skyCube;
     APcObject3D floor;
     GraphicsManager gm;
+    MonkeyEnemy guy;
+    Player player;
     
     float xplace = 0;
     float zplace = 0;
@@ -36,6 +39,9 @@ public class MultiProgramExampleCore extends ACore {
     private float previousAngle = 0f;
     private float angle = 0f;
     private final float angelPerSecond = 50f;
+    
+    float playerX;
+    float playerY;
     
     
     // Customize core setup -------------------------------------------------------------------- //
@@ -78,13 +84,46 @@ public class MultiProgramExampleCore extends ACore {
         input.getInputEvent(GLFW_KEY_S).subscribe(inputCallback);
         input.getInputEvent(GLFW_KEY_W).subscribe(inputCallback);
         input.getInputEvent(GLFW_KEY_X).subscribe(testCallback);
+        
+        input.getInputEvent(GLFW_KEY_LEFT).subscribe(new IKeyEventListener() {
+			
+			@Override
+			public void actionPerformed(KeyEventPublisher sender, Object e) {
+				playerX -= 0.3f;
+			}
+		});
+        input.getInputEvent(GLFW_KEY_RIGHT).subscribe(new IKeyEventListener() {
+			
+			@Override
+			public void actionPerformed(KeyEventPublisher sender, Object e) {
+				playerX += 0.3f;
+			}
+		});
+        input.getInputEvent(GLFW_KEY_UP).subscribe(new IKeyEventListener() {
+			
+			@Override
+			public void actionPerformed(KeyEventPublisher sender, Object e) {
+				playerY += 0.3f;
+			}
+		});
+        input.getInputEvent(GLFW_KEY_DOWN).subscribe(new IKeyEventListener() {
+			
+			@Override
+			public void actionPerformed(KeyEventPublisher sender, Object e) {
+				playerY -= 0.3f;
+			}
+		});
+        
     	
         gm = new GraphicsManager();
         
         gm.add(cube = Object3DFactory.getCube());
         gm.add(skyCube = Object3DFactory.getCube());
         gm.add(floor = Object3DFactory.getSquare());
-
+        
+        guy = new MonkeyEnemy(gm);
+        player = new Player(gm, input);
+        
         menu = new StartMenu(gm, input, 
         		0, 0, windowWidth, windowHeight,
         		0, 0, windowWidth, windowHeight);
@@ -144,7 +183,13 @@ public class MultiProgramExampleCore extends ACore {
         float lerpAngle = (1f - timePassed) * previousAngle + timePassed * angle;
         Matrix4f model = Matrix4f.rotate(lerpAngle, 0f, 0f, 1f);
         model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle, .6f, 1f, 1f));
-        
+       
+        guy.positionOnMap(-10, 1);
+        guy.updateModel(Matrix4f.rotate(-90, 1, 0, 0));
+        player.positionOnMap(playerX, playerY);
+        player.updateModel(Matrix4f.rotate(-90, 1, 0, 0));
+        player.projectile.movingProjectile();
+        player.projectile.updateModel(Matrix4f.rotate(-90, 1, 0, 0));
         cube.setModel(Matrix4f.translate(0, 0, -10).multiply(Matrix4f.scale(.5f, .5f, .5f).multiply(model)));
         skyCube.setModel(Matrix4f.translate(30, 5f, 10).multiply(Matrix4f.scale(6f, 6f, 6f).multiply(model)));
         floor.setModel(Matrix4f.translate(0f, -1, -10f).multiply(Matrix4f.rotate(90, 1f, 0f, 0f).multiply(Matrix4f.scale(10f,1000f,1f))));
@@ -152,6 +197,9 @@ public class MultiProgramExampleCore extends ACore {
         Matrix4f projection = Matrix4f.perspective(20, windowRatio, 1, 10000).multiply(Matrix4f.rotate(xplace*60, 0, 1, 0));
         projection = projection.multiply(Matrix4f.rotate(xplace*60, 0, 1, 0).multiply(Matrix4f.translate(0, 0, zplace)));
         
+        guy.updateProjection(projection);
+        player.projectile.updateProjection(projection);
+        player.updateProjection(projection);
         cube.setProjection(projection);
         skyCube.setProjection(projection);
         floor.setProjection(projection);

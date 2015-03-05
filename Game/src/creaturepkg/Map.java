@@ -1,4 +1,4 @@
-package mappkg;
+package creaturepkg;
 
 public class Map implements IMap {
 

@@ -10,6 +10,9 @@ public class Object3DFactory {
 	public static APcObject3D getSquare(){
 		return new Square();
 	}
+	public static APcObject3D getMonkey() {
+		return new MonkeyEnemy();
+	}
 }
 
 
