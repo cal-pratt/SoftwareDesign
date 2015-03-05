@@ -7,7 +7,7 @@ property float z
 property uchar red
 property uchar green
 property uchar blue
-element face 2
+element face 4
 property list uchar uint vertex_indices
 end_header
 -0.6 -0.6 0 255 0 0
@@ -16,3 +16,5 @@ end_header
 -0.6 0.6 0 100 100 100
 3 2 1 0
 3 0 3 2
+3 0 1 2
+3 2 3 0

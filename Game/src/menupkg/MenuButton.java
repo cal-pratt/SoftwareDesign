@@ -14,7 +14,7 @@ import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
 public class MenuButton implements IMenuItem{
 	private ButtonEventPublisher eventPublisher;
-	
+	private IKeyEventListener callBack;
 	private GraphicsManager gm;
 	
 	private UserInput input;
@@ -54,8 +54,7 @@ public class MenuButton implements IMenuItem{
 		
 		pressed = false;
 		
-		input.getInputEvent(GLFW_MOUSE_BUTTON_1).subscribe(new IKeyEventListener(){
-
+		input.getInputEvent(GLFW_MOUSE_BUTTON_1).subscribe(callBack = new IKeyEventListener(){
 			@Override
 			public void actionPerformed(KeyEventPublisher sender, Object e) {
 				checkInput((int)e);
@@ -67,10 +66,10 @@ public class MenuButton implements IMenuItem{
 	private void checkInput(int action){
 		if(input.getMouseX() > posX && input.getMouseX() < posX + width 
 				&& input.getMouseY() > posY && input.getMouseY() < posY + height){
-			if(action == GLFW_PRESS){
+			if(input.getAction(GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
 				setPressed(true);
 			}
-			else if(action != GLFW_REPEAT){
+			else if(input.getAction(GLFW_MOUSE_BUTTON_1)  != GLFW_REPEAT){
 				boolean prevPressed = pressed;
 				setPressed(false);
 				if(prevPressed){
@@ -129,6 +128,7 @@ public class MenuButton implements IMenuItem{
 	public void delete() {
 		gm.remove(release);
 		gm.remove(press);
+		input.getInputEvent(GLFW_MOUSE_BUTTON_1).unsubscribe(callBack);
 	}
 	
 	

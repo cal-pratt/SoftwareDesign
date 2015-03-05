@@ -24,8 +24,8 @@ import java.nio.IntBuffer;
 public abstract class ACore {
 
     // Customizable startup variables ---------------------------------------------------------- //
-    protected int windowWidth = 300;
-    protected int windowHeight = 300;
+    protected float windowWidth = 300;
+    protected float windowHeight = 300;
     protected int windowFullscreen = GL_FALSE;
     protected String windowTitle = "Default ACore";
     protected int exitKey = GLFW_KEY_ESCAPE;
@@ -49,7 +49,7 @@ public abstract class ACore {
     // Abstract functions ---------------------------------------------------------------------- //
     protected abstract void startup();
     protected abstract void teardown();
-    protected abstract void resizeViewport(int width, int height);
+    protected abstract void resizeViewport();
     protected abstract void updateLogic(long timePassed);
     protected abstract void draw(long timePassed);
     
@@ -93,11 +93,11 @@ public abstract class ACore {
         glfwWindowHint(GLFW_RESIZABLE, windowFullscreen == GL_TRUE ? GL_FALSE : GL_TRUE );
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         if (windowFullscreen == GL_TRUE){
-            windowIdentifier = glfwCreateWindow(windowWidth, windowHeight, windowTitle, 
+            windowIdentifier = glfwCreateWindow((int)windowWidth, (int)windowHeight, windowTitle, 
                     glfwGetPrimaryMonitor(), NULL);
         }
         else{
-            windowIdentifier = glfwCreateWindow(windowWidth, windowHeight, windowTitle, 
+            windowIdentifier = glfwCreateWindow((int)windowWidth, (int)windowHeight, windowTitle, 
                     NULL, NULL);
         }
         if ( windowIdentifier == NULL ){
@@ -109,8 +109,8 @@ public abstract class ACore {
         if(windowFullscreen == GL_FALSE){
             glfwSetWindowPos(
                 windowIdentifier,
-                (GLFWvidmode.width(vidmode) - windowWidth) / 2,
-                (GLFWvidmode.height(vidmode) - windowHeight) / 2
+                (GLFWvidmode.width(vidmode) - (int)windowWidth) / 2,
+                (GLFWvidmode.height(vidmode) - (int)windowHeight) / 2
             );
         }
         glfwMakeContextCurrent(windowIdentifier);
@@ -120,8 +120,8 @@ public abstract class ACore {
         IntBuffer width = BufferUtils.createIntBuffer(1);
         IntBuffer height = BufferUtils.createIntBuffer(1);
         glfwGetFramebufferSize(windowIdentifier, width, height);
-        windowRatio = width.get() / (float) height.get();
-        
+        windowWidth = width.get(); windowHeight = height.get();
+        windowRatio = windowWidth / windowHeight;
         
     }
     
@@ -167,9 +167,9 @@ public abstract class ACore {
         	IntBuffer width = BufferUtils.createIntBuffer(1);
         	IntBuffer height = BufferUtils.createIntBuffer(1);
         	glfwGetFramebufferSize(windowIdentifier, width, height);
-        	int w = width.get(); int h = height.get();
-            windowRatio = w / (float) h;
-            resizeViewport(w, h);
+        	windowWidth = width.get(); windowHeight = height.get();
+            windowRatio = windowWidth / windowHeight;
+            resizeViewport();
             
             updateLogic(threadSleepDuration);
             draw(threadSleepDuration);

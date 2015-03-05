@@ -63,20 +63,20 @@ public class TexExampleCore extends ACore {
     }
 
     @Override
-    protected void resizeViewport(int width, int height) {
-        int dx, dy, size;
-        if(width > height){
-            dx = (width - height) / 2;
+    protected void resizeViewport() {
+        float dx, dy, size;
+        if(windowWidth > windowHeight){
+            dx = (windowWidth - windowHeight) / 2;
             dy = 0;
-            size = height;
+            size = windowHeight;
         }
         else{
             dx = 0;
-            dy = (height - width) / 2;
-            size = width;
+            dy = (windowHeight - windowWidth) / 2;
+            size = windowWidth;
         }
         
-        glViewport(dx, dy, size, size);
+        glViewport((int)dx, (int)dy, (int)size, (int)size);
     }
 
     @Override
