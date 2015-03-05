@@ -9,9 +9,23 @@ public interface IMenuItem {
 	
 	public void setSize(float width, float height );
 	
-	public void update(Matrix4f m);
+	public void updateOrthographic(Matrix4f m);
 	
 	public void delete();
 	
+	public void reset();
+	
+	public void hide();
+	
+	public void show();
+	
 	public ATexObject2D getSprite();
+    
+    public float getWidth();
+    
+    public float getHeight();
+    
+    public float getX();
+    
+    public float getY();
 }
