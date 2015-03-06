@@ -145,7 +145,7 @@ public class MultiProgramExampleCore extends ACore {
 
     @Override
     synchronized protected void draw(long timePassed) {
-        glClearColor(.2f,.4f,.6f, 1.0f); 
+        glClearColor(0,0,0, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
@@ -155,16 +155,16 @@ public class MultiProgramExampleCore extends ACore {
         Matrix4f model = Matrix4f.rotate(lerpAngle, 0f, 0f, 1f);
         model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle, .6f, 1f, 1f));
        
-        player.updateModel(Matrix4f.rotate(-90, 1, 0, 0).translate(0, 0, 0));
         monkey.setModel(Matrix4f.scale(2, 2, 2).multiply(Matrix4f.translate(0, 0, -1)));
         floor.setModel(Matrix4f.translate(0, 0, -2).multiply(Matrix4f.scale(100, 100, 100)));
         
-        Matrix4f projection = Matrix4f.perspective(25, windowRatio, 1, 100).multiply(Matrix4f.rotate(0, 1, 0, 0));
+        Matrix4f projection = Matrix4f.perspective(35, windowRatio, 1, 1000).multiply(Matrix4f.rotate(0, 1, 0, 0));
         projection = projection.multiply(Matrix4f.rotate(-45, 1, 0, 0).multiply(
         		Matrix4f.translate(-player.getPosX(), 50 - player.getPosY(), -50)));
         
         
-        player.update(timePassed, projection);
+        player.update(timePassed, projection, Matrix4f.translate( 0, -4, 0).multiply(
+                Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1f, 1f, 1f))));
         monkey.setProjection(projection);
         floor.setProjection(projection);
         

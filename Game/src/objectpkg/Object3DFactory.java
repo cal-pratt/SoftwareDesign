@@ -13,6 +13,17 @@ public class Object3DFactory {
 	public static APcObject3D getMonkey() {
 		return new MonkeyEnemy();
 	}
+
+    public static APcObject3D getSpaceShipTop() {
+        return new SpaceShipTop();
+    }
+    public static APcObject3D getSpaceShipBottom() {
+        return new SpaceShipBottom();
+    }
+    public static APcObject3D getLaser() {
+        return new Laser();
+    }
+    
 }
 
 

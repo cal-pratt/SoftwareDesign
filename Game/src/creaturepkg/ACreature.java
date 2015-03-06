@@ -1,5 +1,7 @@
 package creaturepkg;
 
+import java.util.List;
+
 import graphicspkg.GraphicsManager;
 import objectpkg.APcObject3D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
@@ -21,9 +23,17 @@ public abstract class ACreature extends MapElement {
 		
 		this.currHealth = maxHealth;
 		
-		gm.add(creatureMesh);
-		creatureMesh.setView(new Matrix4f());
 	}
+	protected ACreature(GraphicsManager gm,  List<APcObject3D> creatureMesh, int maxHealth, int attackLvl, int defenseLvl, int attackType) {
+        super(gm, creatureMesh, 0, 0);
+        this.maxHealth = maxHealth;
+        this.attackLvl = attackLvl;
+        this.defenseLvl = defenseLvl;
+        this.attackType = attackType;
+        
+        this.currHealth = maxHealth;
+    }
+	
 	//behaviour
 	public void die(){}
 	

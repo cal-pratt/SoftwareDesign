@@ -2,6 +2,7 @@ package creaturepkg;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class Player extends ACreature {
 	private IKeyEventListener fireCallback;
 	private IKeyEventListener aimCallback;
 	
+	private Matrix4f rot = new Matrix4f();
+	
 	private float velocityX = 0, velocityY = 0;
 	private float aimX = 0, aimY = 0;
 	
@@ -30,9 +33,8 @@ public class Player extends ACreature {
 	private float lastFire = 0;
 	private float fireIncrement = 40;
 	
-	public Player(GraphicsManager gman, UserInput input) {
-		super(gman, Object3DFactory.getCube(), 10, 2, 2, 0);
-		
+	public Player(GraphicsManager gm, UserInput input) {
+		super(gm, Arrays.asList(Object3DFactory.getSpaceShipTop(), Object3DFactory.getSpaceShipBottom()), 10, 2, 2, 0);
 		eventPublisher = new PlayerEventPublisher();
 		
 		this.input = input;
@@ -151,11 +153,27 @@ public class Player extends ACreature {
 		//		|| input.getAction(GLFW_KEY_SPACE) == GLFW_REPEAT;
 	}
 	
-	public void update(float timepassed, Matrix4f projection){
+	public void update(float timepassed, Matrix4f projection, Matrix4f model){
 		this.x += velocityX;
 		this.y += velocityY;
 		
 		lastFire += timepassed;
+		
+		if(velocityX != 0 || velocityY != 0 ){
+		    if(velocityX == 0){
+		        if(velocityY > 0){
+		            rot = Matrix4f.rotate(0, 0, 0, 1);
+		        }
+		        else{
+                    rot = Matrix4f.rotate(180, 0, 0, 1);
+		        }
+		    }
+		    else{
+		        float angle = 180f*(float)(Math.atan(velocityY/velocityX))/3.14f;
+		        if(velocityX > 0) angle += 180;
+	            rot = Matrix4f.rotate(angle + 90, 0f, 0f, 1f);
+		    }
+		}
 		
 		if(aimX != 0 || aimY != 0 ){
 			if(lastFire > fireIncrement ){
@@ -163,7 +181,7 @@ public class Player extends ACreature {
 				lastFire = 0;
 			}
 		}
-		updateModel(Matrix4f.rotate(-90, 1, 0, 0));
+		updateModel(model.multiply(Matrix4f.translate(0,2.5f, 1).multiply(rot)).multiply(Matrix4f.rotate(90, 1, 0, 0)));
 		updateProjection(projection);
 		for(Projectile p : new LinkedList<>(projectiles)){
 			if(Math.pow(Math.abs(p.x - x),2) + Math.pow(Math.abs(p.y - y),2) > 2000){
@@ -174,11 +192,12 @@ public class Player extends ACreature {
 		for(Projectile p : projectiles){
 			p.update(projection);
 		}
-		updateModel(new Matrix4f());
 	}
 	
 	private void createProjectile() {
-		projectiles.add(new Projectile(gm, x, y, aimX, aimY));
+	    
+		projectiles.add(new Projectile(gm, x-.4f, y+.4f, aimX, aimY));
+        projectiles.add(new Projectile(gm, x+.4f, y-.4f, aimX, aimY));
 	}
 
 	//Player variables

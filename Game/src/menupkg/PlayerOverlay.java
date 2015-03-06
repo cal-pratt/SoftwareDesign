@@ -26,7 +26,7 @@ public class PlayerOverlay extends AMenu {
 		this.gm = gm;
 		this.player = player;
 		
-		fullwidth = repWidth/2;
+		fullwidth = 875;
 		
 		callBack = new IPlayerEventListener(){
 			@Override
@@ -34,18 +34,19 @@ public class PlayerOverlay extends AMenu {
 				updateSize();
 			}
 		};
-		
+
+        add(banner = new MenuSprite(
+                gm, Object2DFactory.getBanner(), 
+                0,0, repWidth, repHeight));
+        
 		health = new MenuSprite(gm, Object2DFactory.getHealth(), 
-				(repWidth - fullwidth)/2, 0f, fullwidth, 50);
+				25, actualHeight*9/10f, fullwidth, actualHeight/10f);
 		nohealth = new MenuSprite(gm, Object2DFactory.getNoHealth(), 
-				(repWidth - fullwidth)/2, 0f, fullwidth, 50);
+                25, actualHeight*9/10f, fullwidth, actualHeight/10f);
+
 		
 		add(nohealth);
 		add(health);
-
-		add(banner = new MenuSprite(
-				gm, Object2DFactory.getBanner(), 
-				0,0, repWidth, repHeight));
 	}
 	
 	private void updateSize(){
@@ -64,18 +65,18 @@ public class PlayerOverlay extends AMenu {
 	@Override
 	public void hide() {
 		player.getEventPublisher().unsubscribe(callBack);
+        banner.hide();
 		health.hide();
 		nohealth.hide();
-		banner.hide();
 	}
 
 	@Override
 	public void show() {
 		updateSize();
 		player.getEventPublisher().subscribe(callBack);
+        banner.show();
 		health.show();
 		nohealth.show();
-		banner.show();
 	}
 
 }

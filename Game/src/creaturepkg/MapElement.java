@@ -1,5 +1,8 @@
 package creaturepkg;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import graphicspkg.GraphicsManager;
 import objectpkg.APcObject3D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
@@ -9,19 +12,31 @@ class MapElement implements IMapElement{
 	protected float x;
 	protected float y;
 	protected GraphicsManager gm;
-	protected APcObject3D mesh;
+	protected List<APcObject3D> meshList;
 	
 	public boolean deleted = false;
 
-	protected MapElement(GraphicsManager gm, APcObject3D mesh, float x, float y) {
+	protected MapElement(GraphicsManager gm, List<APcObject3D> mesh, float x, float y) {
 		this.gm = gm;
-		this.mesh = mesh;
+		this.meshList = mesh;
 		this.x = x;
 		this.y = y;
-		
-		gm.add(mesh);
-		mesh.setView(new Matrix4f());
+		for(APcObject3D m : meshList){
+	        gm.add(m);
+	        m.setView(new Matrix4f());
+		}
 	}
+	
+	protected MapElement(GraphicsManager gm, APcObject3D mesh, float x, float y) {
+        this.gm = gm;
+        this.meshList = new ArrayList<APcObject3D>();
+        this.meshList.add(mesh);
+        this.x = x;
+        this.y = y;
+        
+        gm.add(mesh);
+        mesh.setView(new Matrix4f());
+    }
 	
 	@Override
 	public void positionOnMap(float x, float y) {
@@ -43,17 +58,25 @@ class MapElement implements IMapElement{
 
 	@Override
 	public void delete() {
-		gm.remove(mesh);
+        for(APcObject3D mesh : meshList){
+            gm.remove(mesh);
+        }
 		deleted = true;
 	}
 	
 	public void updateProjection(Matrix4f m) {
-		mesh.setProjection(m);
+
+        for(APcObject3D mesh : meshList){
+            mesh.setProjection(m);
+        }
 	}
 	
 	public void updateModel(Matrix4f m) {
 		m = (Matrix4f.translate(x, y, 0)).multiply(m);
-		mesh.setModel(m);
+
+        for(APcObject3D mesh : meshList){
+            mesh.setModel(m);
+        }
 	}
 
 }
