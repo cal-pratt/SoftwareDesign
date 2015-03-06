@@ -23,7 +23,7 @@ public class MultiProgramExampleCore extends ACore {
     
     StartMenu menu;
     PlayerOverlay overlay;
-    APcObject3D monkey;
+    MonkeyEnemy monkey;
     APcObject3D floor;
     GraphicsManager gm;
     
@@ -97,14 +97,14 @@ public class MultiProgramExampleCore extends ACore {
         
     	
         gm = new GraphicsManager();
-        gm.add(monkey = Object3DFactory.getMonkey());
         gm.add(floor = Object3DFactory.getSquare());
         
-        monkey.setView(new Matrix4f());
         floor.setView(new Matrix4f());
         
         player = new Player(gm, input);
         player.setPosY(-10);
+        
+        monkey = new MonkeyEnemy(gm, player);
         
         menu = new StartMenu(gm, input, 
         		0, 0, windowWidth, windowHeight,
@@ -153,9 +153,7 @@ public class MultiProgramExampleCore extends ACore {
 
         float lerpAngle = (1f - timePassed) * previousAngle + timePassed * angle;
         Matrix4f model = Matrix4f.rotate(lerpAngle, 0f, 0f, 1f);
-        model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle, .6f, 1f, 1f));
-       
-        monkey.setModel(Matrix4f.scale(2, 2, 2).multiply(Matrix4f.translate(0, 0, -1)));
+        model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle, .6f, 1f, 1f));;
         floor.setModel(Matrix4f.translate(0, 0, -2).multiply(Matrix4f.scale(100, 100, 100)));
         
         Matrix4f projection = Matrix4f.perspective(35, windowRatio, 1, 1000).multiply(Matrix4f.rotate(0, 1, 0, 0));
@@ -165,7 +163,8 @@ public class MultiProgramExampleCore extends ACore {
         
         player.update(timePassed, projection, Matrix4f.translate( 0, -4, 0).multiply(
                 Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1f, 1f, 1f))));
-        monkey.setProjection(projection);
+        monkey.update(timePassed, projection, Matrix4f.translate( 0, 4, 1).multiply(
+                Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1f, 1f, 1f))));
         floor.setProjection(projection);
         
         menu.update();

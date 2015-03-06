@@ -1,7 +1,12 @@
 package creaturepkg;
 
+import inputpkg.UserInput;
+
+import java.util.LinkedList;
 import java.util.List;
 
+import menupkg.PlayerOverlay;
+import menupkg.StartMenu;
 import graphicspkg.GraphicsManager;
 import objectpkg.APcObject3D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
@@ -13,6 +18,10 @@ public abstract class ACreature extends MapElement {
 	private int attackLvl;
 	private int defenseLvl;
 	private int attackType;
+	protected float aimX = 0;
+	protected float aimY = 0;
+	
+	protected List<Projectile> projectiles = new LinkedList<Projectile>();
 	
 	protected ACreature(GraphicsManager gm, APcObject3D creatureMesh, int maxHealth, int attackLvl, int defenseLvl, int attackType) {
 		super(gm, creatureMesh, 0, 0);
@@ -35,7 +44,8 @@ public abstract class ACreature extends MapElement {
     }
 	
 	//behaviour
-	public void die(){}
+	public void die(){
+	}
 	
 	//Triggered as player begins to attack
 	public int attack() {
@@ -55,6 +65,24 @@ public abstract class ACreature extends MapElement {
 		}
 		if (target.getCurrentHealth() <= 0) {
 			target.die();
+		}
+	}
+	
+	protected void createProjectile() {
+	    
+		projectiles.add(new Projectile(gm, x-.4f, y+.4f, aimX, aimY));
+        projectiles.add(new Projectile(gm, x+.4f, y-.4f, aimX, aimY));
+	}
+	
+	protected void updateProjectiles(Matrix4f projection) {
+		for(Projectile p : new LinkedList<>(projectiles)){
+			if(Math.pow(Math.abs(p.x - x),2) + Math.pow(Math.abs(p.y - y),2) > 2000){
+				p.delete();
+				projectiles.remove(p);
+			}
+		}
+		for(Projectile p : projectiles){
+			p.update(projection);
 		}
 	}
 

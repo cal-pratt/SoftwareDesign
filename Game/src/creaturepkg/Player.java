@@ -17,8 +17,6 @@ import silvertiger.tutorial.lwjgl.math.Matrix4f;
 public class Player extends ACreature {
 	private PlayerEventPublisher eventPublisher;
 	
-	private List<Projectile> projectiles = new LinkedList<Projectile>();
-	
 	private UserInput input;
 	private IKeyEventListener velocityCallback;
 	private IKeyEventListener fireCallback;
@@ -27,8 +25,6 @@ public class Player extends ACreature {
 	private Matrix4f rot = new Matrix4f();
 	
 	private float velocityX = 0, velocityY = 0;
-	private float aimX = 0, aimY = 0;
-	
 	private float fire = 0;
 	private float lastFire = 0;
 	private float fireIncrement = 40;
@@ -156,6 +152,7 @@ public class Player extends ACreature {
 	public void update(float timepassed, Matrix4f projection, Matrix4f model){
 		this.x += velocityX;
 		this.y += velocityY;
+		eventPublisher.publish(true);
 		
 		lastFire += timepassed;
 		
@@ -183,21 +180,7 @@ public class Player extends ACreature {
 		}
 		updateModel(model.multiply(Matrix4f.translate(0,2.5f, 1).multiply(rot)).multiply(Matrix4f.rotate(90, 1, 0, 0)));
 		updateProjection(projection);
-		for(Projectile p : new LinkedList<>(projectiles)){
-			if(Math.pow(Math.abs(p.x - x),2) + Math.pow(Math.abs(p.y - y),2) > 2000){
-				p.delete();
-				projectiles.remove(p);
-			}
-		}
-		for(Projectile p : projectiles){
-			p.update(projection);
-		}
-	}
-	
-	private void createProjectile() {
-	    
-		projectiles.add(new Projectile(gm, x-.4f, y+.4f, aimX, aimY));
-        projectiles.add(new Projectile(gm, x+.4f, y-.4f, aimX, aimY));
+		updateProjectiles(projection);
 	}
 
 	//Player variables
