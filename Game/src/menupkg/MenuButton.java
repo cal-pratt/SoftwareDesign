@@ -39,11 +39,6 @@ public class MenuButton implements IMenuItem{
 		this.input = input;
 		this.release = release;
 		this.press = press;
-		
-		release.setView(new Matrix4f());
-		press.setView(new Matrix4f());
-		release.setModel(Matrix4f.scale(0, 0, 0));
-		press.setModel(Matrix4f.scale(0, 0, 0));
 
 		gm.add(release);
 		gm.add(press);
@@ -80,29 +75,7 @@ public class MenuButton implements IMenuItem{
 	}
 	
 	private void setPressed(boolean pressed){
-		if(this.pressed != pressed){
-			this.pressed = pressed;
-			if(this.pressed){
-				press.setModel(new Matrix4f());
-				release.setModel(Matrix4f.scale(0, 0, 0));
-			}
-			else{
-				release.setModel(new Matrix4f());
-				press.setModel(Matrix4f.scale(0, 0, 0));
-			}
-		}
-	}
-	
-	private void forcePressed(boolean pressed){
 		this.pressed = pressed;
-		if(this.pressed){
-			press.setModel(new Matrix4f());
-			release.setModel(Matrix4f.scale(0, 0, 0));
-		}
-		else{
-			release.setModel(new Matrix4f());
-			press.setModel(Matrix4f.scale(0, 0, 0));
-		}
 	}
 
 	@Override
@@ -120,8 +93,18 @@ public class MenuButton implements IMenuItem{
 	@Override
 	public void updateOrthographic(Matrix4f m){
 		m = m.multiply(Matrix4f.translate(posX, posY,0));
-		press.setProjection(m.multiply(Matrix4f.scale(width/press.getWidth(), height/press.getHeight(), 1)));
-		release.setProjection(m.multiply(Matrix4f.scale(width/release.getWidth(), height/release.getHeight(), 1)));
+		if(hidden){
+			press.setProjection(Matrix4f.scale(0, 0, 0));
+			release.setProjection(Matrix4f.scale(0, 0, 0));
+		}
+		else if(pressed){
+			press.setProjection(m.multiply(Matrix4f.scale(width/press.getWidth(), height/press.getHeight(), 1)));
+			release.setProjection(Matrix4f.scale(0, 0, 0));
+		}
+		else{
+			release.setProjection(m.multiply(Matrix4f.scale(width/release.getWidth(), height/release.getHeight(), 1)));
+			press.setProjection(Matrix4f.scale(0, 0, 0));
+		}
 	}
 
 	@Override
@@ -158,15 +141,13 @@ public class MenuButton implements IMenuItem{
 
 	@Override
 	public void reset() {
-		forcePressed(false);
+		setPressed(false);
 	}
 
 	@Override
 	public void hide() {
 		if(!hidden){
 			hidden = true;
-			press.setModel(Matrix4f.scale(0, 0, 0));
-			release.setModel(Matrix4f.scale(0, 0, 0));
 			input.getInputEvent(GLFW_MOUSE_BUTTON_1).unsubscribe(callBack);
 		}
 	}
@@ -175,7 +156,6 @@ public class MenuButton implements IMenuItem{
 	public void show() {
 		if(hidden){
 			hidden = false;
-			forcePressed(false);
 			input.getInputEvent(GLFW_MOUSE_BUTTON_1).subscribe(callBack);
 		}
 	}

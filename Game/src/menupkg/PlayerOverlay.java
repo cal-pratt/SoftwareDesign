@@ -26,7 +26,7 @@ public class PlayerOverlay extends AMenu {
 		this.gm = gm;
 		this.player = player;
 		
-		fullwidth = 875;
+		fullwidth = repWidth/2.15f;
 		
 		callBack = new IPlayerEventListener(){
 			@Override
@@ -40,9 +40,9 @@ public class PlayerOverlay extends AMenu {
                 0,0, repWidth, repHeight));
         
 		health = new MenuSprite(gm, Object2DFactory.getHealth(), 
-				25, actualHeight*9/10f, fullwidth, actualHeight/10f);
+				repWidth/100, actualHeight*9/10f, fullwidth, actualHeight/10f);
 		nohealth = new MenuSprite(gm, Object2DFactory.getNoHealth(), 
-                25, actualHeight*9/10f, fullwidth, actualHeight/10f);
+				repWidth/100, actualHeight*9/10f, fullwidth, actualHeight/10f);
 
 		
 		add(nohealth);

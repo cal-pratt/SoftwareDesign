@@ -24,9 +24,6 @@ public class MenuSprite implements IMenuItem {
 		this.posY = posY;
 		this.width = width;
 		this.height = height;
-
-		sprite.setView(Matrix4f.scale(0, 0, 0));
-		sprite.setModel(new Matrix4f());
 		
 		gm.add(sprite);
 	}
@@ -43,8 +40,13 @@ public class MenuSprite implements IMenuItem {
 	@Override
 	public void updateOrthographic(Matrix4f m){
 		m = m.multiply(Matrix4f.translate(posX, posY,0));
-		m = m.multiply(Matrix4f.scale(width/sprite.getWidth(), height/sprite.getHeight(), 1));
-		sprite.setProjection(m);
+		if(hidden){
+			sprite.setProjection(Matrix4f.scale(0, 0, 0));
+		}
+		else{
+			m = m.multiply(Matrix4f.scale(width/sprite.getWidth(), height/sprite.getHeight(), 1));
+			sprite.setProjection(m);
+		}
 	}
 	public ATexObject2D getSprite(){
 		return sprite;
@@ -84,7 +86,6 @@ public class MenuSprite implements IMenuItem {
 	public void hide() {
 		if(!hidden){
 			hidden = true;
-			sprite.setView(Matrix4f.scale(0, 0, 0));
 		}
 	}
 
@@ -92,7 +93,6 @@ public class MenuSprite implements IMenuItem {
 	public void show() {
 		if(hidden){
 			hidden = false;
-			sprite.setView(new Matrix4f());
 		}
 	}
 	

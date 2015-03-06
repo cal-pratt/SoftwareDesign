@@ -74,7 +74,7 @@ public abstract class ACreature extends MapElement {
         projectiles.add(new Projectile(gm, x+.4f, y-.4f, aimX, aimY));
 	}
 	
-	protected void updateProjectiles(Matrix4f projection) {
+	protected void updateProjectiles(float timepassed) {
 		for(Projectile p : new LinkedList<>(projectiles)){
 			if(Math.pow(Math.abs(p.x - x),2) + Math.pow(Math.abs(p.y - y),2) > 2000){
 				p.delete();
@@ -82,7 +82,7 @@ public abstract class ACreature extends MapElement {
 			}
 		}
 		for(Projectile p : projectiles){
-			p.update(projection);
+			p.update(timepassed);
 		}
 	}
 

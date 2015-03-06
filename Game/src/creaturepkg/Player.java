@@ -149,7 +149,7 @@ public class Player extends ACreature {
 		//		|| input.getAction(GLFW_KEY_SPACE) == GLFW_REPEAT;
 	}
 	
-	public void update(float timepassed, Matrix4f projection, Matrix4f model){
+	public void update(float timepassed, Matrix4f model){
 		this.x += velocityX;
 		this.y += velocityY;
 		eventPublisher.publish(true);
@@ -178,9 +178,10 @@ public class Player extends ACreature {
 				lastFire = 0;
 			}
 		}
-		updateModel(model.multiply(Matrix4f.translate(0,2.5f, 1).multiply(rot)).multiply(Matrix4f.rotate(90, 1, 0, 0)));
-		updateProjection(projection);
-		updateProjectiles(projection);
+		updateModel(model.multiply(
+				Matrix4f.translate(0,2.5f, 1).multiply(rot)).multiply(
+								Matrix4f.rotate(90, 1, 0, 0)));
+		updateProjectiles(timepassed);
 	}
 
 	//Player variables

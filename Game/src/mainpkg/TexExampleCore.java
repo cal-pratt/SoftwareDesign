@@ -53,7 +53,6 @@ public class TexExampleCore extends ACore {
         int width = widthBuffer.get();
         int height = heightBuffer.get();
         
-        continuetex.setView(new Matrix4f());
         continuetex.setProjection(Matrix4f.orthographic(0f, width, 0f, height, -1f, 1f));
         
     }
@@ -97,10 +96,6 @@ public class TexExampleCore extends ACore {
         float lerpAngle = (1f - timePassed) * previousAngle + timePassed * angle;
         Matrix4f model = Matrix4f.rotate(lerpAngle, 0f, 0f, 1f);
         model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle, .6f, 1f, 1f));
-        
-        //cube.setModel( Matrix4f.translate(.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
-        //tri.setModel( Matrix4f.translate(-.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
-        continuetex.setModel(new Matrix4f());
 
         gm.draw();
     }

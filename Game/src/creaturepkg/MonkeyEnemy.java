@@ -27,9 +27,11 @@ public class MonkeyEnemy extends ACreature {
 	private IPlayerEventListener callback;
 	
 	//Enemy variables
-	private float aggroRange = 3;
+	private float aggroRange = 30;
 	private float lastFire;
 	private float fireIncrement = 200;
+	
+	private boolean updateEnemyAim = false;
 	
 	public MonkeyEnemy(GraphicsManager gm, Player player) {
 		super(gm, Object3DFactory.getMonkey(), 10, 1, 1, 0);
@@ -38,7 +40,7 @@ public class MonkeyEnemy extends ACreature {
 			
 			@Override
 			public void actionPerformed(PlayerEventPublisher sender, Object e) {
-				updateAim();
+				updateEnemyAim = true;
 			}
 		};
 		player.getEventPublisher().subscribe(callback);
@@ -54,7 +56,7 @@ public class MonkeyEnemy extends ACreature {
 	}
 	
 	public void updateAim(){
-		if (((player.x)*(player.x))+((this.y)*(this.y)) < aggroRange*aggroRange){
+		if (Math.pow(player.getPosX() - x,2) + Math.pow(player.getPosY() - y,2) < aggroRange*aggroRange){
 			float dX = (player.getPosX() - this.x);
 	        float dY = (player.getPosY() - this.y);
 	        
@@ -65,9 +67,11 @@ public class MonkeyEnemy extends ACreature {
 			aimX = 0;
 			aimY = 0;
 		}
+		updateEnemyAim = false;
 	}
 	
-	public void update(float timePassed, Matrix4f projection, Matrix4f model) {
+	public void update(float timePassed, Matrix4f model) {
+		if(updateEnemyAim) updateAim();
 		lastFire += timePassed;
 		if(aimX != 0 || aimY != 0 ){
 			if(lastFire > fireIncrement ){
@@ -75,9 +79,9 @@ public class MonkeyEnemy extends ACreature {
 				lastFire = 0;
 			}
 		}
+		
 		updateModel(model);
-		updateProjection(projection);
-		updateProjectiles(projection);
+		updateProjectiles(timePassed);
 	}
 	
 	@Override 

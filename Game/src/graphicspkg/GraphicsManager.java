@@ -6,9 +6,12 @@ import java.util.Map;
 import objectpkg.APcObject3D;
 import objectpkg.ATexObject2D;
 import objectpkg.IObject3D;
+import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
 public class GraphicsManager {
-	Map<IObject3D, IGraphicLinker> graphicLinkers = new LinkedHashMap<IObject3D, IGraphicLinker>();
+	Map<IObject3D, IGraphicLinker> graphicTexLinkers = new LinkedHashMap<IObject3D, IGraphicLinker>();
+	Map<IObject3D, IGraphicLinker> graphicPcLinkers = new LinkedHashMap<IObject3D, IGraphicLinker>();
+	Matrix4f pcProjection;
 	Map<String, PcGraphicsBuffer> pcBuffers = new LinkedHashMap<String, PcGraphicsBuffer>();
     Map<String, TexGraphicsBuffer> texBuffers = new LinkedHashMap<String, TexGraphicsBuffer>();
 	
@@ -25,7 +28,7 @@ public class GraphicsManager {
 		if(!pcBuffers.containsKey(object.getFilename())){
 			pcBuffers.put(object.getFilename(), new PcGraphicsBuffer(basicProgram, object.getFilename()));
 		}
-		graphicLinkers.put(object, new PcGraphicLinker(object,pcBuffers.get(object.getFilename()), basicProgram));
+		graphicPcLinkers.put(object, new PcGraphicLinker(object,pcBuffers.get(object.getFilename()), basicProgram));
 	}
 	
 	public void remove(APcObject3D object){
@@ -36,7 +39,7 @@ public class GraphicsManager {
 			basicProgram.delete();
 			pcBuffers.clear();
 		}
-		graphicLinkers.remove(object);
+		graphicPcLinkers.remove(object);
 	}
 	
 	public void add(ATexObject2D object){
@@ -46,7 +49,7 @@ public class GraphicsManager {
         if(!texBuffers.containsKey(object.getFilename())){
             texBuffers.put(object.getFilename(), new TexGraphicsBuffer(texProgram, object.getFilename()));
         }
-        graphicLinkers.put(object, new TexGraphicLinker(object,texBuffers.get(object.getFilename()), texProgram));
+        graphicTexLinkers.put(object, new TexGraphicLinker(object,texBuffers.get(object.getFilename()), texProgram));
     }
     
     public void remove(ATexObject2D object){
@@ -57,7 +60,7 @@ public class GraphicsManager {
             texProgram.delete();
             texBuffers.clear();
         }
-        graphicLinkers.remove(object);
+        graphicTexLinkers.remove(object);
     }
 	
 	public void delete(){
@@ -68,13 +71,30 @@ public class GraphicsManager {
         texProgram.delete();
 		pcBuffers.clear();
         texBuffers.clear();
-		graphicLinkers.clear();
+        graphicPcLinkers.clear();
+        graphicTexLinkers.clear();
+	}
+	
+	public void setPcProjection(Matrix4f m){
+		pcProjection = m;
 	}
 	
 	public void draw(){
-		for(IObject3D object : graphicLinkers.keySet()){
-			graphicLinkers.get(object).set();
-			graphicLinkers.get(object).draw();
+		if(basicProgramCount > 0){
+	    	basicProgram.use();
+	    	basicProgram.setProjection(pcProjection);
+			for(IObject3D object : graphicPcLinkers.keySet()){
+				graphicPcLinkers.get(object).set();
+				graphicPcLinkers.get(object).draw();
+			}
+		}
+
+		if(texProgramCount > 0){
+	    	texProgram.use();
+			for(IObject3D object : graphicTexLinkers.keySet()){
+				graphicTexLinkers.get(object).set();
+				graphicTexLinkers.get(object).draw();
+			}
 		}
 	}
 }

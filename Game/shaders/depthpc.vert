@@ -6,7 +6,6 @@ in vec3 color;
 smooth out vec3 vertexColor;
 
 uniform mat4 model;
-uniform mat4 view;
 uniform mat4 projection;
 
 

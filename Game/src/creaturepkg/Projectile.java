@@ -31,10 +31,9 @@ public class Projectile extends MapElement{
 	}
 	
 	//projectile should move forward in direction shot
-	public void update(Matrix4f projection){
+	public void update(float timepassed){
 		x += dx;
 		y += dy;
-		updateProjection(projection);
 		updateModel(Matrix4f.scale(.5f, .5f, .5f).multiply(rot).multiply(Matrix4f.rotate(90, 0, 0, 1)));
 	}
 	

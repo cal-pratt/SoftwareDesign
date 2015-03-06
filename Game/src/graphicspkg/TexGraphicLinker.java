@@ -17,8 +17,6 @@ class TexGraphicLinker implements IGraphicLinker {
     public void set(){
     	buffer.bind();
         program.use();
-        program.setModel(object.getModel());
-        program.setView(object.getView());
         program.setProjection(object.getProjection());
     }
     public void draw(){

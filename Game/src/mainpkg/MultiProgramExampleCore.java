@@ -99,8 +99,6 @@ public class MultiProgramExampleCore extends ACore {
         gm = new GraphicsManager();
         gm.add(floor = Object3DFactory.getSquare());
         
-        floor.setView(new Matrix4f());
-        
         player = new Player(gm, input);
         player.setPosY(-10);
         
@@ -160,12 +158,12 @@ public class MultiProgramExampleCore extends ACore {
         projection = projection.multiply(Matrix4f.rotate(-45, 1, 0, 0).multiply(
         		Matrix4f.translate(-player.getPosX(), 50 - player.getPosY(), -50)));
         
+        gm.setPcProjection(projection);
         
-        player.update(timePassed, projection, Matrix4f.translate( 0, -4, 0).multiply(
+        player.update(timePassed, Matrix4f.translate( 0, -4, 0).multiply(
                 Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1f, 1f, 1f))));
-        monkey.update(timePassed, projection, Matrix4f.translate( 0, 4, 1).multiply(
+        monkey.update(timePassed, Matrix4f.translate( 0, 4, 1).multiply(
                 Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1f, 1f, 1f))));
-        floor.setProjection(projection);
         
         menu.update();
         overlay.update();

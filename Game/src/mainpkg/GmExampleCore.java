@@ -47,11 +47,6 @@ public class GmExampleCore extends ACore {
         gm.add(cube = Object3DFactory.getCube());
         gm.add(tri = Object3DFactory.getTriangle());
         
-        cube.setView(new Matrix4f());
-        cube.setProjection(Matrix4f.orthographic(-windowRatio, windowRatio, -1f, 1f, -1f, 1f));
-        tri.setView(new Matrix4f());
-        tri.setProjection(Matrix4f.orthographic(-windowRatio, windowRatio, -1f, 1f, -1f, 1f));
-        
     }
 
     @Override
@@ -94,6 +89,9 @@ public class GmExampleCore extends ACore {
         cube.setModel( Matrix4f.translate(.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
         tri.setModel( Matrix4f.translate(-.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
         
+
+        
+        gm.setPcProjection(Matrix4f.orthographic(-windowRatio, windowRatio, -1f, 1f, -1f, 1f));
 
         gm.draw();
     }

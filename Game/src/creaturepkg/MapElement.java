@@ -23,7 +23,6 @@ class MapElement implements IMapElement{
 		this.y = y;
 		for(APcObject3D m : meshList){
 	        gm.add(m);
-	        m.setView(new Matrix4f());
 		}
 	}
 	
@@ -35,7 +34,6 @@ class MapElement implements IMapElement{
         this.y = y;
         
         gm.add(mesh);
-        mesh.setView(new Matrix4f());
     }
 	
 	@Override
@@ -62,13 +60,6 @@ class MapElement implements IMapElement{
             gm.remove(mesh);
         }
 		deleted = true;
-	}
-	
-	public void updateProjection(Matrix4f m) {
-
-        for(APcObject3D mesh : meshList){
-            mesh.setProjection(m);
-        }
 	}
 	
 	public void updateModel(Matrix4f m) {
