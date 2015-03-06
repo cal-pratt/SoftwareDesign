@@ -10,20 +10,23 @@ public class Launcher {
     }
     
     // Core abstraction ------------------------------------------------------------------------ //
+    @SuppressWarnings("unused")
     private static ACore concreteCore() {
         return new GameCore();
     }
     
+    @SuppressWarnings("unused")
     private static ACore gmCore() {
         return new GmExampleCore();
     }
 
+    @SuppressWarnings("unused")
     private static ACore texCore() {
         return new TexExampleCore();
     }
     
     private static ACore multiProgCore() {
-        return new MultiProgramExampleCore();
+        return new MainCore();
     }
 }
 // --------------------------------------------------------------------------------------------- //

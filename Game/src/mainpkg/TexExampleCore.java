@@ -42,9 +42,9 @@ public class TexExampleCore extends ACore {
     @Override
     protected void startup() {
         
-        gm = new GraphicsManager();
+        gm = new GraphicsManager(windowWidth, windowHeight);
         
-        gm.add(continuetex = Object2DFactory.getContinue());
+        gm.add(continuetex = Object2DFactory.getContinueClicked());
         
         long window = GLFW.glfwGetCurrentContext();
         IntBuffer widthBuffer = BufferUtils.createIntBuffer(1);
@@ -79,7 +79,7 @@ public class TexExampleCore extends ACore {
     }
 
     @Override
-    protected void updateLogic(long timePassed) {
+    protected void updateActions(long timePassed) {
         previousAngle = angle;
         angle += timePassed * angelPerSecond/1000.0;
         

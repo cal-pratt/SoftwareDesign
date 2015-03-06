@@ -50,7 +50,7 @@ public class GameCore extends ACore {
     }
 
     @Override
-    protected void updateLogic(long timePassed) {
+    protected void updateActions(long timePassed) {
     }
 
     @Override

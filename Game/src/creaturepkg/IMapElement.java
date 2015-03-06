@@ -1,8 +1,10 @@
 package creaturepkg;
 
+import silvertiger.tutorial.lwjgl.math.Matrix4f;
+
 public interface IMapElement {
-	
-	public void positionOnMap(float x, float y);
+    public void updateActions(float timepassed);
+    public void updateModel(Matrix4f model);
 	public float getPosX();
 	public float getPosY();
 	public void setPosX(float x);

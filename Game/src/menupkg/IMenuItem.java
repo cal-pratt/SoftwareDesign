@@ -9,7 +9,7 @@ public interface IMenuItem {
 	
 	public void setSize(float width, float height );
 	
-	public void updateOrthographic(Matrix4f m);
+	public void updateView(Matrix4f m);
 	
 	public void delete();
 	

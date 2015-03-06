@@ -1,6 +1,5 @@
 package menupkg;
 
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
 import graphicspkg.GraphicsManager;
 import objectpkg.ATexObject2D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
@@ -38,7 +37,7 @@ public class MenuSprite implements IMenuItem {
 	}
 
 	@Override
-	public void updateOrthographic(Matrix4f m){
+	public void updateView(Matrix4f m){
 		m = m.multiply(Matrix4f.translate(posX, posY,0));
 		if(hidden){
 			sprite.setProjection(Matrix4f.scale(0, 0, 0));

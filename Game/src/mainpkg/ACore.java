@@ -50,7 +50,7 @@ public abstract class ACore {
     protected abstract void startup();
     protected abstract void teardown();
     protected abstract void resizeViewport();
-    protected abstract void updateLogic(long timePassed);
+    protected abstract void updateActions(long timePassed);
     protected abstract void draw(long timePassed);
     
     // Main application execution -------------------------------------------------------------- //
@@ -164,14 +164,17 @@ public abstract class ACore {
         double reference = glfwGetTime();
         
         while(isRunning() && glfwWindowShouldClose(windowIdentifier) == GL_FALSE){
+            
         	IntBuffer width = BufferUtils.createIntBuffer(1);
         	IntBuffer height = BufferUtils.createIntBuffer(1);
         	glfwGetFramebufferSize(windowIdentifier, width, height);
         	windowWidth = width.get(); windowHeight = height.get();
             windowRatio = windowWidth / windowHeight;
             resizeViewport();
+
             
-            updateLogic(threadSleepDuration);
+            updateActions(threadSleepDuration);
+            
             draw(threadSleepDuration);
             
             glfwSwapBuffers(windowIdentifier);

@@ -2,26 +2,61 @@ package objectpkg;
 
 public class Object3DFactory {
 	public static APcObject3D getCube(){
-		return new Cube();
+		return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/cube.ply";
+            }
+		};
 	}
 	public static APcObject3D getTriangle(){
-		return new Triangle();
+		return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/triangle.ply";
+            }
+        };
 	}
 	public static APcObject3D getSquare(){
-		return new Square();
+		return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/square.ply";
+            }
+        };
 	}
 	public static APcObject3D getMonkey() {
-		return new MonkeyEnemy();
+		return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/MONKAY.ply";
+            }
+        };
 	}
 
     public static APcObject3D getSpaceShipTop() {
-        return new SpaceShipTop();
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/spaceshiptop.ply";
+            }
+        };
     }
     public static APcObject3D getSpaceShipBottom() {
-        return new SpaceShipBottom();
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/spaceshipbottom.ply";
+            }
+        };
     }
     public static APcObject3D getLaser() {
-        return new Laser();
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/laser.ply";
+            }
+        };
     }
     
 }

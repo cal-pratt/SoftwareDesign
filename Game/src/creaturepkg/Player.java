@@ -3,9 +3,6 @@ package creaturepkg;
 import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
 import eventpkg.IKeyEventListener;
 import eventpkg.KeyEventPublisher;
 import eventpkg.PlayerEventPublisher;
@@ -19,13 +16,11 @@ public class Player extends ACreature {
 	
 	private UserInput input;
 	private IKeyEventListener velocityCallback;
-	private IKeyEventListener fireCallback;
 	private IKeyEventListener aimCallback;
 	
 	private Matrix4f rot = new Matrix4f();
 	
 	private float velocityX = 0, velocityY = 0;
-	private float fire = 0;
 	private float lastFire = 0;
 	private float fireIncrement = 40;
 	
@@ -34,14 +29,6 @@ public class Player extends ACreature {
 		eventPublisher = new PlayerEventPublisher();
 		
 		this.input = input;
-		
-		fireCallback = new IKeyEventListener() {
-			
-			@Override
-			public void actionPerformed(KeyEventPublisher sender, Object e) {
-				readyProjectile();
-			}
-		};
 		
 		
 		velocityCallback = new IKeyEventListener(){
@@ -68,16 +55,11 @@ public class Player extends ACreature {
         input.getInputEvent(GLFW_KEY_DOWN).subscribe(aimCallback);
         input.getInputEvent(GLFW_KEY_LEFT).subscribe(aimCallback);
         input.getInputEvent(GLFW_KEY_RIGHT).subscribe(aimCallback);
-		input.getInputEvent(GLFW_KEY_SPACE).subscribe(fireCallback);
 	}
 	
 	@Override 
 	public void delete(){
 		super.delete();
-		for(Projectile p : projectiles){
-			p.delete();
-		}
-		projectiles.clear();
         input.getInputEvent(GLFW_KEY_A).unsubscribe(velocityCallback);
         input.getInputEvent(GLFW_KEY_D).unsubscribe(velocityCallback);
         input.getInputEvent(GLFW_KEY_S).unsubscribe(velocityCallback);
@@ -87,23 +69,10 @@ public class Player extends ACreature {
         input.getInputEvent(GLFW_KEY_DOWN).unsubscribe(aimCallback);
         input.getInputEvent(GLFW_KEY_LEFT).unsubscribe(aimCallback);
         input.getInputEvent(GLFW_KEY_RIGHT).unsubscribe(aimCallback);
-		input.getInputEvent(GLFW_KEY_SPACE).unsubscribe(fireCallback);
 	}
 	
 	public PlayerEventPublisher getEventPublisher(){
 		return eventPublisher;
-	}
-	
-	public void doDamage(float dmg){
-		currHealth -= dmg;
-		if (currHealth < 0){
-			currHealth = 0;
-		}
-
-		if (currHealth > maxHealth){
-			currHealth = maxHealth;
-		}
-		eventPublisher.publish(true);
 	}
 	
 	private void updateVelocity(){
@@ -144,17 +113,9 @@ public class Player extends ACreature {
         aimY = dy;
 	}
 	
-	private void readyProjectile(){
-		//fire = input.getAction(GLFW_KEY_SPACE) == GLFW_PRESS 
-		//		|| input.getAction(GLFW_KEY_SPACE) == GLFW_REPEAT;
-	}
-	
-	public void update(float timepassed, Matrix4f model){
-		this.x += velocityX;
-		this.y += velocityY;
-		eventPublisher.publish(true);
-		
-		lastFire += timepassed;
+	public void updateActions(float timepassed){
+	    
+        lastFire += timepassed;
 		
 		if(velocityX != 0 || velocityY != 0 ){
 		    if(velocityX == 0){
@@ -170,19 +131,40 @@ public class Player extends ACreature {
 		        if(velocityX > 0) angle += 180;
 	            rot = Matrix4f.rotate(angle + 90, 0f, 0f, 1f);
 		    }
+
+	        this.x += velocityX;
+	        this.y += velocityY;
+	        
+            eventPublisher.publish(true);
 		}
 		
 		if(aimX != 0 || aimY != 0 ){
 			if(lastFire > fireIncrement ){
-				createProjectile();
+			    float shipTipX = x + velocityX*7;
+                float shipTipY = y + velocityY*7;
+		        projectiles.add(new Projectile(gm, shipTipX-aimY/2, shipTipY+aimX/2, aimX, aimY));
+		        projectiles.add(new Projectile(gm, shipTipX+aimY/2, shipTipY-aimX/2, aimX, aimY));
 				lastFire = 0;
 			}
 		}
-		updateModel(model.multiply(
-				Matrix4f.translate(0,2.5f, 1).multiply(rot)).multiply(
-								Matrix4f.rotate(90, 1, 0, 0)));
-		updateProjectiles(timepassed);
+		super.updateActions(timepassed);
 	}
+	
+	public void updateModel(Matrix4f model){
+        super.updateModel(model.multiply(Matrix4f.translate(0,2.5f, 1).multiply(rot)).multiply(Matrix4f.rotate(90, 1, 0, 0)));
+	}
+    
+    public void doDamage(float dmg){
+        currHealth -= dmg;
+        if (currHealth < 0){
+            currHealth = 0;
+        }
+
+        if (currHealth > maxHealth){
+            currHealth = maxHealth;
+        }
+        eventPublisher.publish(true);
+    }
 
 	//Player variables
 	private int experience, skillPoints;

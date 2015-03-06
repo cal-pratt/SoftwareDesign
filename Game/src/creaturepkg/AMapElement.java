@@ -7,7 +7,7 @@ import graphicspkg.GraphicsManager;
 import objectpkg.APcObject3D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
-class MapElement implements IMapElement{
+abstract class AMapElement implements IMapElement{
 
 	protected float x;
 	protected float y;
@@ -16,7 +16,7 @@ class MapElement implements IMapElement{
 	
 	public boolean deleted = false;
 
-	protected MapElement(GraphicsManager gm, List<APcObject3D> mesh, float x, float y) {
+	protected AMapElement(GraphicsManager gm, List<APcObject3D> mesh, float x, float y) {
 		this.gm = gm;
 		this.meshList = mesh;
 		this.x = x;
@@ -26,7 +26,7 @@ class MapElement implements IMapElement{
 		}
 	}
 	
-	protected MapElement(GraphicsManager gm, APcObject3D mesh, float x, float y) {
+	protected AMapElement(GraphicsManager gm, APcObject3D mesh, float x, float y) {
         this.gm = gm;
         this.meshList = new ArrayList<APcObject3D>();
         this.meshList.add(mesh);
@@ -36,20 +36,17 @@ class MapElement implements IMapElement{
         gm.add(mesh);
     }
 	
-	@Override
-	public void positionOnMap(float x, float y) {
-		this.x = x;
-		this.y = y;
-	}
 	public float getPosX(){
 		return x;
 	}
 	public float getPosY(){
 		return y;
 	}
+	
 	public void setPosX(float x){
 		this.x = x;
 	}
+	
 	public void setPosY(float y){
 		this.y = y;
 	}
@@ -66,7 +63,7 @@ class MapElement implements IMapElement{
 		m = (Matrix4f.translate(x, y, 0)).multiply(m);
 
         for(APcObject3D mesh : meshList){
-            mesh.setModel(m);
+            mesh.updateModel(m);
         }
 	}
 

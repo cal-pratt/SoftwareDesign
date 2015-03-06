@@ -35,7 +35,9 @@ public class MenuButton implements IMenuItem{
 		this.posY = posY;
 		this.width = width;
 		this.height = height;
+		
 		this.gm = gm;
+		
 		this.input = input;
 		this.release = release;
 		this.press = press;
@@ -91,7 +93,7 @@ public class MenuButton implements IMenuItem{
 	}
 
 	@Override
-	public void updateOrthographic(Matrix4f m){
+	public void updateView(Matrix4f m){
 		m = m.multiply(Matrix4f.translate(posX, posY,0));
 		if(hidden){
 			press.setProjection(Matrix4f.scale(0, 0, 0));

@@ -1,60 +1,49 @@
 package menupkg;
 
 import objectpkg.Object2DFactory;
-import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import creaturepkg.Player;
 import eventpkg.IPlayerEventListener;
 import eventpkg.PlayerEventPublisher;
 import graphicspkg.GraphicsManager;
 
 public class PlayerOverlay extends AMenu {
-	IPlayerEventListener callBack;
+    private IPlayerEventListener callBack;
 	
-	GraphicsManager gm;
-	Player player;
-	MenuSprite health;
-	MenuSprite nohealth;
-	MenuSprite banner;
+    private Player player;
+    private MenuSprite health;
+    private MenuSprite nohealth;
 	
-	float fullwidth; 
+    private float fullwidth; 
 		
-	public PlayerOverlay(GraphicsManager gm, Player player, float actualPosX, float actualPosY, float actualWidth,
-			float actualHeight, float repPosX, float repPosY, float repWidth,
-			float repHeight) {
-		super(actualPosX, actualPosY, actualWidth, actualHeight, repPosX, repPosY,
-				repWidth, repHeight);
-		this.gm = gm;
+	public PlayerOverlay(GraphicsManager gm, Player player) {
+		super(gm);
 		this.player = player;
 		
-		fullwidth = repWidth/2.15f;
+		fullwidth = width/2.15f;
 		
 		callBack = new IPlayerEventListener(){
 			@Override
 			public void actionPerformed(PlayerEventPublisher sender, Object e) {
-				updateSize();
+				updateHealthBar();
 			}
 		};
 
-        add(banner = new MenuSprite(
+        add(new MenuSprite(
                 gm, Object2DFactory.getBanner(), 
-                0,0, repWidth, repHeight));
+                0,0, width, height));
         
 		health = new MenuSprite(gm, Object2DFactory.getHealth(), 
-				repWidth/100, actualHeight*9/10f, fullwidth, actualHeight/10f);
-		nohealth = new MenuSprite(gm, Object2DFactory.getNoHealth(), 
-				repWidth/100, actualHeight*9/10f, fullwidth, actualHeight/10f);
-
+		        width/100, height*9/10f, fullwidth, height/10f);
 		
+		nohealth = new MenuSprite(gm, Object2DFactory.getNoHealth(), 
+		        width/100, height*9/10f, fullwidth, height/10f);
+
 		add(nohealth);
 		add(health);
 	}
 	
-	private void updateSize(){
+	private void updateHealthBar(){
 		health.setSize(fullwidth * player.getCurrentHealth()/ (float) player.getMaxHealth(), health.getHeight());
-	}
-	
-	public void update(){
-		updateOrthographic(new Matrix4f());
 	}
 	
 	@Override
@@ -64,19 +53,19 @@ public class PlayerOverlay extends AMenu {
 
 	@Override
 	public void hide() {
-		player.getEventPublisher().unsubscribe(callBack);
-        banner.hide();
-		health.hide();
-		nohealth.hide();
+        if (!hidden){
+            super.hide();
+    		player.getEventPublisher().unsubscribe(callBack);
+        }
 	}
 
 	@Override
 	public void show() {
-		updateSize();
-		player.getEventPublisher().subscribe(callBack);
-        banner.show();
-		health.show();
-		nohealth.show();
+        if (hidden){
+            super.show();
+    		updateHealthBar();
+    		player.getEventPublisher().subscribe(callBack);
+        }
 	}
 
 }

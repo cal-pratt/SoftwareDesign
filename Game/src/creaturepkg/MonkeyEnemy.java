@@ -1,37 +1,18 @@
 package creaturepkg;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
-
-import java.util.LinkedList;
-import java.util.List;
-
 import eventpkg.IPlayerEventListener;
 import eventpkg.PlayerEventPublisher;
 import graphicspkg.GraphicsManager;
-import objectpkg.APcObject3D;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
 public class MonkeyEnemy extends ACreature {
-	
-	private List<Projectile> projectiles = new LinkedList<Projectile>();
 	private Player player;
 	private IPlayerEventListener callback;
 	
-	//Enemy variables
 	private float aggroRange = 30;
 	private float lastFire;
 	private float fireIncrement = 200;
-	
-	private boolean updateEnemyAim = false;
 	
 	public MonkeyEnemy(GraphicsManager gm, Player player) {
 		super(gm, Object3DFactory.getMonkey(), 10, 1, 1, 0);
@@ -40,22 +21,19 @@ public class MonkeyEnemy extends ACreature {
 			
 			@Override
 			public void actionPerformed(PlayerEventPublisher sender, Object e) {
-				updateEnemyAim = true;
+			    updateAim();
 			}
 		};
 		player.getEventPublisher().subscribe(callback);
 	}
+
+    @Override 
+    public void delete(){
+        player.getEventPublisher().unsubscribe(callback);
+        super.delete();
+    }
 	
-	//Getters and Setters
-	public float getAggroRange() {
-		return aggroRange;
-	}
-	
-	public void setAggroRange(int aggroRange) {
-		this.aggroRange = aggroRange;
-	}
-	
-	public void updateAim(){
+	private void updateAim(){
 		if (Math.pow(player.getPosX() - x,2) + Math.pow(player.getPosY() - y,2) < aggroRange*aggroRange){
 			float dX = (player.getPosX() - this.x);
 	        float dY = (player.getPosY() - this.y);
@@ -67,31 +45,24 @@ public class MonkeyEnemy extends ACreature {
 			aimX = 0;
 			aimY = 0;
 		}
-		updateEnemyAim = false;
 	}
-	
-	public void update(float timePassed, Matrix4f model) {
-		if(updateEnemyAim) updateAim();
-		lastFire += timePassed;
+
+    @Override 
+	public void updateActions(float timepassed) {
+		lastFire += timepassed;
 		if(aimX != 0 || aimY != 0 ){
 			if(lastFire > fireIncrement ){
-				createProjectile();
+		        projectiles.add(new Projectile(gm, x-.4f, y+.4f, aimX, aimY));
+		        projectiles.add(new Projectile(gm, x+.4f, y-.4f, aimX, aimY));
 				lastFire = 0;
 			}
 		}
-		
-		updateModel(model);
-		updateProjectiles(timePassed);
+        super.updateActions(timepassed);
 	}
-	
-	@Override 
-	public void delete(){
-		super.delete();
-		for(Projectile p : projectiles){
-			p.delete();
-		}
-		projectiles.clear();
-        player.getEventPublisher().unsubscribe(callback);
+
+    @Override 
+	public void updateModel(Matrix4f model) {
+	    super.updateModel(model);
 	}
 	
 	@Override
@@ -107,5 +78,14 @@ public class MonkeyEnemy extends ACreature {
 		//Fire projectile
 		return atkDamage;
 	}
+    
+    //Getters and Setters
+    public float getAggroRange() {
+        return aggroRange;
+    }
+    
+    public void setAggroRange(int aggroRange) {
+        this.aggroRange = aggroRange;
+    }
 
 }

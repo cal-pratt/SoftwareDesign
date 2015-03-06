@@ -1,5 +1,7 @@
 package menupkg;
 
+import graphicspkg.GraphicsManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,32 +9,21 @@ import objectpkg.ATexObject2D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
 public abstract class AMenu implements IMenuItem{
-	float actualWidth;
-	float actualHeight;
-	float actualPosX;
-	float actualPosY;
-	
-	float repWidth;
-	float repHeight;
-	float repPosX;
-	float repPosY;
-
+	float width;
+	float height;
+	GraphicsManager gm;
     List<IMenuItem> items;
     
-    public AMenu(float actualPosX, float actualPosY, float actualWidth, float actualHeight,
-    		float repPosX, float repPosY, float repWidth, float repHeight ){
+    protected boolean hidden = true;
+    
+    public AMenu(GraphicsManager gm){
     	
     	items = new ArrayList<IMenuItem>();
     	
-    	this.actualWidth = actualWidth;
-    	this.actualHeight = actualHeight;
-    	this.actualPosX = actualPosX;
-    	this.actualPosY = actualPosY;
+    	this.gm = gm;
     	
-    	this.repWidth = repWidth;
-    	this.repHeight = repHeight;
-    	this.repPosX = repPosX;
-    	this.repPosY = repPosY;
+    	this.width = gm.getWidth();
+    	this.height = gm.getHeight();
     }
     
     public void add(IMenuItem item){
@@ -51,55 +42,59 @@ public abstract class AMenu implements IMenuItem{
     }
 	
 	@Override
-	public void updateOrthographic(Matrix4f m) {
-    	m = m.multiply(Matrix4f.translate(
-    			actualPosX/actualWidth, 
-    			actualPosY/actualHeight, 
-    			0));
-        m = m.multiply(Matrix4f.orthographic(
-        		0, repWidth*repWidth/actualWidth, 
-        		0, actualHeight*(actualHeight/repHeight), 
-        		-1f, 10f));
-		m = m.multiply(Matrix4f.translate(
-				repPosX, 
-				repPosY,
-				0));
+	public void updateView(Matrix4f m) {
+        this.width = gm.getWidth();
+        this.height = gm.getHeight();
+        m = m.multiply(Matrix4f.orthographic(0, width, 0, height, -1f, 10f));
     	for(IMenuItem item : items){
-    		item.updateOrthographic(m);
+    		item.updateView(m);
     	}
     }
     
+   public void hide(){
+        if (!hidden){
+            hidden = true;
+            for(IMenuItem item : items){
+                item.hide();
+            }
+        }
+    }
+
+    public void show(){
+        if (hidden){
+            hidden = false;
+            for(IMenuItem item : items){
+                item.show();
+            }
+        }
+    }
+	
     public float getWidth(){
-    	return actualWidth;
+    	return width;
     }
     
     public float getHeight(){
-    	return actualHeight;
+    	return height;
     }
     
     public float getX(){
-    	return actualPosX;
+    	return 0;
     }
     
     public float getY(){
-    	return actualPosY;
+    	return 0;
     }
 
 	@Override
-	public void setPosition(float posX, float posY) {
-		actualPosX = posX;
-		actualPosY = posY;
-	}
+	public void setPosition(float posX, float posY) {}
 
 	@Override
-	public void setSize(float width, float height) {
-		actualWidth = width;
-		actualHeight = height;
-	}
+	public void setSize(float width, float height) {}
 
 	@Override
 	public ATexObject2D getSprite() {
 		return null;
 	}
+	
     
 }

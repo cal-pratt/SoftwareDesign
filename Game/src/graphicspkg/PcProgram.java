@@ -24,6 +24,7 @@ class PcProgram extends ADefinedProgram{
     public void setModel(Matrix4f model){
         setUniform(uniModel, model);
     }
+    
     public void setProjection(Matrix4f projection){
         setUniform(uniProjection, projection);
     }

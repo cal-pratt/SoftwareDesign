@@ -36,7 +36,7 @@ public class GmExampleCore extends ACore {
     // Core implementation --------------------------------------------------------------------- //
     @Override
     protected void startup() {
-        gm = new GraphicsManager();
+        gm = new GraphicsManager(windowWidth, windowHeight);
         
     	glEnable(GL_CULL_FACE);
     	glCullFace(GL_FRONT);
@@ -71,7 +71,7 @@ public class GmExampleCore extends ACore {
     }
 
     @Override
-    protected void updateLogic(long timePassed) {
+    protected void updateActions(long timePassed) {
         previousAngle = angle;
         angle += timePassed * angelPerSecond/1000.0;
         
@@ -86,8 +86,8 @@ public class GmExampleCore extends ACore {
         Matrix4f model = Matrix4f.rotate(lerpAngle, 0f, 0f, 1f);
         model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle, .6f, 1f, 1f));
         
-        cube.setModel( Matrix4f.translate(.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
-        tri.setModel( Matrix4f.translate(-.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
+        cube.updateModel( Matrix4f.translate(.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
+        tri.updateModel( Matrix4f.translate(-.4f, 0f, 0f).multiply(Matrix4f.scale(.2f, .2f, .2f).multiply(model)));
         
 
         
