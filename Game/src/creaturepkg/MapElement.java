@@ -10,6 +10,8 @@ class MapElement implements IMapElement{
 	protected float y;
 	protected GraphicsManager gm;
 	protected APcObject3D mesh;
+	
+	public boolean deleted = false;
 
 	protected MapElement(GraphicsManager gm, APcObject3D mesh, float x, float y) {
 		this.gm = gm;
@@ -25,6 +27,24 @@ class MapElement implements IMapElement{
 	public void positionOnMap(float x, float y) {
 		this.x = x;
 		this.y = y;
+	}
+	public float getPosX(){
+		return x;
+	}
+	public float getPosY(){
+		return y;
+	}
+	public void setPosX(float x){
+		this.x = x;
+	}
+	public void setPosY(float y){
+		this.y = y;
+	}
+
+	@Override
+	public void delete() {
+		gm.remove(mesh);
+		deleted = true;
 	}
 	
 	public void updateProjection(Matrix4f m) {

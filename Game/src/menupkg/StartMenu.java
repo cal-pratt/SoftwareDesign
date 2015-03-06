@@ -13,6 +13,8 @@ public class StartMenu extends AMenu {
 
 	boolean hidden = true;
 	
+
+	
 	MenuButton continuegame;
 	boolean continuePressed = false;
 	IButtonEventListener continueCallback;

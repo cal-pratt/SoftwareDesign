@@ -51,8 +51,8 @@ class TexGraphicsBuffer implements IGraphicsBuffer {
 
         /* Element data */
         IntBuffer elements = BufferUtils.createIntBuffer(2 * 3);
-        elements.put(2).put(1).put(0);
-        elements.put(0).put(3).put(2);
+        elements.put(0).put(1).put(2);
+        elements.put(2).put(3).put(0);
         elements.flip();
 
         /* Generate Element Buffer Object */

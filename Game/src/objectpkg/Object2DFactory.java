@@ -19,4 +19,12 @@ public class Object2DFactory {
     public static ATexObject2D getContinueClicked(){
     	return new ContinueClicked();
     }
+
+    public static ATexObject2D getHealth(){
+    	return new HealthBar();
+    }
+
+    public static ATexObject2D getNoHealth(){
+    	return new NoHealthBar();
+    }
 }

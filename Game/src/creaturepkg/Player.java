@@ -1,30 +1,184 @@
 package creaturepkg;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_Z;
+import static org.lwjgl.glfw.GLFW.*;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import eventpkg.IKeyEventListener;
 import eventpkg.KeyEventPublisher;
+import eventpkg.PlayerEventPublisher;
 import inputpkg.UserInput;
 import graphicspkg.GraphicsManager;
-import objectpkg.APcObject3D;
 import objectpkg.Object3DFactory;
+import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
 public class Player extends ACreature {
-	public Projectile projectile;
+	private PlayerEventPublisher eventPublisher;
+	
+	private List<Projectile> projectiles = new LinkedList<Projectile>();
+	
+	private UserInput input;
+	private IKeyEventListener velocityCallback;
+	private IKeyEventListener fireCallback;
+	private IKeyEventListener aimCallback;
+	
+	private float velocityX = 0, velocityY = 0;
+	private float aimX = 0, aimY = 0;
+	
+	private float fire = 0;
+	private float lastFire = 0;
+	private float fireIncrement = 40;
+	
 	public Player(GraphicsManager gman, UserInput input) {
 		super(gman, Object3DFactory.getCube(), 10, 2, 2, 0);
-
-		createProjectile();
-		input.getInputEvent(GLFW_KEY_Z).subscribe(new IKeyEventListener() {
+		
+		eventPublisher = new PlayerEventPublisher();
+		
+		this.input = input;
+		
+		fireCallback = new IKeyEventListener() {
 			
 			@Override
 			public void actionPerformed(KeyEventPublisher sender, Object e) {
-				createProjectile();
+				readyProjectile();
 			}
-		});
+		};
+		
+		
+		velocityCallback = new IKeyEventListener(){
+            @Override 
+            public void actionPerformed(KeyEventPublisher event, Object action) 
+            { 
+                updateVelocity();
+            }
+	    };
+	    aimCallback = new IKeyEventListener(){
+            @Override 
+            public void actionPerformed(KeyEventPublisher event, Object action) 
+            { 
+                updateAim();
+            }
+	    };
+        
+        input.getInputEvent(GLFW_KEY_A).subscribe(velocityCallback);
+        input.getInputEvent(GLFW_KEY_D).subscribe(velocityCallback);
+        input.getInputEvent(GLFW_KEY_S).subscribe(velocityCallback);
+        input.getInputEvent(GLFW_KEY_W).subscribe(velocityCallback);
+        
+        input.getInputEvent(GLFW_KEY_UP).subscribe(aimCallback);
+        input.getInputEvent(GLFW_KEY_DOWN).subscribe(aimCallback);
+        input.getInputEvent(GLFW_KEY_LEFT).subscribe(aimCallback);
+        input.getInputEvent(GLFW_KEY_RIGHT).subscribe(aimCallback);
+		input.getInputEvent(GLFW_KEY_SPACE).subscribe(fireCallback);
+	}
+	
+	@Override 
+	public void delete(){
+		super.delete();
+		for(Projectile p : projectiles){
+			p.delete();
+		}
+		projectiles.clear();
+        input.getInputEvent(GLFW_KEY_A).unsubscribe(velocityCallback);
+        input.getInputEvent(GLFW_KEY_D).unsubscribe(velocityCallback);
+        input.getInputEvent(GLFW_KEY_S).unsubscribe(velocityCallback);
+        input.getInputEvent(GLFW_KEY_W).unsubscribe(velocityCallback);
+        
+        input.getInputEvent(GLFW_KEY_UP).unsubscribe(aimCallback);
+        input.getInputEvent(GLFW_KEY_DOWN).unsubscribe(aimCallback);
+        input.getInputEvent(GLFW_KEY_LEFT).unsubscribe(aimCallback);
+        input.getInputEvent(GLFW_KEY_RIGHT).unsubscribe(aimCallback);
+		input.getInputEvent(GLFW_KEY_SPACE).unsubscribe(fireCallback);
+	}
+	
+	public PlayerEventPublisher getEventPublisher(){
+		return eventPublisher;
+	}
+	
+	public void doDamage(float dmg){
+		currHealth -= dmg;
+		if (currHealth < 0){
+			currHealth = 0;
+		}
+
+		if (currHealth > maxHealth){
+			currHealth = maxHealth;
+		}
+		eventPublisher.publish(true);
+	}
+	
+	private void updateVelocity(){
+        float dx = 0;
+        float dy = 0;
+        if(input.getAction(GLFW_KEY_A) == GLFW_PRESS || input.getAction(GLFW_KEY_A) == GLFW_REPEAT){
+            dx -= 0.5f;
+        }
+        if(input.getAction(GLFW_KEY_D) == GLFW_PRESS || input.getAction(GLFW_KEY_D) == GLFW_REPEAT){
+            dx += 0.5f;
+        }
+        if(input.getAction(GLFW_KEY_S) == GLFW_PRESS || input.getAction(GLFW_KEY_S) == GLFW_REPEAT){
+            dy -= 0.5f;
+        }
+        if(input.getAction(GLFW_KEY_W) == GLFW_PRESS || input.getAction(GLFW_KEY_W) == GLFW_REPEAT){
+            dy += 0.5f;
+        }
+        velocityX = dx;
+        velocityY = dy;
+	}
+	
+	private void updateAim(){
+        float dx = 0;
+        float dy = 0;
+        if(input.getAction(GLFW_KEY_LEFT) == GLFW_PRESS || input.getAction(GLFW_KEY_LEFT) == GLFW_REPEAT){
+            dx -= 1f;
+        }
+        if(input.getAction(GLFW_KEY_RIGHT) == GLFW_PRESS || input.getAction(GLFW_KEY_RIGHT) == GLFW_REPEAT){
+            dx += 1f;
+        }
+        if(input.getAction(GLFW_KEY_UP) == GLFW_PRESS || input.getAction(GLFW_KEY_UP) == GLFW_REPEAT){
+            dy += 1f;
+        }
+        if(input.getAction(GLFW_KEY_DOWN) == GLFW_PRESS || input.getAction(GLFW_KEY_DOWN) == GLFW_REPEAT){
+            dy -= 1f;
+        }
+        aimX = dx;
+        aimY = dy;
+	}
+	
+	private void readyProjectile(){
+		//fire = input.getAction(GLFW_KEY_SPACE) == GLFW_PRESS 
+		//		|| input.getAction(GLFW_KEY_SPACE) == GLFW_REPEAT;
+	}
+	
+	public void update(float timepassed, Matrix4f projection){
+		this.x += velocityX;
+		this.y += velocityY;
+		
+		lastFire += timepassed;
+		
+		if(aimX != 0 || aimY != 0 ){
+			if(lastFire > fireIncrement ){
+				createProjectile();
+				lastFire = 0;
+			}
+		}
+		updateModel(Matrix4f.rotate(-90, 1, 0, 0));
+		updateProjection(projection);
+		for(Projectile p : new LinkedList<>(projectiles)){
+			if(Math.pow(Math.abs(p.x - x),2) + Math.pow(Math.abs(p.y - y),2) > 2000){
+				p.delete();
+				projectiles.remove(p);
+			}
+		}
+		for(Projectile p : projectiles){
+			p.update(projection);
+		}
+		updateModel(new Matrix4f());
 	}
 	
 	private void createProjectile() {
-		projectile = new Projectile(gm, this);
+		projectiles.add(new Projectile(gm, x, y, aimX, aimY));
 	}
 
 	//Player variables

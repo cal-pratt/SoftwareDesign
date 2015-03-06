@@ -6,7 +6,11 @@ import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
 public abstract class ACreature extends MapElement {
 	//Creature variables
-	private int maxHealth, currHealth, attackLvl, defenseLvl, attackType;
+	protected int maxHealth;
+	protected int currHealth;
+	private int attackLvl;
+	private int defenseLvl;
+	private int attackType;
 	
 	protected ACreature(GraphicsManager gm, APcObject3D creatureMesh, int maxHealth, int attackLvl, int defenseLvl, int attackType) {
 		super(gm, creatureMesh, 0, 0);
@@ -14,6 +18,8 @@ public abstract class ACreature extends MapElement {
 		this.attackLvl = attackLvl;
 		this.defenseLvl = defenseLvl;
 		this.attackType = attackType;
+		
+		this.currHealth = maxHealth;
 		
 		gm.add(creatureMesh);
 		creatureMesh.setView(new Matrix4f());

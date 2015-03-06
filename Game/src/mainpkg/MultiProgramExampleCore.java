@@ -3,6 +3,7 @@ package mainpkg;
 import creaturepkg.MonkeyEnemy;
 import creaturepkg.Player;
 import menupkg.MenuSprite;
+import menupkg.PlayerOverlay;
 import menupkg.StartMenu;
 import eventpkg.IKeyEventListener;
 import eventpkg.KeyEventPublisher;
@@ -21,11 +22,11 @@ import static org.lwjgl.glfw.GLFW.*;
 public class MultiProgramExampleCore extends ACore {
     
     StartMenu menu;
-    APcObject3D cube;
-    APcObject3D skyCube;
+    PlayerOverlay overlay;
+    APcObject3D monkey;
     APcObject3D floor;
     GraphicsManager gm;
-    MonkeyEnemy guy;
+    
     Player player;
     
     float xplace = 0;
@@ -35,6 +36,7 @@ public class MultiProgramExampleCore extends ACore {
     
     private IKeyEventListener inputCallback;
     private IKeyEventListener testCallback;
+    private IKeyEventListener inputCallback2;
     
     private float previousAngle = 0f;
     private float angle = 0f;
@@ -60,14 +62,22 @@ public class MultiProgramExampleCore extends ACore {
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_FRONT);
-        glFrontFace(GL_CCW);
+        glFrontFace(GL_CW);
         glDepthRange(0.0f, 1.0f);
         
         inputCallback = new IKeyEventListener(){
             @Override 
             public void actionPerformed(KeyEventPublisher event, Object action) 
             { 
-                updateCubeVelocity();
+            	player.doDamage(1);
+            }
+        };
+        
+        inputCallback2 = new IKeyEventListener(){
+            @Override 
+            public void actionPerformed(KeyEventPublisher event, Object action) 
+            { 
+            	player.doDamage(-1);
             }
         };
         
@@ -76,77 +86,40 @@ public class MultiProgramExampleCore extends ACore {
             public void actionPerformed(KeyEventPublisher event, Object action) 
             { 
                 menu.show();
+                overlay.hide();
             }
         };
         
-        input.getInputEvent(GLFW_KEY_A).subscribe(inputCallback);
-        input.getInputEvent(GLFW_KEY_D).subscribe(inputCallback);
-        input.getInputEvent(GLFW_KEY_S).subscribe(inputCallback);
-        input.getInputEvent(GLFW_KEY_W).subscribe(inputCallback);
         input.getInputEvent(GLFW_KEY_X).subscribe(testCallback);
         
-        input.getInputEvent(GLFW_KEY_LEFT).subscribe(new IKeyEventListener() {
-			
-			@Override
-			public void actionPerformed(KeyEventPublisher sender, Object e) {
-				playerX -= 0.3f;
-			}
-		});
-        input.getInputEvent(GLFW_KEY_RIGHT).subscribe(new IKeyEventListener() {
-			
-			@Override
-			public void actionPerformed(KeyEventPublisher sender, Object e) {
-				playerX += 0.3f;
-			}
-		});
-        input.getInputEvent(GLFW_KEY_UP).subscribe(new IKeyEventListener() {
-			
-			@Override
-			public void actionPerformed(KeyEventPublisher sender, Object e) {
-				playerY += 0.3f;
-			}
-		});
-        input.getInputEvent(GLFW_KEY_DOWN).subscribe(new IKeyEventListener() {
-			
-			@Override
-			public void actionPerformed(KeyEventPublisher sender, Object e) {
-				playerY -= 0.3f;
-			}
-		});
+        input.getInputEvent(GLFW_KEY_K).subscribe(inputCallback);
+        input.getInputEvent(GLFW_KEY_I).subscribe(inputCallback2);
         
     	
         gm = new GraphicsManager();
-        
-        gm.add(cube = Object3DFactory.getCube());
-        gm.add(skyCube = Object3DFactory.getCube());
+        gm.add(monkey = Object3DFactory.getMonkey());
         gm.add(floor = Object3DFactory.getSquare());
         
-        guy = new MonkeyEnemy(gm);
+        monkey.setView(new Matrix4f());
+        floor.setView(new Matrix4f());
+        
         player = new Player(gm, input);
+        player.setPosY(-10);
         
         menu = new StartMenu(gm, input, 
         		0, 0, windowWidth, windowHeight,
         		0, 0, windowWidth, windowHeight);
         
+        overlay = new PlayerOverlay(gm, player, 
+        		0, 0, windowWidth, windowHeight,
+        		0, 0, windowWidth, windowHeight);
+        
         menu.show();
-
-        cube.setView(Matrix4f.scale(0, 0, 0));
-        skyCube.setView(Matrix4f.scale(0, 0, 0));
-        floor.setView(Matrix4f.scale(0, 0, 0));
-        
-        cube.setProjection(Matrix4f.scale(0, 0, 0));
-        skyCube.setProjection(Matrix4f.scale(0, 0, 0));
-        floor.setProjection(Matrix4f.scale(0, 0, 0));
-        
     }
 
     @Override
     protected void teardown() {
     	menu.delete();
-    	input.getInputEvent(GLFW_KEY_A).unsubscribe(inputCallback);
-        input.getInputEvent(GLFW_KEY_D).unsubscribe(inputCallback);
-        input.getInputEvent(GLFW_KEY_S).unsubscribe(inputCallback);
-        input.getInputEvent(GLFW_KEY_W).unsubscribe(inputCallback);
         input.getInputEvent(GLFW_KEY_X).unsubscribe(testCallback);
     }
 
@@ -164,10 +137,8 @@ public class MultiProgramExampleCore extends ACore {
         
         if(menu.isNewPressed()){
         	Matrix4f perspective = Matrix4f.perspective(20, windowRatio, 1, 600);
-            cube.setProjection(perspective);
-            skyCube.setProjection(perspective);
-            floor.setProjection(perspective);
             menu.hide();
+            overlay.show();
         }
         menu.reset();
     }
@@ -184,28 +155,21 @@ public class MultiProgramExampleCore extends ACore {
         Matrix4f model = Matrix4f.rotate(lerpAngle, 0f, 0f, 1f);
         model = model.multiply(Matrix4f.rotate(previousAngle + timePassed * angle, .6f, 1f, 1f));
        
-        guy.positionOnMap(-10, 1);
-        guy.updateModel(Matrix4f.rotate(-90, 1, 0, 0));
-        player.positionOnMap(playerX, playerY);
-        player.updateModel(Matrix4f.rotate(-90, 1, 0, 0));
-        player.projectile.movingProjectile();
-        player.projectile.updateModel(Matrix4f.rotate(-90, 1, 0, 0));
-        cube.setModel(Matrix4f.translate(0, 0, -10).multiply(Matrix4f.scale(.5f, .5f, .5f).multiply(model)));
-        skyCube.setModel(Matrix4f.translate(30, 5f, 10).multiply(Matrix4f.scale(6f, 6f, 6f).multiply(model)));
-        floor.setModel(Matrix4f.translate(0f, -1, -10f).multiply(Matrix4f.rotate(90, 1f, 0f, 0f).multiply(Matrix4f.scale(10f,1000f,1f))));
+        player.updateModel(Matrix4f.rotate(-90, 1, 0, 0).translate(0, 0, 0));
+        monkey.setModel(Matrix4f.scale(2, 2, 2).multiply(Matrix4f.translate(0, 0, -1)));
+        floor.setModel(Matrix4f.translate(0, 0, -2).multiply(Matrix4f.scale(100, 100, 100)));
         
-        Matrix4f projection = Matrix4f.perspective(20, windowRatio, 1, 10000).multiply(Matrix4f.rotate(xplace*60, 0, 1, 0));
-        projection = projection.multiply(Matrix4f.rotate(xplace*60, 0, 1, 0).multiply(Matrix4f.translate(0, 0, zplace)));
+        Matrix4f projection = Matrix4f.perspective(25, windowRatio, 1, 100).multiply(Matrix4f.rotate(0, 1, 0, 0));
+        projection = projection.multiply(Matrix4f.rotate(-45, 1, 0, 0).multiply(
+        		Matrix4f.translate(-player.getPosX(), 50 - player.getPosY(), -50)));
         
-        guy.updateProjection(projection);
-        player.projectile.updateProjection(projection);
-        player.updateProjection(projection);
-        cube.setProjection(projection);
-        skyCube.setProjection(projection);
+        
+        player.update(timePassed, projection);
+        monkey.setProjection(projection);
         floor.setProjection(projection);
         
-        
         menu.update();
+        overlay.update();
         
         gm.draw();
     }
@@ -215,25 +179,6 @@ public class MultiProgramExampleCore extends ACore {
     public void updateCube(){
         xplace += dx;
         zplace -= dy;
-    }
-    
-    public void updateCubeVelocity(){
-        float x = 0;
-        float y = 0;
-        if(input.getAction(GLFW_KEY_A) == GLFW_PRESS || input.getAction(GLFW_KEY_A) == GLFW_REPEAT){
-            x -= .05f;
-        }
-        if(input.getAction(GLFW_KEY_D) == GLFW_PRESS || input.getAction(GLFW_KEY_D) == GLFW_REPEAT){
-            x += .05f;
-        }
-        if(input.getAction(GLFW_KEY_S) == GLFW_PRESS || input.getAction(GLFW_KEY_S) == GLFW_REPEAT){
-            y += 2f;
-        }
-        if(input.getAction(GLFW_KEY_W) == GLFW_PRESS || input.getAction(GLFW_KEY_W) == GLFW_REPEAT){
-            y -= 2f;
-        }
-        dx = x;
-        dy = y;
     }
 }
 //---------------------------------------------------------------------------------------------- //
