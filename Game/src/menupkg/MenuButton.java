@@ -54,8 +54,8 @@ public class MenuButton implements IMenuItem{
 	}
 	
 	private void checkInput(int action){
-		if(input.getMouseX() > posX && input.getMouseX() < posX + width 
-				&& input.getMouseY() > posY && input.getMouseY() < posY + height){
+		if(input.getMouseX()*gm.getWidth() > posX && input.getMouseX()*gm.getWidth() < posX + width 
+				&& input.getMouseY()*gm.getHeight() > posY && input.getMouseY()*gm.getHeight() < posY + height){
 			if(input.getAction(GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
 				setPressed(true);
 			}
@@ -118,7 +118,7 @@ public class MenuButton implements IMenuItem{
 	public void delete() {
 		gm.remove(release);
 		gm.remove(press);
-		input.getInputEvent(GLFW_MOUSE_BUTTON_1).unsubscribe(callBack);
+		input.getKeyInputEvent(GLFW_MOUSE_BUTTON_1).unsubscribe(callBack);
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class MenuButton implements IMenuItem{
 	public void hide() {
 		if(!hidden){
 			hidden = true;
-			input.getInputEvent(GLFW_MOUSE_BUTTON_1).unsubscribe(callBack);
+			input.getKeyInputEvent(GLFW_MOUSE_BUTTON_1).unsubscribe(callBack);
 		}
 	}
 
@@ -158,7 +158,7 @@ public class MenuButton implements IMenuItem{
 	public void show() {
 		if(hidden){
 			hidden = false;
-			input.getInputEvent(GLFW_MOUSE_BUTTON_1).subscribe(callBack);
+			input.getKeyInputEvent(GLFW_MOUSE_BUTTON_1).subscribe(callBack);
 		}
 	}
 }

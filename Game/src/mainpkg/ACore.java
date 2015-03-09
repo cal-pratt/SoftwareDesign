@@ -179,9 +179,10 @@ public abstract class ACore {
             
             glfwSwapBuffers(windowIdentifier);
             glfwPollEvents();
+            input.pollJoysticks();
             try { 
             	//System.out.println(threadSleepDuration - (long)(glfwGetTime() - reference)/1000l);
-                Thread.sleep(threadSleepDuration - (long)(glfwGetTime() - reference)/1000l);
+                Thread.sleep(threadSleepDuration - (long)(glfwGetTime() - reference)/1000L);
             } catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }

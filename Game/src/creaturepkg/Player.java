@@ -3,7 +3,10 @@ package creaturepkg;
 import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.Arrays;
+
+import eventpkg.IJoystickEventListener;
 import eventpkg.IKeyEventListener;
+import eventpkg.JoystickEventPublisher;
 import eventpkg.KeyEventPublisher;
 import eventpkg.PlayerEventPublisher;
 import inputpkg.UserInput;
@@ -15,8 +18,9 @@ public class Player extends ACreature {
 	private PlayerEventPublisher eventPublisher;
 	
 	private UserInput input;
-	private IKeyEventListener velocityCallback;
-	private IKeyEventListener aimCallback;
+	private IKeyEventListener velocityKeyCallback;
+	private IKeyEventListener aimKeyCallback;
+    private IJoystickEventListener joystickCallback;
 	
 	private Matrix4f rot = new Matrix4f();
 	
@@ -31,51 +35,70 @@ public class Player extends ACreature {
 		this.input = input;
 		
 		
-		velocityCallback = new IKeyEventListener(){
+		velocityKeyCallback = new IKeyEventListener(){
             @Override 
             public void actionPerformed(KeyEventPublisher event, Object action) 
             { 
-                updateVelocity();
+                updateKeyVelocity();
             }
 	    };
-	    aimCallback = new IKeyEventListener(){
+	    aimKeyCallback = new IKeyEventListener(){
             @Override 
             public void actionPerformed(KeyEventPublisher event, Object action) 
             { 
-                updateAim();
+                updateKeyAim();
             }
 	    };
+
+	    joystickCallback = new IJoystickEventListener(){
+            @Override 
+            public void actionPerformed(JoystickEventPublisher event, Object action) 
+            {
+                updateJoystickDir((float[])action);
+            }
+        };
         
-        input.getInputEvent(GLFW_KEY_A).subscribe(velocityCallback);
-        input.getInputEvent(GLFW_KEY_D).subscribe(velocityCallback);
-        input.getInputEvent(GLFW_KEY_S).subscribe(velocityCallback);
-        input.getInputEvent(GLFW_KEY_W).subscribe(velocityCallback);
+        input.getKeyInputEvent(GLFW_KEY_A).subscribe(velocityKeyCallback);
+        input.getKeyInputEvent(GLFW_KEY_D).subscribe(velocityKeyCallback);
+        input.getKeyInputEvent(GLFW_KEY_S).subscribe(velocityKeyCallback);
+        input.getKeyInputEvent(GLFW_KEY_W).subscribe(velocityKeyCallback);
         
-        input.getInputEvent(GLFW_KEY_UP).subscribe(aimCallback);
-        input.getInputEvent(GLFW_KEY_DOWN).subscribe(aimCallback);
-        input.getInputEvent(GLFW_KEY_LEFT).subscribe(aimCallback);
-        input.getInputEvent(GLFW_KEY_RIGHT).subscribe(aimCallback);
+        input.getKeyInputEvent(GLFW_KEY_UP).subscribe(aimKeyCallback);
+        input.getKeyInputEvent(GLFW_KEY_DOWN).subscribe(aimKeyCallback);
+        input.getKeyInputEvent(GLFW_KEY_LEFT).subscribe(aimKeyCallback);
+        input.getKeyInputEvent(GLFW_KEY_RIGHT).subscribe(aimKeyCallback);
+        
+
+        if(input.JoystickFound(GLFW_JOYSTICK_1)){
+            input.getJoystickInputEvent(GLFW_JOYSTICK_1).subscribe(joystickCallback);
+        }
+        
+        
 	}
 	
 	@Override 
 	public void delete(){
 		super.delete();
-        input.getInputEvent(GLFW_KEY_A).unsubscribe(velocityCallback);
-        input.getInputEvent(GLFW_KEY_D).unsubscribe(velocityCallback);
-        input.getInputEvent(GLFW_KEY_S).unsubscribe(velocityCallback);
-        input.getInputEvent(GLFW_KEY_W).unsubscribe(velocityCallback);
+        input.getKeyInputEvent(GLFW_KEY_A).unsubscribe(velocityKeyCallback);
+        input.getKeyInputEvent(GLFW_KEY_D).unsubscribe(velocityKeyCallback);
+        input.getKeyInputEvent(GLFW_KEY_S).unsubscribe(velocityKeyCallback);
+        input.getKeyInputEvent(GLFW_KEY_W).unsubscribe(velocityKeyCallback);
         
-        input.getInputEvent(GLFW_KEY_UP).unsubscribe(aimCallback);
-        input.getInputEvent(GLFW_KEY_DOWN).unsubscribe(aimCallback);
-        input.getInputEvent(GLFW_KEY_LEFT).unsubscribe(aimCallback);
-        input.getInputEvent(GLFW_KEY_RIGHT).unsubscribe(aimCallback);
+        input.getKeyInputEvent(GLFW_KEY_UP).unsubscribe(aimKeyCallback);
+        input.getKeyInputEvent(GLFW_KEY_DOWN).unsubscribe(aimKeyCallback);
+        input.getKeyInputEvent(GLFW_KEY_LEFT).unsubscribe(aimKeyCallback);
+        input.getKeyInputEvent(GLFW_KEY_RIGHT).unsubscribe(aimKeyCallback);
+        
+        if(input.JoystickFound(GLFW_JOYSTICK_1)){
+            input.getJoystickInputEvent(GLFW_JOYSTICK_1).unsubscribe(joystickCallback);
+        }
 	}
 	
 	public PlayerEventPublisher getEventPublisher(){
 		return eventPublisher;
 	}
 	
-	private void updateVelocity(){
+	private void updateKeyVelocity(){
         float dx = 0;
         float dy = 0;
         if(input.getAction(GLFW_KEY_A) == GLFW_PRESS || input.getAction(GLFW_KEY_A) == GLFW_REPEAT){
@@ -94,7 +117,7 @@ public class Player extends ACreature {
         velocityY = dy;
 	}
 	
-	private void updateAim(){
+	private void updateKeyAim(){
         float dx = 0;
         float dy = 0;
         if(input.getAction(GLFW_KEY_LEFT) == GLFW_PRESS || input.getAction(GLFW_KEY_LEFT) == GLFW_REPEAT){
@@ -111,6 +134,49 @@ public class Player extends ACreature {
         }
         aimX = dx;
         aimY = dy;
+	}
+	
+	public void updateJoystickDir(float[] axes){
+	    float dx = input.getLeftStickerHor(GLFW_JOYSTICK_1);
+	    float dy = -input.getLeftStickerVert(GLFW_JOYSTICK_1);
+	    
+	    if(dx == 0 && dy == 0){
+	        velocityX = 0;
+	        velocityY = 0;
+	    }
+	    else if(dx == 0){
+	        velocityX = 0;
+	        velocityY = dy > 0 ? .5f : -.5f;
+	    }
+	    else if(dy == 0){
+            velocityX = dx > 0 ? .5f : -.5f;
+            velocityY = 0;
+        }
+	    else{
+	        velocityX = dx*.5f/((float)Math.sqrt(dx*dx + dy*dy));
+	        velocityY = dy*.5f/((float)Math.sqrt(dx*dx + dy*dy));
+	    }
+	    
+	    dx = input.getRightStickerHor(GLFW_JOYSTICK_1);
+	    dy = -input.getRightStickerVert(GLFW_JOYSTICK_1);
+	    
+	    if(dx == 0 && dy == 0){
+	        aimX = 0;
+	        aimY = 0;
+        }
+        else if(dx == 0){
+            aimX = 0;
+            aimY = dy > 0 ? 1f : -1f;
+        }
+        else if(dy == 0){
+            aimX = dx > 0 ? 1f : -1f;
+            aimY = 0;
+        }
+        else{
+            aimX = dx/((float)Math.sqrt(dx*dx + dy*dy));
+            aimY = dy/((float)Math.sqrt(dx*dx + dy*dy));
+        }
+        
 	}
 	
 	public void updateActions(float timepassed){
@@ -147,6 +213,7 @@ public class Player extends ACreature {
 				lastFire = 0;
 			}
 		}
+		
 		super.updateActions(timepassed);
 	}
 	

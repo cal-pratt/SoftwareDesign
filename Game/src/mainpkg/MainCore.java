@@ -91,9 +91,9 @@ public class MainCore extends ACore {
             }
         };
         
-        input.getInputEvent(GLFW_KEY_X).subscribe(testCallback1);
-        input.getInputEvent(GLFW_KEY_K).subscribe(testCallback2);
-        input.getInputEvent(GLFW_KEY_P).subscribe(testCallback3);
+        input.getKeyInputEvent(GLFW_KEY_X).subscribe(testCallback1);
+        input.getKeyInputEvent(GLFW_KEY_K).subscribe(testCallback2);
+        input.getKeyInputEvent(GLFW_KEY_P).subscribe(testCallback3);
     	
         gm = new GraphicsManager(windowWidth, windowHeight);
         gm.add(floor = Object3DFactory.getSquare());
@@ -131,7 +131,7 @@ public class MainCore extends ACore {
     @Override
     protected void teardown() {
     	startMenu.delete();
-        input.getInputEvent(GLFW_KEY_X).unsubscribe(testCallback1);
+        input.getKeyInputEvent(GLFW_KEY_X).unsubscribe(testCallback1);
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 
+import eventpkg.JoystickEventPublisher;
 import eventpkg.KeyEventPublisher;
 
 
@@ -18,13 +19,20 @@ public class UserInput {
 
     // Keyboard data container ----------------------------------------------------------------- //
     private Map<Integer, Key> keyMap;
+    private Map<Integer, JoystickInput> joystickMap;
     private float mouseX, mouseY;
     // Constructors ---------------------------------------------------------------------------- //
     public UserInput(){
         keyMap = new HashMap<Integer, Key>();
-        
+        joystickMap = new HashMap<Integer, JoystickInput>();
         for(int name : KEYNAMES){
             keyMap.put(name, new Key());
+        }
+
+        for(int name : JOYSTICKNAMES){
+            if (glfwGetJoystickName(name) != null){
+                joystickMap.put(name, new JoystickInput(name));
+            }
         }
     }
     
@@ -38,10 +46,49 @@ public class UserInput {
         IntBuffer widthBuffer = BufferUtils.createIntBuffer(1);
         IntBuffer heightBuffer = BufferUtils.createIntBuffer(1);
         GLFW.glfwGetFramebufferSize(window, widthBuffer, heightBuffer);
-        int height = heightBuffer.get();
+        float height = (float)heightBuffer.get();
+        float width = (float)widthBuffer.get();
         
-        mouseX = x;
-        mouseY = height - y;
+        mouseX = (x)/width;
+        mouseY = (height - y)/height;
+    }
+    
+    public void pollJoysticks(){
+        for(JoystickInput joystick : joystickMap.values()){
+            joystick.poll();
+        }
+    }
+    
+    public KeyEventPublisher getKeyInputEvent(int key){
+        return keyMap.get(key).getInputEvent();
+    }
+    
+    public JoystickEventPublisher getJoystickInputEvent(int name){
+        return joystickMap.get(name).getInputEvent();
+    }
+    
+    public boolean JoystickFound(int name){
+        return joystickMap.containsKey(name);
+    }
+    
+    public float getLeftStickerHor(int name){
+        return joystickMap.get(name).getLeftStickerHor();
+    }
+    
+    public float getLeftStickerVert(int name){
+        return joystickMap.get(name).getLeftStickerVert();
+    }
+    
+    public float getTriggers(int name){
+        return joystickMap.get(name).getTriggers();
+    }
+    
+    public float getRightStickerVert(int name){
+        return joystickMap.get(name).getRightStickerVert();
+    }
+    
+    public float getRightStickerHor(int name){
+        return joystickMap.get(name).getRightStickerHor();
     }
     
 	public float getMouseX(){
@@ -54,10 +101,6 @@ public class UserInput {
 	
 	public int getAction(int key){
         return keyMap.get(key).getAction();
-    }
-	
-	public KeyEventPublisher getInputEvent(int key){
-        return keyMap.get(key).getInputEvent();
     }
     
     private final int KEYNAMES[] = {
@@ -190,6 +233,25 @@ public class UserInput {
             GLFW_MOUSE_BUTTON_6,
             GLFW_MOUSE_BUTTON_7,
             GLFW_MOUSE_BUTTON_8
+    };
+    
+    private final int JOYSTICKNAMES[] = {
+            GLFW_JOYSTICK_1,
+            GLFW_JOYSTICK_2,
+            GLFW_JOYSTICK_3,
+            GLFW_JOYSTICK_4,
+            GLFW_JOYSTICK_5,
+            GLFW_JOYSTICK_6,
+            GLFW_JOYSTICK_7,
+            GLFW_JOYSTICK_8,
+            GLFW_JOYSTICK_9,
+            GLFW_JOYSTICK_10,
+            GLFW_JOYSTICK_11,
+            GLFW_JOYSTICK_12,
+            GLFW_JOYSTICK_13,
+            GLFW_JOYSTICK_14,
+            GLFW_JOYSTICK_15,
+            GLFW_JOYSTICK_16
     };
     
 }
