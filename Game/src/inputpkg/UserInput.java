@@ -19,19 +19,19 @@ public class UserInput {
 
     // Keyboard data container ----------------------------------------------------------------- //
     private Map<Integer, Key> keyMap;
-    private Map<Integer, JoystickInput> joystickMap;
+    private Map<Integer, Joystick> joystickMap;
     private float mouseX, mouseY;
     // Constructors ---------------------------------------------------------------------------- //
     public UserInput(){
         keyMap = new HashMap<Integer, Key>();
-        joystickMap = new HashMap<Integer, JoystickInput>();
+        joystickMap = new HashMap<Integer, Joystick>();
         for(int name : KEYNAMES){
             keyMap.put(name, new Key());
         }
 
         for(int name : JOYSTICKNAMES){
             if (glfwGetJoystickName(name) != null){
-                joystickMap.put(name, new JoystickInput(name));
+                joystickMap.put(name, new Joystick(name));
             }
         }
     }
@@ -54,7 +54,7 @@ public class UserInput {
     }
     
     public void pollJoysticks(){
-        for(JoystickInput joystick : joystickMap.values()){
+        for(Joystick joystick : joystickMap.values()){
             joystick.poll();
         }
     }

@@ -25,6 +25,7 @@ public class Object2DFactory {
             }
         };
     }
+    
     public static ATexObject2D getSpace(){
         return new ATexObject2D(){
             @Override

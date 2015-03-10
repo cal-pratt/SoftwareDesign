@@ -2,7 +2,6 @@ package mainpkg;
 
 import creaturepkg.MonkeyEnemy;
 import creaturepkg.Player;
-import menupkg.MenuButton;
 import menupkg.PauseMenu;
 import menupkg.PlayerOverlay;
 import menupkg.StartMenu;
@@ -11,7 +10,6 @@ import eventpkg.IButtonEventListener;
 import eventpkg.IKeyEventListener;
 import eventpkg.KeyEventPublisher;
 import objectpkg.APcObject3D;
-import objectpkg.Object2DFactory;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import graphicspkg.GraphicsManager;
