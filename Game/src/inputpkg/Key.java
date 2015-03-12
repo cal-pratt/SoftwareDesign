@@ -1,9 +1,9 @@
 package inputpkg;
 
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
-import eventpkg.KeyEventPublisher;
+import eventpkg.GameEvents.KeyEventPublisher;
 
-class Key{
+public class Key{
     private int action;
     private KeyEventPublisher inputEvent;
     
@@ -13,7 +13,7 @@ class Key{
     }
     public void set(int action){
         this.action = action;
-        inputEvent.publish(action);
+        inputEvent.publish(this);
     }
     public KeyEventPublisher getInputEvent(){
         return inputEvent;

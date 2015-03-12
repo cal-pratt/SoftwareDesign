@@ -4,13 +4,10 @@ import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.Arrays;
 
-import eventpkg.IJoystickEventListener;
-import eventpkg.IKeyEventListener;
-import eventpkg.JoystickEventPublisher;
-import eventpkg.KeyEventPublisher;
-import eventpkg.PlayerEventPublisher;
+import eventpkg.GameEvents.*;
 import inputpkg.UserInput;
-import graphicspkg.GraphicsManager;
+import inputpkg.Key;
+import inputpkg.Joystick;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
@@ -22,29 +19,30 @@ public class Player extends ACreature {
 	private IKeyEventListener aimKeyCallback;
     private IJoystickEventListener joystickCallback;
 	
-	private Matrix4f rot = new Matrix4f();
+	private float rotationAngle = 0;
 	
+	private float flightSpeed = 50f;
+    private float laserSpeed = 100f;
 	private float velocityX = 0, velocityY = 0;
 	private float lastFire = 0;
 	private float fireIncrement = 40;
 	
-	public Player(GraphicsManager gm, UserInput input) {
-		super(gm, Arrays.asList(Object3DFactory.getSpaceShipTop(), Object3DFactory.getSpaceShipBottom()), 10, 2, 2, 0);
+	public Player(UserInput input) {
+		super(Arrays.asList(Object3DFactory.getSpaceShipTop(), Object3DFactory.getSpaceShipBottom()), 10, 2, 2, 0);
 		eventPublisher = new PlayerEventPublisher();
 		
 		this.input = input;
 		
-		
 		velocityKeyCallback = new IKeyEventListener(){
             @Override 
-            public void actionPerformed(KeyEventPublisher event, Object action) 
+            public void actionPerformed(KeyEventPublisher event, Key action) 
             { 
                 updateKeyVelocity();
             }
 	    };
 	    aimKeyCallback = new IKeyEventListener(){
             @Override 
-            public void actionPerformed(KeyEventPublisher event, Object action) 
+            public void actionPerformed(KeyEventPublisher event, Key action) 
             { 
                 updateKeyAim();
             }
@@ -52,9 +50,9 @@ public class Player extends ACreature {
 
 	    joystickCallback = new IJoystickEventListener(){
             @Override 
-            public void actionPerformed(JoystickEventPublisher event, Object action) 
+            public void actionPerformed(JoystickEventPublisher event, Joystick action) 
             {
-                updateJoystickDir((float[])action);
+                updateJoystickDir();
             }
         };
         
@@ -102,16 +100,16 @@ public class Player extends ACreature {
         float dx = 0;
         float dy = 0;
         if(input.getAction(GLFW_KEY_A) == GLFW_PRESS || input.getAction(GLFW_KEY_A) == GLFW_REPEAT){
-            dx -= 0.5f;
+            dx -= flightSpeed;
         }
         if(input.getAction(GLFW_KEY_D) == GLFW_PRESS || input.getAction(GLFW_KEY_D) == GLFW_REPEAT){
-            dx += 0.5f;
+            dx += flightSpeed;
         }
         if(input.getAction(GLFW_KEY_S) == GLFW_PRESS || input.getAction(GLFW_KEY_S) == GLFW_REPEAT){
-            dy -= 0.5f;
+            dy -= flightSpeed;
         }
         if(input.getAction(GLFW_KEY_W) == GLFW_PRESS || input.getAction(GLFW_KEY_W) == GLFW_REPEAT){
-            dy += 0.5f;
+            dy += flightSpeed;
         }
         velocityX = dx;
         velocityY = dy;
@@ -121,22 +119,22 @@ public class Player extends ACreature {
         float dx = 0;
         float dy = 0;
         if(input.getAction(GLFW_KEY_LEFT) == GLFW_PRESS || input.getAction(GLFW_KEY_LEFT) == GLFW_REPEAT){
-            dx -= 1f;
+            dx -= laserSpeed;
         }
         if(input.getAction(GLFW_KEY_RIGHT) == GLFW_PRESS || input.getAction(GLFW_KEY_RIGHT) == GLFW_REPEAT){
-            dx += 1f;
+            dx += laserSpeed;
         }
         if(input.getAction(GLFW_KEY_UP) == GLFW_PRESS || input.getAction(GLFW_KEY_UP) == GLFW_REPEAT){
-            dy += 1f;
+            dy += laserSpeed;
         }
         if(input.getAction(GLFW_KEY_DOWN) == GLFW_PRESS || input.getAction(GLFW_KEY_DOWN) == GLFW_REPEAT){
-            dy -= 1f;
+            dy -= laserSpeed;
         }
         aimX = dx;
         aimY = dy;
 	}
 	
-	public void updateJoystickDir(float[] axes){
+	public void updateJoystickDir(){
 	    float dx = input.getLeftStickerHor(GLFW_JOYSTICK_1);
 	    float dy = -input.getLeftStickerVert(GLFW_JOYSTICK_1);
 	    
@@ -146,15 +144,15 @@ public class Player extends ACreature {
 	    }
 	    else if(dx == 0){
 	        velocityX = 0;
-	        velocityY = dy > 0 ? .5f : -.5f;
+	        velocityY = dy > 0 ? flightSpeed : -flightSpeed;
 	    }
 	    else if(dy == 0){
-            velocityX = dx > 0 ? .5f : -.5f;
+            velocityX = dx > 0 ? flightSpeed : -flightSpeed;
             velocityY = 0;
         }
 	    else{
-	        velocityX = dx*.5f/((float)Math.sqrt(dx*dx + dy*dy));
-	        velocityY = dy*.5f/((float)Math.sqrt(dx*dx + dy*dy));
+	        velocityX = dx*flightSpeed/((float)Math.sqrt(dx*dx + dy*dy));
+	        velocityY = dy*flightSpeed/((float)Math.sqrt(dx*dx + dy*dy));
 	    }
 	    
 	    dx = input.getRightStickerHor(GLFW_JOYSTICK_1);
@@ -166,17 +164,16 @@ public class Player extends ACreature {
         }
         else if(dx == 0){
             aimX = 0;
-            aimY = dy > 0 ? 1f : -1f;
+            aimY = dy > 0 ? laserSpeed : -laserSpeed;
         }
         else if(dy == 0){
-            aimX = dx > 0 ? 1f : -1f;
+            aimX = dx > 0 ? laserSpeed : -laserSpeed;
             aimY = 0;
         }
         else{
-            aimX = dx/((float)Math.sqrt(dx*dx + dy*dy));
-            aimY = dy/((float)Math.sqrt(dx*dx + dy*dy));
+            aimX = dx*laserSpeed/((float)Math.sqrt(dx*dx + dy*dy));
+            aimY = dy*laserSpeed/((float)Math.sqrt(dx*dx + dy*dy));
         }
-        
 	}
 	
 	public void updateActions(float timepassed){
@@ -186,39 +183,40 @@ public class Player extends ACreature {
 		if(velocityX != 0 || velocityY != 0 ){
 		    if(velocityX == 0){
 		        if(velocityY > 0){
-		            rot = Matrix4f.rotate(0, 0, 0, 1);
+		            rotationAngle = 0;
 		        }
 		        else{
-                    rot = Matrix4f.rotate(180, 0, 0, 1);
+		            rotationAngle = 180;
 		        }
 		    }
 		    else{
-		        float angle = 180f*(float)(Math.atan(velocityY/velocityX))/3.14f;
-		        if(velocityX > 0) angle += 180;
-	            rot = Matrix4f.rotate(angle + 90, 0f, 0f, 1f);
+		        rotationAngle = -180f*(float)(Math.atan(velocityX/velocityY))/3.14f;
+		        if(velocityY < 0) rotationAngle += 180;
 		    }
 
-	        this.x += velocityX;
-	        this.y += velocityY;
+		    setPosX(getPosX() + velocityX*timepassed/1000f);
+            setPosY(getPosY() + velocityY*timepassed/1000f);
+
+            System.out.println(timepassed);
 	        
-            eventPublisher.publish(true);
+            eventPublisher.publish(this);
 		}
 		
 		if(aimX != 0 || aimY != 0 ){
 			if(lastFire > fireIncrement ){
-			    float shipTipX = x + velocityX*7;
-                float shipTipY = y + velocityY*7;
-		        projectiles.add(new Projectile(gm, shipTipX-aimY/2, shipTipY+aimX/2, aimX, aimY));
-		        projectiles.add(new Projectile(gm, shipTipX+aimY/2, shipTipY-aimX/2, aimX, aimY));
+			    float shipTipX = getPosX() + 3*(float)Math.sin(Math.toRadians(-rotationAngle + 10));
+                float shipTipY = getPosY() + 3*(float)Math.cos(Math.toRadians(rotationAngle - 10));
+                containingMap.addMapElement(new Projectile(this, shipTipX, shipTipY, aimX, aimY));
+                shipTipX = getPosX() + 3*(float)Math.sin(Math.toRadians(-rotationAngle - 10));
+                shipTipY = getPosY() + 3*(float)Math.cos(Math.toRadians(rotationAngle + 10));
+                containingMap.addMapElement(new Projectile(this, shipTipX, shipTipY, aimX, aimY));
 				lastFire = 0;
 			}
 		}
-		
-		super.updateActions(timepassed);
 	}
 	
-	public void updateModel(Matrix4f model){
-        super.updateModel(model.multiply(Matrix4f.translate(0,2.5f, 1).multiply(rot)).multiply(Matrix4f.rotate(90, 1, 0, 0)));
+	public void updateModel(){
+        super.updateModel(Matrix4f.rotate(rotationAngle, 0, 0, 1).multiply(Matrix4f.rotate(90, 1, 0, 0)));
 	}
     
     public void doDamage(float dmg){
@@ -230,7 +228,7 @@ public class Player extends ACreature {
         if (currHealth > maxHealth){
             currHealth = maxHealth;
         }
-        eventPublisher.publish(true);
+        eventPublisher.publish(this);
     }
 
 	//Player variables

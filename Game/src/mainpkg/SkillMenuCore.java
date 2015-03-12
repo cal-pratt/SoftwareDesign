@@ -7,8 +7,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 import creaturepkg.Player;
 import menupkg.SkillMenu;
-import eventpkg.ButtonEventPublisher;
-import eventpkg.IButtonEventListener;
+import menupkg.MenuButton;
+import eventpkg.GameEvents.*;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import graphicspkg.GraphicsManager;
 
@@ -46,14 +46,14 @@ public class SkillMenuCore extends ACore {
         
         gm = new GraphicsManager(windowWidth, windowHeight);
         
-        player = new Player(gm, input);
+       // player = new Player(gm, input);
         
         // TODO update this constructor with any other values you may need.
         skillMenu = new SkillMenu(gm, input, player);
 
         closeMenuCallBack = new IButtonEventListener(){
             @Override
-            public void actionPerformed(ButtonEventPublisher sender, Object e) {
+            public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
                 closePressed = true;
             }
         };

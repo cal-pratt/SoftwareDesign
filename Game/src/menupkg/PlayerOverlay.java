@@ -2,8 +2,7 @@ package menupkg;
 
 import objectpkg.Object2DFactory;
 import creaturepkg.Player;
-import eventpkg.IPlayerEventListener;
-import eventpkg.PlayerEventPublisher;
+import eventpkg.GameEvents.*;
 import graphicspkg.GraphicsManager;
 
 public class PlayerOverlay extends AMenu {
@@ -23,7 +22,7 @@ public class PlayerOverlay extends AMenu {
 		
 		callBack = new IPlayerEventListener(){
 			@Override
-			public void actionPerformed(PlayerEventPublisher sender, Object e) {
+			public void actionPerformed(PlayerEventPublisher sender, Player e) {
 				updateHealthBar();
 			}
 		};

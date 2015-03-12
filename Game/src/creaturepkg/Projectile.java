@@ -1,6 +1,5 @@
 package creaturepkg;
 
-import graphicspkg.GraphicsManager;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
@@ -9,9 +8,12 @@ public class Projectile extends AMapElement{
 	float dx;
 	float dy;
 	Matrix4f rot;
+	IMapElement owner;
 	
-	public Projectile(GraphicsManager gm, float x, float y, float dx, float dy) {
-		super(gm, Object3DFactory.getLaser(), x, y);
+	public Projectile(IMapElement owner, float x, float y, float dx, float dy) {
+		super(Object3DFactory.getLaser(), x, y);
+		this.owner = owner;
+		
 		this.dx = dx;
 		this.dy = dy;
 		
@@ -28,22 +30,23 @@ public class Projectile extends AMapElement{
             if(dx > 0) angle += 180;
             rot = Matrix4f.rotate(angle + 90, 0f, 0f, 1f);
         }
-        
 	}
 
     @Override
 	public void updateActions(float timepassed){
-		x += dx;
-		y += dy;
+        setPosX(getPosX() + dx*timepassed/1000f);
+        setPosY(getPosY() + dy*timepassed/1000f);
+
+        if(Math.pow(Math.abs(owner.getPosX() - getPosX()),2) + 
+                Math.pow(Math.abs(owner.getPosY() - getPosY()),2) > 2000){
+            setDead();
+        }
 	}
 	
 	@Override
-	public void updateModel(Matrix4f model){
+	public void updateModel(){
         super.updateModel(Matrix4f.scale(.5f, .5f, .5f).multiply(rot).multiply(Matrix4f.rotate(90, 0, 0, 1)));
 	}
 	
-	//If a projectile hits a creature, there is a collision
-	public void creatureCollision(ACreature target, Projectile attack) {
-		target.defend(target, attack);
-	}
+	
 }

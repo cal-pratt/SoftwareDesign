@@ -3,10 +3,9 @@ package menupkg;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_REPEAT;
-import eventpkg.ButtonEventPublisher;
-import eventpkg.IKeyEventListener;
-import eventpkg.KeyEventPublisher;
+import eventpkg.GameEvents.*;
 import inputpkg.UserInput;
+import inputpkg.Key;
 import graphicspkg.GraphicsManager;
 import objectpkg.ATexObject2D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
@@ -47,13 +46,13 @@ public class MenuButton implements IMenuItem{
 				
 		callBack = new IKeyEventListener(){
 			@Override
-			public void actionPerformed(KeyEventPublisher sender, Object e) {
-				checkInput((int)e);
+			public void actionPerformed(KeyEventPublisher sender, Key e) {
+				checkInput();
 			}
 		};
 	}
 	
-	private void checkInput(int action){
+	private void checkInput(){
 		if(input.getMouseX()*gm.getWidth() > posX && input.getMouseX()*gm.getWidth() < posX + width 
 				&& input.getMouseY()*gm.getHeight() > posY && input.getMouseY()*gm.getHeight() < posY + height){
 			if(input.getAction(GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
@@ -63,7 +62,7 @@ public class MenuButton implements IMenuItem{
 				boolean prevPressed = pressed;
 				setPressed(false);
 				if(prevPressed){
-					eventPublisher.publish(true);
+					eventPublisher.publish(this);
 				}
 			}
 		}

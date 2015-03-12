@@ -2,12 +2,12 @@ package inputpkg;
 
 import java.nio.FloatBuffer;
 
-import eventpkg.JoystickEventPublisher;
+import eventpkg.GameEvents.JoystickEventPublisher;
 
 
 import static org.lwjgl.glfw.GLFW.glfwGetJoystickAxes;
 
-class Joystick{
+public class Joystick{
     private final float epsilon = 0.001f;
     
     private int name;
@@ -33,9 +33,7 @@ class Joystick{
         leftStickerVert = (Math.abs(fb.get(1)) > epsilon)? fb.get(1) : 0;
         rightStickerHor = (Math.abs(fb.get(2)) > epsilon)? fb.get(2) : 0;
         rightStickerVert = (Math.abs(fb.get(3)) > epsilon)? fb.get(3) : 0;
-        inputEvent.publish(axes);
-
-        System.out.print(leftStickerHor);System.out.println(leftStickerVert);
+        inputEvent.publish(this);
     }
     
     public JoystickEventPublisher getInputEvent(){

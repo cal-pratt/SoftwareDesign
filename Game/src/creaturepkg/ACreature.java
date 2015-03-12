@@ -1,13 +1,7 @@
 package creaturepkg;
 
-import inputpkg.UserInput;
-
-import java.util.LinkedList;
 import java.util.List;
 
-import menupkg.PlayerOverlay;
-import menupkg.StartMenu;
-import graphicspkg.GraphicsManager;
 import objectpkg.APcObject3D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
@@ -21,84 +15,61 @@ public abstract class ACreature extends AMapElement {
 	protected float aimX = 0;
 	protected float aimY = 0;
 	
-	protected List<Projectile> projectiles = new LinkedList<Projectile>();
-	
-	protected ACreature(GraphicsManager gm, APcObject3D creatureMesh, int maxHealth, int attackLvl, int defenseLvl, int attackType) {
-		super(gm, creatureMesh, 0, 0);
+	protected ACreature(APcObject3D creatureMesh, int maxHealth, int attackLvl, int defenseLvl, int attackType) {
+		super(creatureMesh, 0, 0);
 		this.maxHealth = maxHealth;
 		this.attackLvl = attackLvl;
 		this.defenseLvl = defenseLvl;
 		this.attackType = attackType;
-		
 		this.currHealth = maxHealth;
 		
 	}
 	
-	protected ACreature(GraphicsManager gm,  List<APcObject3D> creatureMesh, int maxHealth, int attackLvl, int defenseLvl, int attackType) {
-        super(gm, creatureMesh, 0, 0);
+	protected ACreature(List<APcObject3D> creatureMesh, int maxHealth, int attackLvl, int defenseLvl, int attackType) {
+        super(creatureMesh, 0, 0);
         this.maxHealth = maxHealth;
         this.attackLvl = attackLvl;
         this.defenseLvl = defenseLvl;
         this.attackType = attackType;
-        
         this.currHealth = maxHealth;
     }
 
     @Override
-	public void updateActions(float timepassed) {
-		for(Projectile p : new LinkedList<>(projectiles)){
-			if(Math.pow(Math.abs(p.x - x),2) + Math.pow(Math.abs(p.y - y),2) > 2000){
-				p.delete();
-				projectiles.remove(p);
-			}
-		}
-		for(Projectile p : projectiles){
-			p.updateActions(timepassed);
-		}
-	}
+	public void setPosX(float x){
+        if(x > containingMap.getBoundaryX()){
+            super.setPosX(containingMap.getBoundaryX());
+        }
+        else if(x < -containingMap.getBoundaryX()){
+            super.setPosX(-containingMap.getBoundaryX());
+        }
+        else{
+            super.setPosX(x);
+        }
+    }
 
     @Override
-	public void updateModel(Matrix4f model){
-        for(Projectile p : projectiles){
-            p.updateModel(new Matrix4f());
+    public void setPosY(float y){
+        if(y > containingMap.getBoundaryY()){
+            super.setPosY(containingMap.getBoundaryY());
         }
+        else if(y < -containingMap.getBoundaryY()){
+            super.setPosY(-containingMap.getBoundaryY());
+        }
+        else{
+            super.setPosY(y);
+        }
+    }
+	
+    @Override
+	public void updateModel(Matrix4f model){
         super.updateModel(model);
 	}
 	
     @Override 
     public void delete(){
         super.delete();
-        for(Projectile p : projectiles){
-            p.delete();
-        }
-        projectiles.clear();
-    }
-
-    //behaviour
-    public void die(){
     }
     
-    //Triggered as player begins to attack
-    public int attack() {
-        //When different attacks are made, insert different attack types here
-        int atkDamage = this.getAttackLvl();
-        //Fire projectile
-        return atkDamage;
-    }
-    
-    //When a player is attacked they should automatically defend and lose appropriate health
-    public void defend(ACreature target, Projectile attack){
-        int tgtDefense = target.getDefenseLvl();
-        int atkDamage = attack.power;
-        int damage = atkDamage - tgtDefense;
-        if (damage >0 ) {
-            target.setCurrentHealth(target.getCurrentHealth() - damage);
-        }
-        if (target.getCurrentHealth() <= 0) {
-            target.die();
-        }
-    }
-	//Getters and Setters
 	public int getMaxHealth(){
 		return maxHealth;
 	}

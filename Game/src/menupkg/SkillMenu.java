@@ -3,8 +3,7 @@ package menupkg;
 import inputpkg.UserInput;
 import objectpkg.Object2DFactory;
 import creaturepkg.Player;
-import eventpkg.IPlayerEventListener;
-import eventpkg.PlayerEventPublisher;
+import eventpkg.GameEvents.*;
 import graphicspkg.GraphicsManager;
 
 
@@ -21,14 +20,14 @@ public class SkillMenu extends AMenu {
     
     //TODO add local variables for current player info to avoid constant gets
         
-    public SkillMenu(GraphicsManager gm,  UserInput input,Player player ) {
+    public SkillMenu(GraphicsManager gm, UserInput input, Player player) {
         super(gm);
         this.player = player;
         this.input = input;
         
         callBack = new IPlayerEventListener(){
             @Override
-            public void actionPerformed(PlayerEventPublisher sender, Object e) {
+            public void actionPerformed(PlayerEventPublisher sender, Player e) {
                 updatePlayerInfo();
             }
         };

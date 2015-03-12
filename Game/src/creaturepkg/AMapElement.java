@@ -3,62 +3,80 @@ package creaturepkg;
 import java.util.ArrayList;
 import java.util.List;
 
-import graphicspkg.GraphicsManager;
 import objectpkg.APcObject3D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
 abstract class AMapElement implements IMapElement{
-
-	protected float x;
-	protected float y;
-	protected GraphicsManager gm;
-	protected List<APcObject3D> meshList;
+    
+	private float x;
+	private float y;
+	private List<APcObject3D> meshList;
+	protected IMap containingMap;
 	
-	public boolean deleted = false;
+	private boolean alive = true;
+	
+	public boolean attached = false;
 
-	protected AMapElement(GraphicsManager gm, List<APcObject3D> mesh, float x, float y) {
-		this.gm = gm;
+	protected AMapElement(List<APcObject3D> mesh, float x, float y) {
 		this.meshList = mesh;
 		this.x = x;
 		this.y = y;
-		for(APcObject3D m : meshList){
-	        gm.add(m);
-		}
 	}
 	
-	protected AMapElement(GraphicsManager gm, APcObject3D mesh, float x, float y) {
-        this.gm = gm;
+	protected AMapElement(APcObject3D mesh, float x, float y) {
         this.meshList = new ArrayList<APcObject3D>();
         this.meshList.add(mesh);
         this.x = x;
         this.y = y;
-        
-        gm.add(mesh);
     }
 	
+	public void attachMap(IMap owner){
+    	if(!attached){
+    	    this.containingMap = owner;
+            for(APcObject3D m : meshList){
+                owner.getGraphicsManager().add(m);
+            }
+            attached = true;
+    	}
+	}
+
+    public void detachMap(){
+        if(attached){
+            for(APcObject3D m : meshList){
+                containingMap.getGraphicsManager().remove(m);
+            }
+            attached = false;
+        }
+    }
+    
 	public float getPosX(){
 		return x;
 	}
+	
 	public float getPosY(){
 		return y;
 	}
 	
 	public void setPosX(float x){
-		this.x = x;
+        this.x = x;
 	}
 	
 	public void setPosY(float y){
-		this.y = y;
+        this.y = y;
 	}
 
 	@Override
-	public void delete() {
-        for(APcObject3D mesh : meshList){
-            gm.remove(mesh);
-        }
-		deleted = true;
-	}
+	public void delete() {}
 	
+	@Override
+    public boolean isAlive() {
+        return alive;
+    }
+
+    protected void setDead() {
+        alive = false;
+    }
+    
 	public void updateModel(Matrix4f m) {
 		m = (Matrix4f.translate(x, y, 0)).multiply(m);
 

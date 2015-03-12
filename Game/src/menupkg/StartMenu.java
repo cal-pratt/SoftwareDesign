@@ -1,6 +1,6 @@
 package menupkg;
 
-import eventpkg.ButtonEventPublisher;
+import eventpkg.GameEvents.*;
 import objectpkg.Object2DFactory;
 import graphicspkg.GraphicsManager;
 import inputpkg.UserInput;

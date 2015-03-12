@@ -10,9 +10,7 @@ import java.util.HashMap;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 
-import eventpkg.JoystickEventPublisher;
-import eventpkg.KeyEventPublisher;
-
+import eventpkg.GameEvents.*;
 
 // Class definition ---------------------------------------------------------------------------- //
 public class UserInput {

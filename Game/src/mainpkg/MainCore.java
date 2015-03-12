@@ -1,14 +1,15 @@
 package mainpkg;
 
+import creaturepkg.IMap;
+import creaturepkg.Map;
 import creaturepkg.MonkeyEnemy;
 import creaturepkg.Player;
+import inputpkg.Key;
 import menupkg.PauseMenu;
 import menupkg.PlayerOverlay;
 import menupkg.StartMenu;
-import eventpkg.ButtonEventPublisher;
-import eventpkg.IButtonEventListener;
-import eventpkg.IKeyEventListener;
-import eventpkg.KeyEventPublisher;
+import menupkg.MenuButton;
+import eventpkg.GameEvents.*;
 import objectpkg.APcObject3D;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
@@ -25,6 +26,8 @@ public class MainCore extends ACore {
     StartMenu startMenu;
     PauseMenu pauseMenu;
     PlayerOverlay overlay;
+    
+    IMap gameMap;
     
     MonkeyEnemy monkey;
     APcObject3D floor;
@@ -64,7 +67,7 @@ public class MainCore extends ACore {
         
         testCallback2 = new IKeyEventListener(){
             @Override 
-            public void actionPerformed(KeyEventPublisher event, Object action) 
+            public void actionPerformed(KeyEventPublisher event, Key action) 
             { 
             	player.doDamage(1);
             }
@@ -72,7 +75,7 @@ public class MainCore extends ACore {
         
         testCallback3 = new IKeyEventListener(){
             @Override 
-            public void actionPerformed(KeyEventPublisher event, Object action) 
+            public void actionPerformed(KeyEventPublisher event, Key action) 
             { 
                 allowUpdates = false;
                 pauseMenu.show();
@@ -81,7 +84,7 @@ public class MainCore extends ACore {
         
         testCallback1 = new IKeyEventListener(){
             @Override 
-            public void actionPerformed(KeyEventPublisher event, Object action) 
+            public void actionPerformed(KeyEventPublisher event, Key action) 
             {
                 allowUpdates = false;
                 startMenu.show();
@@ -96,23 +99,24 @@ public class MainCore extends ACore {
         gm = new GraphicsManager(windowWidth, windowHeight);
         gm.add(floor = Object3DFactory.getSquare());
         
-        player = new Player(gm, input);
-        player.setPosY(-10);
-        monkey = new MonkeyEnemy(gm, player);
+        gameMap = new Map(gm, 50, 50);
+        
+        gameMap.addMapElement(player = new Player(input));
+        gameMap.addMapElement(monkey = new MonkeyEnemy(player));
         
         startMenu = new StartMenu(gm, input);
         pauseMenu = new PauseMenu(gm, input);
 
         newCallback = new IButtonEventListener(){
             @Override
-            public void actionPerformed(ButtonEventPublisher sender, Object e) {
+            public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
                 newGamePressed = true;
             }
         };
         
         continueCallback = new IButtonEventListener(){
             @Override
-            public void actionPerformed(ButtonEventPublisher sender, Object e) {
+            public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
                 continuePressed = true;
             }
         };
@@ -124,6 +128,9 @@ public class MainCore extends ACore {
         overlay = new PlayerOverlay(gm, player);
         
         startMenu.show();
+        gameMap.updateActions(0);
+        
+        player.setPosY(-10);
     }
 
     @Override
@@ -142,8 +149,7 @@ public class MainCore extends ACore {
     protected void updateActions(long timePassed) {
         
         if(allowUpdates){
-            player.updateActions(timePassed);
-            monkey.updateActions(timePassed);
+            gameMap.updateActions(timePassed);
         }
         
         if(newGamePressed){
@@ -183,11 +189,7 @@ public class MainCore extends ACore {
         floor.updateModel(Matrix4f.translate(0, 0, -2).multiply(
                 Matrix4f.scale(100, 100, 100)));
         
-        player.updateModel(Matrix4f.translate( 0, -4, 0).multiply(
-                Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1f, 1f, 1f))));
-        
-        monkey.updateModel(Matrix4f.translate( 0, 0, 1).multiply(
-                Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1f, 1f, 1f))));
+        gameMap.updateModel();
         
         gm.draw();
     }

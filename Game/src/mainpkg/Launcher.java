@@ -6,12 +6,11 @@ package mainpkg;
 public class Launcher {
     // Main program method --------------------------------------------------------------------- //
     public static void main(String[] args) {
-        skillMenu().run();
+        mainCore().run();
     }
     
     // Core abstraction ------------------------------------------------------------------------ //
-    @SuppressWarnings("unused")
-    private static ACore multiProgCore() {
+    private static ACore mainCore() {
         return new MainCore();
     }
     
