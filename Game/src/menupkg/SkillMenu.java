@@ -12,6 +12,8 @@ public class SkillMenu extends AMenu {
     
     private Player player;
     private UserInput input;
+    private boolean menuOpen = false;
+    private MenuButton returnToGame;
     
     //TODO add private MenuSprite's for menu;
     
@@ -33,15 +35,30 @@ public class SkillMenu extends AMenu {
         };
         
         
-        add(new MenuSprite(gm, Object2DFactory.getSpace(), 0f, 0f, width, height));
-
-        // TODO add other MenuSprite's to menu. Example in other menus like pause/ start
-        // TODO Look at the Object2DFactory.java and copy the style to add new images
+        add(new MenuSprite(gm, Object2DFactory.getSkillMenu(), width*1f/4f, height*2f/3f, width*2f/4f, height*1f/6f));
+        
+        returnToGame = new MenuButton(gm, input,
+        		Object2DFactory.getSkillExit(), Object2DFactory.getSkillExit(),
+                width/2 - height/7, height/2, width/5, height/5);
+        
+        add(new MenuSprite(gm, Object2DFactory.getSkillFire(), 0f, 0f, width, height));
+        add(new MenuSprite(gm, Object2DFactory.getSkillIce(), 0f, 0f, width, height));
+        add(new MenuSprite(gm, Object2DFactory.getSkillArrowRed(), 0f, 0f, width, height));
+        add(new MenuSprite(gm, Object2DFactory.getSkillArrowBlue(), 0f, 0f, width, height));
+        add(new MenuSprite(gm, Object2DFactory.getSkillDoubleRed(), 0f, 0f, width, height));
+        add(new MenuSprite(gm, Object2DFactory.getSkillDoubleBlue(), 0f, 0f, width, height));
+        add(new MenuSprite(gm, Object2DFactory.getSkillThreeRed(), 0f, 0f, width, height));
+        add(new MenuSprite(gm, Object2DFactory.getSkillThreeBlue(), 0f, 0f, width, height));
+        add(new MenuSprite(gm, Object2DFactory.getSkillStar(), 0f, 0f, width, height));
         
         // TODO add buttons to the menu and create callbacks for button click events.
+        add(returnToGame);
     }
     
     //TODO add getter methods for button events (callbacks) like opening/ closing menu
+    public ButtonEventPublisher getReturnToGameButtonEvent(){
+        return returnToGame.getEventPublisher();
+    }
     
     private void updatePlayerInfo(){
         // TODO update menu locals with player info and other logic if required
@@ -58,6 +75,7 @@ public class SkillMenu extends AMenu {
     public void hide() {
         if (!hidden){
             super.hide();
+            menuOpen = false;
             player.getEventPublisher().unsubscribe(callBack);
             // TODO unsubscribe to all of the event publishers with the callbacks you made
         }
@@ -68,11 +86,16 @@ public class SkillMenu extends AMenu {
         if (hidden){
             super.show();
             updatePlayerInfo();
+            menuOpen = true;
             // TODO call any other update functions to refresh
             // This is because they have previously been unsubed to the normal events
             player.getEventPublisher().subscribe(callBack);
             // TODO subscribe to all of the event publishers with the callbacks you made
         }
+    }
+    
+    public boolean isMenuOpen() {
+    	return menuOpen;
     }
 
 }

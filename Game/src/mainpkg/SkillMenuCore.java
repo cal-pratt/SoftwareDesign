@@ -4,7 +4,7 @@ package mainpkg;
 //3rd Part Imports ---------------------------------------------------------------------------- //
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.glfw.GLFW.*;
-
+import inputpkg.Key;
 import creaturepkg.Player;
 import menupkg.SkillMenu;
 import menupkg.MenuButton;
@@ -55,19 +55,23 @@ public class SkillMenuCore extends ACore {
             @Override
             public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
                 closePressed = true;
+                skillMenu.hide();
             }
         };
+        
+        skillMenu.getReturnToGameButtonEvent().subscribe(closeMenuCallBack);
         
         // TODO subscribe to a SkillMenu Button event with the close closeCallBack
         
         // TODO Create other callbacks you may need and subscribe them to publishers
         
-        skillMenu.show();
+       // skillMenu.show();
     }
 
     @Override
     protected void teardown() {
         skillMenu.delete();
+        skillMenu.getReturnToGameButtonEvent().unsubscribe(closeMenuCallBack);
     }
 
     @Override
