@@ -43,8 +43,21 @@ public abstract class AMenu implements IMenuItem{
 	
 	@Override
 	public void updateView(Matrix4f m) {
-        this.width = gm.getWidth();
-        this.height = gm.getHeight();
+
+        float newWidth = gm.getWidth();
+        float newHeight = gm.getHeight();
+        
+	    for(IMenuItem item : items){
+	        item.setPosition(
+	                newWidth * (item.getX() / width),
+	                newHeight * (item.getY() / height));
+	        item.setSize(
+	                newWidth * (item.getWidth() / width),
+	                newHeight * (item.getHeight() / height));
+	    }
+	    this.width =  gm.getWidth();
+        this.height =  gm.getHeight();
+	    
         m = m.multiply(Matrix4f.orthographic(0, width, 0, height, -1f, 10f));
     	for(IMenuItem item : items){
     		item.updateView(m);

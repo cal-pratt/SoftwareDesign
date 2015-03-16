@@ -42,7 +42,7 @@ public class PlayerOverlay extends AMenu {
 	}
 	
 	private void updateHealthBar(){
-		health.setSize(fullwidth * player.getCurrentHealth()/ (float) player.getMaxHealth(), health.getHeight());
+		health.setSize(width/2.15f * player.getCurrentHealth()/ (float) player.getMaxHealth(), health.getHeight());
 	}
 	
 	@Override
