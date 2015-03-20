@@ -8,9 +8,9 @@ public class Projectile extends AMapElement{
 	float dx;
 	float dy;
 	Matrix4f rot;
-	IMapElement owner;
+	ACreature owner;
 	
-	public Projectile(IMapElement owner, float x, float y, float dx, float dy) {
+	public Projectile(ACreature owner, float x, float y, float dx, float dy) {
 		super(Object3DFactory.getLaser(), x, y);
 		this.owner = owner;
 		
@@ -48,5 +48,13 @@ public class Projectile extends AMapElement{
         super.updateModel(Matrix4f.scale(.5f, .5f, .5f).multiply(rot).multiply(Matrix4f.rotate(90, 0, 0, 1)));
 	}
 	
+	public void updateCollision(ACreature creature){
+		if(this.owner == creature) return;
+		if(Math.pow(Math.abs(creature.getPosX() - getPosX()),2) + 
+                Math.pow(Math.abs(creature.getPosY() - getPosY()),2) < 2){
+			creature.applyDamage(owner);
+			setDead();
+		}
+	}
 	
 }

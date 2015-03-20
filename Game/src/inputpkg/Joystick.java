@@ -12,8 +12,6 @@ public class Joystick{
     
     private int name;
     
-    private float[] axes = new float[4];
-    
     private float leftStickerHor = 0;
     private float leftStickerVert = 0;
     private float triggers = 0;
@@ -43,16 +41,21 @@ public class Joystick{
     public float getLeftStickerHor(){
         return this.leftStickerHor;
     }
+    
     public float getLeftStickerVert(){
         return this.leftStickerVert;
     }
+    
     public float getTriggers(){
         return this.triggers;
     }
+    
     public float getRightStickerVert(){
         return this.rightStickerVert;
     }
+    
     public float getRightStickerHor(){
         return this.rightStickerHor;
     }
+    
 }

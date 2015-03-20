@@ -9,7 +9,7 @@ public interface IMapElement {
 	public void setPosX(float x);
 	public void setPosY(float y);
 	public void delete();
-	public void attachMap(IMap owner);
+	public void attachMap(IGameMap owner);
     public void detachMap();
 	public boolean isAlive();
 }

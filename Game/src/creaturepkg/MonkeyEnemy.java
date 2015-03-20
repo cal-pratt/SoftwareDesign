@@ -15,7 +15,7 @@ public class MonkeyEnemy extends ACreature {
 	private float fireIncrement = 200;
 	
 	public MonkeyEnemy(Player player) {
-		super(Object3DFactory.getMonkey(), 10, 1, 1, 0);
+		super(Object3DFactory.getMonkey(), 10, 2, 2, 0);
 		this.player = player;
 		callback = new IPlayerEventListener() {
 			

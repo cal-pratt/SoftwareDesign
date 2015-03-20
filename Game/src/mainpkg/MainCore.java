@@ -1,7 +1,7 @@
 package mainpkg;
 
-import creaturepkg.IMap;
-import creaturepkg.Map;
+import creaturepkg.IGameMap;
+import creaturepkg.GameMap;
 import creaturepkg.MonkeyEnemy;
 import creaturepkg.Player;
 import inputpkg.Key;
@@ -29,9 +29,10 @@ public class MainCore extends ACore {
     SkillMenu skillMenu;
     PlayerOverlay overlay;
     
-    IMap gameMap;
+    IGameMap gameMap;
     
     MonkeyEnemy monkey;
+    MonkeyEnemy monkey2;
     APcObject3D floor;
     
     GraphicsManager gm;
@@ -53,10 +54,10 @@ public class MainCore extends ACore {
     public MainCore(){
         windowWidth = 1920;
         windowHeight = 1080;
-        windowFullscreen = GL_FALSE;
+        windowFullscreen = GL_TRUE;
         windowTitle = "Game Core";
         exitKey = GLFW_KEY_ESCAPE;
-        threadSleepDuration = 10l;
+        threadSleepDuration = 5l;
     }
     
     // Core implementation --------------------------------------------------------------------- //
@@ -111,10 +112,11 @@ public class MainCore extends ACore {
         gm = new GraphicsManager(windowWidth, windowHeight);
         gm.add(floor = Object3DFactory.getSquare());
         
-        gameMap = new Map(gm, 50, 50);
+        gameMap = new GameMap(gm, 50, 50);
         
         gameMap.addMapElement(player = new Player(input));
         gameMap.addMapElement(monkey = new MonkeyEnemy(player));
+        gameMap.addMapElement(monkey2 = new MonkeyEnemy(player));
         
         startMenu = new StartMenu(gm, input);
         pauseMenu = new PauseMenu(gm, input);
@@ -142,6 +144,8 @@ public class MainCore extends ACore {
         
         startMenu.show();
         gameMap.updateActions(0);
+        
+        monkey2.setPosX(-5);
         
         player.setPosY(-10);
     }

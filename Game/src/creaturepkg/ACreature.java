@@ -33,6 +33,17 @@ public abstract class ACreature extends AMapElement {
         this.attackType = attackType;
         this.currHealth = maxHealth;
     }
+	
+	public void applyDamage(ACreature attacker){
+		int attack = attacker.attackLvl - this.defenseLvl + 1;
+		if(attack > 0){
+			currHealth -= attack;
+		}
+		if(currHealth <= 0){
+			currHealth = 0;
+			setDead();
+		}
+	}
 
     @Override
 	public void setPosX(float x){

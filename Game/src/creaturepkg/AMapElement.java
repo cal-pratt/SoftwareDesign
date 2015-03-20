@@ -11,7 +11,7 @@ abstract class AMapElement implements IMapElement{
 	private float x;
 	private float y;
 	private List<APcObject3D> meshList;
-	protected IMap containingMap;
+	protected IGameMap containingMap;
 	
 	private boolean alive = true;
 	
@@ -30,7 +30,7 @@ abstract class AMapElement implements IMapElement{
         this.y = y;
     }
 	
-	public void attachMap(IMap owner){
+	public void attachMap(IGameMap owner){
     	if(!attached){
     	    this.containingMap = owner;
             for(APcObject3D m : meshList){

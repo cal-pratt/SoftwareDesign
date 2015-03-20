@@ -21,8 +21,8 @@ public class Player extends ACreature {
 	
 	private float rotationAngle = 0;
 	
-	private float flightSpeed = 50f;
-    private float laserSpeed = 100f;
+	private float flightSpeed = 100f;
+    private float laserSpeed = 200f;
 	private float velocityX = 0, velocityY = 0;
 	private float lastFire = 0;
 	private float fireIncrement = 40;
@@ -199,7 +199,6 @@ public class Player extends ACreature {
 
             System.out.println(timepassed);
 	        
-            eventPublisher.publish(this);
 		}
 		
 		if(aimX != 0 || aimY != 0 ){
@@ -213,6 +212,8 @@ public class Player extends ACreature {
 				lastFire = 0;
 			}
 		}
+		
+        eventPublisher.publish(this);
 	}
 	
 	public void updateModel(){

@@ -6,26 +6,42 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Map implements IMap {
+public class GameMap implements IGameMap {
 
     private List<IMapElement> mapElements;
+    private List<ACreature> mapCreatures;
+    private List<Projectile> mapProjectiles;
     private List<IMapElement> mapQueue;
     private GraphicsManager gm;
     
     private float xBound;
     private float yBound;
     
-    public Map(GraphicsManager gm, float xBound, float yBound){
+    public GameMap(GraphicsManager gm, float xBound, float yBound){
         this.gm = gm;
         this.xBound = xBound;
         this.yBound = yBound;
         mapElements = new ArrayList<IMapElement>();
+        mapCreatures = new ArrayList<ACreature>();
+        mapProjectiles = new ArrayList<Projectile>();
         mapQueue = new LinkedList<IMapElement>();
     }
 
     @Override
 	public void addMapElement(IMapElement ele){
         mapQueue.add(ele);
+	}
+
+    @Override
+    public void addMapElement(ACreature ele){
+		addMapElement((IMapElement)ele);
+		mapCreatures.add(ele);
+	}
+
+    @Override
+	public void addMapElement(Projectile ele){
+		addMapElement((IMapElement)ele);
+		mapProjectiles.add(ele);
 	}
 	
 	@Override
@@ -38,10 +54,28 @@ public class Map implements IMap {
             ele.attachMap(this);
         }
         mapQueue.clear();
+        for(ACreature creature : mapCreatures){
+        	if(creature.isAlive())
+        	for(Projectile proj : mapProjectiles){
+            	if(proj.isAlive()){
+            		proj.updateCollision(creature);
+            	}
+            }
+        }
         for (IMapElement ele : new ArrayList<>(mapElements)){
             if(!ele.isAlive()){
                 mapElements.remove(ele);
                 ele.detachMap();
+            }
+        }
+        for (ACreature creature : new ArrayList<>(mapCreatures)){
+            if(!creature.isAlive()){
+            	mapCreatures.remove(creature);
+            }
+        }
+        for (Projectile proj : new ArrayList<>(mapProjectiles)){
+            if(!proj.isAlive()){
+            	mapProjectiles.remove(proj);
             }
         }
     }
