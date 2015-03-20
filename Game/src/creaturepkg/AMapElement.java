@@ -5,11 +5,11 @@ import java.util.List;
 
 import objectpkg.APcObject3D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
+import silvertiger.tutorial.lwjgl.math.Vector2f;
 
 abstract class AMapElement implements IMapElement{
     
-	private float x;
-	private float y;
+	private Vector2f position;
 	private List<APcObject3D> meshList;
 	protected IGameMap containingMap;
 	
@@ -17,17 +17,15 @@ abstract class AMapElement implements IMapElement{
 	
 	public boolean attached = false;
 
-	protected AMapElement(List<APcObject3D> mesh, float x, float y) {
+	protected AMapElement(List<APcObject3D> mesh, Vector2f position) {
 		this.meshList = mesh;
-		this.x = x;
-		this.y = y;
+		this.position = new Vector2f(position.x, position.y);
 	}
 	
-	protected AMapElement(APcObject3D mesh, float x, float y) {
+	protected AMapElement(APcObject3D mesh, Vector2f position) {
         this.meshList = new ArrayList<APcObject3D>();
         this.meshList.add(mesh);
-        this.x = x;
-        this.y = y;
+		this.position = new Vector2f(position.x, position.y);
     }
 	
 	public void attachMap(IGameMap owner){
@@ -48,21 +46,16 @@ abstract class AMapElement implements IMapElement{
             attached = false;
         }
     }
-    
-	public float getPosX(){
-		return x;
+
+	@Override
+	public Vector2f getPosition(){
+		return new Vector2f(position.x, position.y);
 	}
-	
-	public float getPosY(){
-		return y;
-	}
-	
-	public void setPosX(float x){
-        this.x = x;
-	}
-	
-	public void setPosY(float y){
-        this.y = y;
+
+	@Override
+	public void setPosition(Vector2f position){
+        this.position.x = position.x;
+        this.position.y = position.y;
 	}
 
 	@Override
@@ -78,7 +71,7 @@ abstract class AMapElement implements IMapElement{
     }
     
 	public void updateModel(Matrix4f m) {
-		m = (Matrix4f.translate(x, y, 0)).multiply(m);
+		m = (Matrix4f.translate(position.x, position.y, 0)).multiply(m);
 
         for(APcObject3D mesh : meshList){
             mesh.updateModel(m);

@@ -4,6 +4,7 @@ package creaturepkg;
 import eventpkg.GameEvents.*;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
+import silvertiger.tutorial.lwjgl.math.Vector2f;
 
 public class MonkeyEnemy extends ACreature {
 	private Player player;
@@ -34,26 +35,24 @@ public class MonkeyEnemy extends ACreature {
     }
 	
 	private void updateAim(){
-		if (Math.pow(player.getPosX() - getPosX(),2) + Math.pow(player.getPosY() - getPosY(),2) < aggroRange*aggroRange){
-			float dX = (player.getPosX() - this.getPosX());
-	        float dY = (player.getPosY() - this.getPosY());
+		if (player.getPosition().subtract(this.getPosition()).length() < aggroRange){
+			Vector2f delta = player.getPosition().subtract(this.getPosition());
 	        
-	        aimX = dX*laserSpeed/((float)Math.sqrt(dX*dX + dY*dY));
-	        aimY = dY*laserSpeed/((float)Math.sqrt(dX*dX + dY*dY));
+	        aim = delta.scale(laserSpeed/delta.length());
 		}
 		else {
-			aimX = 0;
-			aimY = 0;
+			aim = new Vector2f();
 		}
 	}
 
     @Override 
 	public void updateActions(float timepassed) {
 		lastFire += timepassed;
-		if(aimX != 0 || aimY != 0 ){
+		if(aim.x != 0 || aim.y != 0 ){
 			if(lastFire > fireIncrement ){
-			    containingMap.addMapElement(new Projectile(this, getPosX()-.4f, getPosY()+.4f, aimX, aimY));
-			   // containingMap.addMapElement(new Projectile(this, getPosX()+.4f, getPosY()-.4f, aimX, aimY));
+			    containingMap.addMapElement(
+			    		new Projectile(this, getPosition().add(new Vector2f(-.4f,+.4f)), aim)
+			    	);
 				lastFire = 0;
 			}
 		}

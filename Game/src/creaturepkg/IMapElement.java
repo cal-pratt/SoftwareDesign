@@ -1,13 +1,13 @@
 package creaturepkg;
 
+import silvertiger.tutorial.lwjgl.math.Vector2f;
+
 
 public interface IMapElement {
     public void updateActions(float timepassed);
     public void updateModel();
-	public float getPosX();
-	public float getPosY();
-	public void setPosX(float x);
-	public void setPosY(float y);
+	public Vector2f getPosition();
+	public void setPosition(Vector2f position);
 	public void delete();
 	public void attachMap(IGameMap owner);
     public void detachMap();

@@ -106,9 +106,9 @@ public class SkillMenuCore extends ACore {
         
         // projection is a matrix used to center the model infront of the camera
         // there is only one 3D shader program so we only have to update one camera
-        Matrix4f projection = Matrix4f.perspective(35, windowRatio, 1, 1000).multiply(Matrix4f.rotate(0, 1, 0, 0));
+        Matrix4f projection = Matrix4f.perspective(35, windowRatio, 1, 1000);
         projection = projection.multiply(Matrix4f.rotate(-45, 1, 0, 0).multiply(
-                Matrix4f.translate(-player.getPosX(), 50 - player.getPosY(), -50)));
+                Matrix4f.translate(-player.getPosition().x, 50 - player.getPosition().y, -50)));
         
         gm.setPcProjection(projection);
         

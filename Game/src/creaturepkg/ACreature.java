@@ -4,6 +4,7 @@ import java.util.List;
 
 import objectpkg.APcObject3D;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
+import silvertiger.tutorial.lwjgl.math.Vector2f;
 
 public abstract class ACreature extends AMapElement {
 	//Creature variables
@@ -12,11 +13,12 @@ public abstract class ACreature extends AMapElement {
 	private int attackLvl;
 	private int defenseLvl;
 	private int attackType;
-	protected float aimX = 0;
-	protected float aimY = 0;
+	
+	protected Vector2f aim;
 	
 	protected ACreature(APcObject3D creatureMesh, int maxHealth, int attackLvl, int defenseLvl, int attackType) {
-		super(creatureMesh, 0, 0);
+		super(creatureMesh, new Vector2f());
+		this.aim = new Vector2f();
 		this.maxHealth = maxHealth;
 		this.attackLvl = attackLvl;
 		this.defenseLvl = defenseLvl;
@@ -26,7 +28,8 @@ public abstract class ACreature extends AMapElement {
 	}
 	
 	protected ACreature(List<APcObject3D> creatureMesh, int maxHealth, int attackLvl, int defenseLvl, int attackType) {
-        super(creatureMesh, 0, 0);
+        super(creatureMesh, new Vector2f());
+		this.aim = new Vector2f();
         this.maxHealth = maxHealth;
         this.attackLvl = attackLvl;
         this.defenseLvl = defenseLvl;
@@ -46,40 +49,19 @@ public abstract class ACreature extends AMapElement {
 	}
 
     @Override
-	public void setPosX(float x){
-        if(x > containingMap.getBoundaryX()){
-            super.setPosX(containingMap.getBoundaryX());
-        }
-        else if(x < -containingMap.getBoundaryX()){
-            super.setPosX(-containingMap.getBoundaryX());
-        }
-        else{
-            super.setPosX(x);
-        }
-    }
-
-    @Override
-    public void setPosY(float y){
-        if(y > containingMap.getBoundaryY()){
-            super.setPosY(containingMap.getBoundaryY());
-        }
-        else if(y < -containingMap.getBoundaryY()){
-            super.setPosY(-containingMap.getBoundaryY());
-        }
-        else{
-            super.setPosY(y);
-        }
+	public void setPosition(Vector2f position){
+    	Vector2f minb = containingMap.getMinBoundary();
+    	Vector2f maxb = containingMap.getMaxBoundary();
+    	super.setPosition(new Vector2f(
+    			Math.min(maxb.x, Math.max(minb.x, position.x)),
+    			Math.min(maxb.y, Math.max(minb.y, position.y))
+    		));
     }
 	
     @Override
 	public void updateModel(Matrix4f model){
         super.updateModel(model);
 	}
-	
-    @Override 
-    public void delete(){
-        super.delete();
-    }
     
 	public int getMaxHealth(){
 		return maxHealth;

@@ -10,6 +10,7 @@ import inputpkg.Key;
 import inputpkg.Joystick;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
+import silvertiger.tutorial.lwjgl.math.Vector2f;
 
 public class Player extends ACreature {
 	private PlayerEventPublisher eventPublisher;
@@ -23,14 +24,14 @@ public class Player extends ACreature {
 	
 	private float flightSpeed = 100f;
     private float laserSpeed = 200f;
-	private float velocityX = 0, velocityY = 0;
+	private Vector2f velocity;
 	private float lastFire = 0;
 	private float fireIncrement = 40;
 	
 	public Player(UserInput input) {
 		super(Arrays.asList(Object3DFactory.getSpaceShipTop(), Object3DFactory.getSpaceShipBottom()), 10, 2, 2, 0);
 		eventPublisher = new PlayerEventPublisher();
-		
+		this.velocity = new Vector2f();
 		this.input = input;
 		
 		velocityKeyCallback = new IKeyEventListener(){
@@ -111,8 +112,7 @@ public class Player extends ACreature {
         if(input.getAction(GLFW_KEY_W) == GLFW_PRESS || input.getAction(GLFW_KEY_W) == GLFW_REPEAT){
             dy += flightSpeed;
         }
-        velocityX = dx;
-        velocityY = dy;
+        velocity = new Vector2f(dx, dy);
 	}
 	
 	private void updateKeyAim(){
@@ -130,8 +130,7 @@ public class Player extends ACreature {
         if(input.getAction(GLFW_KEY_DOWN) == GLFW_PRESS || input.getAction(GLFW_KEY_DOWN) == GLFW_REPEAT){
             dy -= laserSpeed;
         }
-        aimX = dx;
-        aimY = dy;
+        aim = new Vector2f(dx, dy);
 	}
 	
 	public void updateJoystickDir(){
@@ -139,50 +138,30 @@ public class Player extends ACreature {
 	    float dy = -input.getLeftStickerVert(GLFW_JOYSTICK_1);
 	    
 	    if(dx == 0 && dy == 0){
-	        velocityX = 0;
-	        velocityY = 0;
+	    	velocity = new Vector2f(0, 0);
 	    }
-	    else if(dx == 0){
-	        velocityX = 0;
-	        velocityY = dy > 0 ? flightSpeed : -flightSpeed;
-	    }
-	    else if(dy == 0){
-            velocityX = dx > 0 ? flightSpeed : -flightSpeed;
-            velocityY = 0;
-        }
 	    else{
-	        velocityX = dx*flightSpeed/((float)Math.sqrt(dx*dx + dy*dy));
-	        velocityY = dy*flightSpeed/((float)Math.sqrt(dx*dx + dy*dy));
+	    	velocity = new Vector2f(dx, dy).normalize().scale(flightSpeed);
 	    }
 	    
 	    dx = input.getRightStickerHor(GLFW_JOYSTICK_1);
 	    dy = -input.getRightStickerVert(GLFW_JOYSTICK_1);
 	    
 	    if(dx == 0 && dy == 0){
-	        aimX = 0;
-	        aimY = 0;
-        }
-        else if(dx == 0){
-            aimX = 0;
-            aimY = dy > 0 ? laserSpeed : -laserSpeed;
-        }
-        else if(dy == 0){
-            aimX = dx > 0 ? laserSpeed : -laserSpeed;
-            aimY = 0;
-        }
-        else{
-            aimX = dx*laserSpeed/((float)Math.sqrt(dx*dx + dy*dy));
-            aimY = dy*laserSpeed/((float)Math.sqrt(dx*dx + dy*dy));
-        }
+	    	aim = new Vector2f(0, 0);
+	    }
+	    else{
+	    	aim = new Vector2f(dx, dy).normalize().scale(laserSpeed);
+	    }
 	}
 	
 	public void updateActions(float timepassed){
 	    
         lastFire += timepassed;
 		
-		if(velocityX != 0 || velocityY != 0 ){
-		    if(velocityX == 0){
-		        if(velocityY > 0){
+		if(velocity.x != 0 || velocity.y != 0 ){
+		    if(velocity.x == 0){
+		        if(velocity.y > 0){
 		            rotationAngle = 0;
 		        }
 		        else{
@@ -190,25 +169,28 @@ public class Player extends ACreature {
 		        }
 		    }
 		    else{
-		        rotationAngle = -180f*(float)(Math.atan(velocityX/velocityY))/3.14f;
-		        if(velocityY < 0) rotationAngle += 180;
+		        rotationAngle = -180f*(float)(Math.atan(velocity.x/velocity.y))/3.14f;
+		        if(velocity.y < 0) rotationAngle += 180;
 		    }
 
-		    setPosX(getPosX() + velocityX*timepassed/1000f);
-            setPosY(getPosY() + velocityY*timepassed/1000f);
+	    	setPosition(getPosition().add(velocity.scale(timepassed/1000f)));
 
             System.out.println(timepassed);
 	        
 		}
 		
-		if(aimX != 0 || aimY != 0 ){
+		if(aim.x != 0 || aim.y != 0 ){
 			if(lastFire > fireIncrement ){
-			    float shipTipX = getPosX() + 3*(float)Math.sin(Math.toRadians(-rotationAngle + 10));
-                float shipTipY = getPosY() + 3*(float)Math.cos(Math.toRadians(rotationAngle - 10));
-                containingMap.addMapElement(new Projectile(this, shipTipX, shipTipY, aimX, aimY));
-                shipTipX = getPosX() + 3*(float)Math.sin(Math.toRadians(-rotationAngle - 10));
-                shipTipY = getPosY() + 3*(float)Math.cos(Math.toRadians(rotationAngle + 10));
-                containingMap.addMapElement(new Projectile(this, shipTipX, shipTipY, aimX, aimY));
+				Vector2f shipTip = getPosition().add(new Vector2f(
+						3*(float)Math.sin(Math.toRadians(-rotationAngle + 10)),
+						3*(float)Math.cos(Math.toRadians(rotationAngle - 10))
+					));
+                containingMap.addMapElement(new Projectile(this, shipTip, aim));
+                shipTip = getPosition().add(new Vector2f(
+						3*(float)Math.sin(Math.toRadians(-rotationAngle - 10)),
+						3*(float)Math.cos(Math.toRadians(rotationAngle + 10))
+					));
+                containingMap.addMapElement(new Projectile(this, shipTip, aim));
 				lastFire = 0;
 			}
 		}
@@ -230,6 +212,12 @@ public class Player extends ACreature {
             currHealth = maxHealth;
         }
         eventPublisher.publish(this);
+    }
+    
+    @Override
+    public void setDead(){
+        eventPublisher.publish(this);
+        super.setDead();
     }
 
 	//Player variables

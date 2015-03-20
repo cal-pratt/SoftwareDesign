@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import silvertiger.tutorial.lwjgl.math.Vector2f;
+
 public class GameMap implements IGameMap {
 
     private List<IMapElement> mapElements;
@@ -14,13 +16,13 @@ public class GameMap implements IGameMap {
     private List<IMapElement> mapQueue;
     private GraphicsManager gm;
     
-    private float xBound;
-    private float yBound;
+    private Vector2f maxBound;
+    private Vector2f minBound;
     
-    public GameMap(GraphicsManager gm, float xBound, float yBound){
+    public GameMap(GraphicsManager gm, Vector2f minBound, Vector2f maxBound){
         this.gm = gm;
-        this.xBound = xBound;
-        this.yBound = yBound;
+        this.maxBound = maxBound;
+        this.minBound = minBound;
         mapElements = new ArrayList<IMapElement>();
         mapCreatures = new ArrayList<ACreature>();
         mapProjectiles = new ArrayList<Projectile>();
@@ -93,13 +95,13 @@ public class GameMap implements IGameMap {
     }
 
     @Override
-    public float getBoundaryX() {
-        return xBound;
+    public Vector2f getMaxBoundary() {
+        return new Vector2f(maxBound.x, maxBound.y);
     }
 
     @Override
-    public float getBoundaryY() {
-        return yBound;
+    public Vector2f getMinBoundary() {
+        return new Vector2f(minBound.x, minBound.y);
     }
     
     

@@ -14,6 +14,7 @@ import eventpkg.GameEvents.*;
 import objectpkg.APcObject3D;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
+import silvertiger.tutorial.lwjgl.math.Vector2f;
 import graphicspkg.GraphicsManager;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
@@ -52,10 +53,10 @@ public class MainCore extends ACore {
     
     // Customize core setup -------------------------------------------------------------------- //
     public MainCore(){
-        windowWidth = 1920;
-        windowHeight = 1080;
-        windowFullscreen = GL_TRUE;
-        windowTitle = "Game Core";
+        windowWidth = 1800;
+        windowHeight = 900;
+        windowFullscreen = GL_FALSE;
+        windowTitle = "Evan is lame as fuuuuu";
         exitKey = GLFW_KEY_ESCAPE;
         threadSleepDuration = 5l;
     }
@@ -112,7 +113,7 @@ public class MainCore extends ACore {
         gm = new GraphicsManager(windowWidth, windowHeight);
         gm.add(floor = Object3DFactory.getSquare());
         
-        gameMap = new GameMap(gm, 50, 50);
+        gameMap = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
         
         gameMap.addMapElement(player = new Player(input));
         gameMap.addMapElement(monkey = new MonkeyEnemy(player));
@@ -145,9 +146,8 @@ public class MainCore extends ACore {
         startMenu.show();
         gameMap.updateActions(0);
         
-        monkey2.setPosX(-5);
-        
-        player.setPosY(-10);
+        monkey2.setPosition(new Vector2f(-5, 0));
+        player.setPosition(new Vector2f(0, -10));
     }
 
     @Override
@@ -195,9 +195,9 @@ public class MainCore extends ACore {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         
-        Matrix4f projection = Matrix4f.perspective(35, windowRatio, 1, 1000).multiply(Matrix4f.rotate(0, 1, 0, 0));
+        Matrix4f projection = Matrix4f.perspective(35, windowRatio, 1, 1000);
         projection = projection.multiply(Matrix4f.rotate(-45, 1, 0, 0).multiply(
-                Matrix4f.translate(-player.getPosX(), 50 - player.getPosY(), -50)));
+                Matrix4f.translate(-player.getPosition().x, 50 - player.getPosition().y, -50)));
         
         gm.setPcProjection(projection);
         
