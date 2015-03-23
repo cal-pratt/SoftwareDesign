@@ -23,6 +23,8 @@ public class SkillMenuCore extends ACore {
     private IButtonEventListener closeMenuCallBack;
     private boolean closePressed = false;
     
+    private IKeyEventListener testCallback4;
+    
     
     // Customize core setup -------------------------------------------------------------------- //
     public SkillMenuCore(){
@@ -50,14 +52,26 @@ public class SkillMenuCore extends ACore {
         
         // TODO update this constructor with any other values you may need.
         skillMenu = new SkillMenu(gm, input, player);
+        
+        testCallback4 = new IKeyEventListener(){
+            @Override 
+            public void actionPerformed(KeyEventPublisher event, Key action) 
+            { 
+            	closePressed = false;
+                skillMenu.show();
+            }
+        };
 
         closeMenuCallBack = new IButtonEventListener(){
             @Override
             public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
                 closePressed = true;
-                skillMenu.hide();
+               // skillMenu.hide();
             }
         };
+        
+
+        input.getKeyInputEvent(GLFW_KEY_M).subscribe(testCallback4);
         
         skillMenu.getReturnToGameButtonEvent().subscribe(closeMenuCallBack);
         
@@ -70,8 +84,8 @@ public class SkillMenuCore extends ACore {
 
     @Override
     protected void teardown() {
-        skillMenu.delete();
         skillMenu.getReturnToGameButtonEvent().unsubscribe(closeMenuCallBack);
+        skillMenu.delete();
     }
 
     @Override
@@ -83,7 +97,7 @@ public class SkillMenuCore extends ACore {
     @Override
     protected void updateActions(long timePassed) {
         
-        player.updateActions(timePassed);
+        //player.updateActions(timePassed);
         // If our close button event got fired then we hide the skill menu
         if(closePressed){
             skillMenu.hide();
@@ -101,14 +115,14 @@ public class SkillMenuCore extends ACore {
         // Any mesh in blender is centered at position 0,0,0
         // In order to draw it elsewhere we create a matrix which will  scale, rotate or move the player
         // Every point in the blender file has this translation applied to it
-        player.updateModel(Matrix4f.translate( 0, -4, 0).multiply(
-                Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1f, 1f, 1f))));
+       // player.updateModel(Matrix4f.translate( 0, -4, 0).multiply(
+        //        Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1f, 1f, 1f))));
         
         // projection is a matrix used to center the model infront of the camera
         // there is only one 3D shader program so we only have to update one camera
         Matrix4f projection = Matrix4f.perspective(35, windowRatio, 1, 1000);
         projection = projection.multiply(Matrix4f.rotate(-45, 1, 0, 0).multiply(
-                Matrix4f.translate(-player.getPosition().x, 50 - player.getPosition().y, -50)));
+                Matrix4f.translate(0, 50 - 0, -50)));
         
         gm.setPcProjection(projection);
         

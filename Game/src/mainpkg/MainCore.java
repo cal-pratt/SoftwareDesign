@@ -27,7 +27,6 @@ public class MainCore extends ACore {
     
     StartMenu startMenu;
     PauseMenu pauseMenu;
-    SkillMenu skillMenu;
     PlayerOverlay overlay;
     
     IGameMap gameMap;
@@ -42,7 +41,6 @@ public class MainCore extends ACore {
     private IKeyEventListener testCallback2;
     private IKeyEventListener testCallback1;
     private IKeyEventListener testCallback3;
-    private IKeyEventListener testCallback4;
     
     private IButtonEventListener continueCallback;
     private IButtonEventListener newCallback;
@@ -87,13 +85,7 @@ public class MainCore extends ACore {
             }
         };
         
-        testCallback4 = new IKeyEventListener(){
-            @Override 
-            public void actionPerformed(KeyEventPublisher event, Key action) 
-            { 
-                skillMenu.show();
-            }
-        };
+        
         
         testCallback1 = new IKeyEventListener(){
             @Override 
@@ -108,7 +100,6 @@ public class MainCore extends ACore {
         input.getKeyInputEvent(GLFW_KEY_X).subscribe(testCallback1);
         input.getKeyInputEvent(GLFW_KEY_K).subscribe(testCallback2);
         input.getKeyInputEvent(GLFW_KEY_P).subscribe(testCallback3);
-        input.getKeyInputEvent(GLFW_KEY_M).subscribe(testCallback4);
     	
         gm = new GraphicsManager(windowWidth, windowHeight);
         gm.add(floor = Object3DFactory.getSquare());
@@ -121,7 +112,6 @@ public class MainCore extends ACore {
         
         startMenu = new StartMenu(gm, input);
         pauseMenu = new PauseMenu(gm, input);
-        skillMenu = new SkillMenu(gm, input, player);
 
         newCallback = new IButtonEventListener(){
             @Override
@@ -174,14 +164,12 @@ public class MainCore extends ACore {
             newGamePressed = false;
             startMenu.hide();
             pauseMenu.hide();
-            skillMenu.hide();
             overlay.show();
         }else if(continuePressed){
             allowUpdates = true;
             continuePressed = false;
             startMenu.hide();
             pauseMenu.hide();
-            skillMenu.hide();
             overlay.show();
         }
     }
@@ -203,7 +191,6 @@ public class MainCore extends ACore {
         
         startMenu.updateView(new Matrix4f());
         pauseMenu.updateView(new Matrix4f());
-        skillMenu.updateView(new Matrix4f());
         overlay.updateView(new Matrix4f());
         
         floor.updateModel(Matrix4f.translate(0, 0, -2).multiply(
