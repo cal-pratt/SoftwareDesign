@@ -74,7 +74,7 @@ public class Object2DFactory {
         return new ATexObject2D(){
             @Override
             public String getFilename() {
-                return "sprites/pause.png";
+                return "sprites/pause2.png";
             }
         };
     }

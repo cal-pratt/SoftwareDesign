@@ -13,9 +13,9 @@ public class PauseMenu extends AMenu {
         
         continuegame = new MenuButton(gm, input,
                 Object2DFactory.getContinueReleased(), Object2DFactory.getContinueClicked(),
-                width/2 - height/7, height/2, width/5, height/5);
+                width/2f - height/7f, height/3f, width/5f, height/5f);
         
-        add(new MenuSprite(gm, Object2DFactory.getPause(), width*1f/4f, height*2f/3f, width*2f/4f, height*1f/6f));
+        add(new MenuSprite(gm, Object2DFactory.getPause(), width*1f/3.8f, height*2f/3.8f, width/2f, height*1f/3f));
         add(continuegame);
     }
     
