@@ -12,7 +12,7 @@ public abstract class ACreature extends AMapElement {
 	protected int currHealth;
 	private int attackLvl;
 	private int defenseLvl;
-	private int attackType;
+	private int attackType = 0;
 	
 	protected Vector2f aim;
 	
