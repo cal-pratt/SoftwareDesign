@@ -74,6 +74,22 @@ public class Object3DFactory {
             }
         };
     }
+    public static APcObject3D getCoolShip() {
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/coolship.ply";
+            }
+        };
+    }
+    public static APcObject3D getPortal() {
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/portal.ply";
+            }
+        };
+    }
     
 }
 
