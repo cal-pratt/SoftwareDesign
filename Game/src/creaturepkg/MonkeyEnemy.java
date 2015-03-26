@@ -1,37 +1,39 @@
 package creaturepkg;
 
 
+import java.util.Arrays;
+
 import eventpkg.GameEvents.*;
+import graphicspkg.GraphicsManager;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import silvertiger.tutorial.lwjgl.math.Vector2f;
 
 public class MonkeyEnemy extends ACreature {
 	private Player player;
-	private IPlayerEventListener callback;
 
     private float laserSpeed = 100f;
 	private float aggroRange = 30;
-	private float lastFire;
+	private float lastFire = 0;
 	private float fireIncrement = 200;
 	
+	private IPlayerEventListener callback = new IPlayerEventListener() {
+		@Override
+		public void actionPerformed(PlayerEventPublisher sender, Player e) {
+		    updateAim();
+		}
+	};
+	
 	public MonkeyEnemy(Player player) {
-		super(Object3DFactory.getMonkey(), 10, 2, 2, 0);
+		super(Arrays.asList(Object3DFactory.getMonkey()), 10, 2, 2, 0);
 		this.player = player;
-		callback = new IPlayerEventListener() {
-			
-			@Override
-			public void actionPerformed(PlayerEventPublisher sender, Player e) {
-			    updateAim();
-			}
-		};
 		player.getEventPublisher().subscribe(callback);
 	}
 
     @Override 
-    public void delete(){
+    public void delete(IGameMap map){
         player.getEventPublisher().unsubscribe(callback);
-        super.delete();
+        super.delete(map);
     }
 	
 	private void updateAim(){
@@ -46,11 +48,11 @@ public class MonkeyEnemy extends ACreature {
 	}
 
     @Override 
-	public void updateActions(float timepassed) {
+	public void updateActions(IGameMap map, float timepassed) {
 		lastFire += timepassed;
 		if(aim.x != 0 || aim.y != 0 ){
 			if(lastFire > fireIncrement ){
-			    containingMap.addMapElement(
+				map.addMapElement(
 			    		new Projectile(this, getPosition().add(new Vector2f(-.4f,+.4f)), aim)
 			    	);
 				lastFire = 0;

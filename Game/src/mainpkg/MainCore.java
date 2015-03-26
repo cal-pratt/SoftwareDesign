@@ -30,20 +30,69 @@ public class MainCore extends ACore {
     PlayerOverlay overlay;
     
     IGameMap gameMap;
+    IGameMap[] gameMaps = new IGameMap[2];
+    int gameMapIndex = 0;
+    
+    private IKeyEventListener testCallback2 = new IKeyEventListener(){
+        @Override 
+        public void actionPerformed(KeyEventPublisher event, Key action){
+            if(action.getAction() == GLFW_PRESS){
+	        	gameMaps[gameMapIndex].detachMapElements();
+	        	gameMaps[gameMapIndex].removeMapElement(player);
+	        	gameMapIndex = gameMapIndex == 0? 1: 0;
+	        	gameMaps[gameMapIndex].addMapElement(player);
+	        	gameMaps[gameMapIndex].attachMapElements();
+	        	gameMaps[gameMapIndex].updateActions(0);
+	        	player.setPosition(new Vector2f(0, -10));
+            }
+        }
+    };
     
     MonkeyEnemy monkey;
     MonkeyEnemy monkey2;
     APcObject3D floor;
     
     GraphicsManager gm;
+    
     Player player;
+
+    private IKeyEventListener testCallback3 = new IKeyEventListener(){
+        @Override 
+        public void actionPerformed(KeyEventPublisher event, Key action) 
+        { 
+            allowUpdates = false;
+            pauseMenu.show();
+        }
+    };
     
-    private IKeyEventListener testCallback2;
-    private IKeyEventListener testCallback1;
-    private IKeyEventListener testCallback3;
+    private IKeyEventListener testCallback4 = new IKeyEventListener(){
+        @Override 
+        public void actionPerformed(KeyEventPublisher event, Key action) 
+        { 
+        }
+    };
     
-    private IButtonEventListener continueCallback;
-    private IButtonEventListener newCallback;
+    private IKeyEventListener testCallback1 = new IKeyEventListener(){
+        @Override 
+        public void actionPerformed(KeyEventPublisher event, Key action) 
+        {
+            allowUpdates = false;
+            startMenu.show();
+            overlay.hide();
+        }
+    };
+    private IButtonEventListener continueCallback = new IButtonEventListener(){
+        @Override
+        public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
+            newGamePressed = true;
+        }
+    };
+    private IButtonEventListener newCallback  = new IButtonEventListener(){
+        @Override
+        public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
+            continuePressed = true;
+        }
+    };
     private boolean newGamePressed = false; 
     private boolean continuePressed = false;
     private boolean allowUpdates = false;
@@ -54,7 +103,7 @@ public class MainCore extends ACore {
         windowWidth = 1800;
         windowHeight = 900;
         windowFullscreen = GL_FALSE;
-        windowTitle = "Evan is lame as fuuuuu";
+        windowTitle = "Komputers r kewl";
         exitKey = GLFW_KEY_ESCAPE;
         threadSleepDuration = 5l;
     }
@@ -68,76 +117,33 @@ public class MainCore extends ACore {
         glFrontFace(GL_CW);
         glDepthRange(0.0f, 1.0f);
         
-        testCallback2 = new IKeyEventListener(){
-            @Override 
-            public void actionPerformed(KeyEventPublisher event, Key action) 
-            { 
-            	player.doDamage(1);
-            }
-        };
-        
-        testCallback3 = new IKeyEventListener(){
-            @Override 
-            public void actionPerformed(KeyEventPublisher event, Key action) 
-            { 
-                allowUpdates = false;
-                pauseMenu.show();
-            }
-        };
-        
-        
-        
-        testCallback1 = new IKeyEventListener(){
-            @Override 
-            public void actionPerformed(KeyEventPublisher event, Key action) 
-            {
-                allowUpdates = false;
-                startMenu.show();
-                overlay.hide();
-            }
-        };
         
         input.getKeyInputEvent(GLFW_KEY_X).subscribe(testCallback1);
-        input.getKeyInputEvent(GLFW_KEY_K).subscribe(testCallback2);
+        input.getKeyInputEvent(GLFW_KEY_1).subscribe(testCallback2);
         input.getKeyInputEvent(GLFW_KEY_P).subscribe(testCallback3);
     	
         gm = new GraphicsManager(windowWidth, windowHeight);
         gm.add(floor = Object3DFactory.getSquare());
         
-        gameMap = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
+        gameMaps[0] = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
+        gameMaps[1] = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
         
-        gameMap.addMapElement(player = new Player(input));
-        gameMap.addMapElement(monkey = new MonkeyEnemy(player));
-        gameMap.addMapElement(monkey2 = new MonkeyEnemy(player));
-        
-        startMenu = new StartMenu(gm, input);
-        pauseMenu = new PauseMenu(gm, input);
+        gameMaps[0].addMapElement(player = new Player(input));
+        gameMaps[0].addMapElement(monkey = new MonkeyEnemy(player));
+        gameMaps[1].addMapElement(monkey2 = new MonkeyEnemy(player));
 
-        newCallback = new IButtonEventListener(){
-            @Override
-            public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
-                newGamePressed = true;
-            }
-        };
-        
-        continueCallback = new IButtonEventListener(){
-            @Override
-            public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
-                continuePressed = true;
-            }
-        };
-        
-        startMenu.getNewgameButtonEvent().subscribe(newCallback);
-        
-        pauseMenu.getContinueButtonEvent().subscribe(continueCallback);
-        
-        overlay = new PlayerOverlay(gm, player);
-        
-        startMenu.show();
-        gameMap.updateActions(0);
+        gameMaps[0].updateActions(0);
+        gameMaps[1].updateActions(0);
         
         monkey2.setPosition(new Vector2f(-5, 0));
         player.setPosition(new Vector2f(0, -10));
+        
+        startMenu = new StartMenu(gm, input);
+        startMenu.getNewgameButtonEvent().subscribe(newCallback);
+        startMenu.show();
+        pauseMenu = new PauseMenu(gm, input);
+        pauseMenu.getContinueButtonEvent().subscribe(continueCallback);
+        overlay = new PlayerOverlay(gm, player);
     }
 
     @Override
@@ -156,7 +162,7 @@ public class MainCore extends ACore {
     protected void updateActions(long timePassed) {
         
         if(allowUpdates){
-            gameMap.updateActions(timePassed);
+            gameMaps[gameMapIndex].updateActions(timePassed);
         }
         
         if(newGamePressed){
@@ -196,7 +202,7 @@ public class MainCore extends ACore {
         floor.updateModel(Matrix4f.translate(0, 0, -2).multiply(
                 Matrix4f.scale(100, 100, 100)));
         
-        gameMap.updateModel();
+        gameMaps[gameMapIndex].updateModel();
         
         gm.draw();
     }

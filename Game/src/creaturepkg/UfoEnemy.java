@@ -1,5 +1,7 @@
 package creaturepkg;
 
+import java.util.Arrays;
+
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import silvertiger.tutorial.lwjgl.math.Vector2f;
@@ -16,7 +18,7 @@ public class UfoEnemy extends ACreature{
 	private float fireIncrement = 200;
 	
 	public UfoEnemy(Player player) {
-		super(Object3DFactory.getUfo(), 10, 2, 2, 0);
+		super(Arrays.asList(Object3DFactory.getUfo()), 10, 2, 2, 0);
 		this.player = player;
 		callback = new IPlayerEventListener() {
 			
@@ -29,9 +31,9 @@ public class UfoEnemy extends ACreature{
 	}
 	
 	@Override 
-    public void delete(){
+    public void delete(IGameMap map){
         player.getEventPublisher().unsubscribe(callback);
-        super.delete();
+        super.delete(map);
     }
 	
 	private void updateAim(){
@@ -46,11 +48,11 @@ public class UfoEnemy extends ACreature{
 	}
 
     @Override 
-	public void updateActions(float timepassed) {
+	public void updateActions(IGameMap map, float timepassed) {
 		lastFire += timepassed;
 		if(aim.x != 0 || aim.y != 0 ){
 			if(lastFire > fireIncrement ){
-			    containingMap.addMapElement(
+				map.addMapElement(
 			    		new Projectile(this, getPosition().add(new Vector2f(-.4f,+.4f)), aim)
 			    	);
 				lastFire = 0;
