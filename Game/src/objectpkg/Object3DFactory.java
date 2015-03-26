@@ -58,12 +58,19 @@ public class Object3DFactory {
             }
         };
     }
-    
     public static APcObject3D getUfo() {
         return new APcObject3D(){
             @Override
             public String getFilename() {
                 return "meshdata/ufo.ply";
+            }
+        };
+    }
+    public static APcObject3D getPlayerShip() {
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/playerShip.ply";
             }
         };
     }
