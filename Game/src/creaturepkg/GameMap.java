@@ -10,10 +10,10 @@ import silvertiger.tutorial.lwjgl.math.Vector2f;
 
 public class GameMap implements IGameMap {
 
-    private List<IMapElement> mapElements;
-    private List<ACreature> mapCreatures;
-    private List<Projectile> mapProjectiles;
-    private List<IMapElement> mapQueue;
+    private List<IMapElement> mapElements = new ArrayList<IMapElement>();
+    private List<ACreature> mapCreatures = new ArrayList<ACreature>();
+    private List<Projectile> mapProjectiles = new ArrayList<Projectile>();
+    private List<IMapElement> mapQueue = new LinkedList<IMapElement>();
     private GraphicsManager gm;
     
     private Vector2f maxBound;
@@ -23,14 +23,9 @@ public class GameMap implements IGameMap {
         this.gm = gm;
         this.maxBound = maxBound;
         this.minBound = minBound;
-        mapElements = new ArrayList<IMapElement>();
-        mapCreatures = new ArrayList<ACreature>();
-        mapProjectiles = new ArrayList<Projectile>();
-        mapQueue = new LinkedList<IMapElement>();
     }
 
-    @Override
-	public void addMapElement(IMapElement ele){
+    private void addMapElement(IMapElement ele){
         mapQueue.add(ele);
 	}
 
@@ -45,42 +40,73 @@ public class GameMap implements IGameMap {
 		addMapElement((IMapElement)ele);
 		mapProjectiles.add(ele);
 	}
+    
+	private void removeMapElement(IMapElement ele){
+    	mapElements.remove(ele);
+	}
+
+    @Override
+    public void removeMapElement(ACreature ele){
+    	removeMapElement((IMapElement)ele);
+		mapCreatures.remove(ele);
+	}
+
+    @Override
+	public void removeMapElement(Projectile ele){
+    	removeMapElement((IMapElement)ele);
+		mapProjectiles.remove(ele);
+	}
 	
 	@Override
     public void updateActions(float timepassed){
+		// Update all elements in the map
         for (IMapElement ele : mapElements){
-            ele.updateActions(timepassed);
+            ele.updateActions(this, timepassed);
         }
+        // Add all new elements to the map
         for(IMapElement ele : mapQueue){
             mapElements.add(ele);
             ele.attachMap(this);
         }
         mapQueue.clear();
+        
+        // update projectile collisions
         for(ACreature creature : mapCreatures){
-        	if(creature.isAlive())
+        	if(creature.getState() != MapElementState.DEAD)
         	for(Projectile proj : mapProjectiles){
-            	if(proj.isAlive()){
+            	if(proj.getState() != MapElementState.DEAD){
             		proj.updateCollision(creature);
             	}
             }
         }
-        for (IMapElement ele : new ArrayList<>(mapElements)){
-            if(!ele.isAlive()){
-                mapElements.remove(ele);
-                ele.detachMap();
-            }
-        }
+        // Remove dead elements
         for (ACreature creature : new ArrayList<>(mapCreatures)){
-            if(!creature.isAlive()){
+            if(creature.getState() == MapElementState.DEAD){
             	mapCreatures.remove(creature);
+                mapElements.remove(creature);
+                creature.removeMap(this);
             }
         }
         for (Projectile proj : new ArrayList<>(mapProjectiles)){
-            if(!proj.isAlive()){
+            if(proj.getState() == MapElementState.DEAD){
             	mapProjectiles.remove(proj);
+                mapElements.remove(proj);
+                proj.removeMap(this);
             }
         }
     }
+	
+	public void attachMapElements(){
+		for (IMapElement ele : mapElements){
+            ele.attachMap(this);
+		}
+	}
+	
+	public void detachMapElements(){
+		for (IMapElement ele : mapElements){
+            ele.removeMap(this);
+		}
+	}
 	
     @Override
     public void updateModel(){

@@ -7,29 +7,17 @@ import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import silvertiger.tutorial.lwjgl.math.Vector2f;
 
 public abstract class ACreature extends AMapElement {
-	//Creature variables
+	
+	protected Vector2f aim  = new Vector2f();
+
 	protected int maxHealth;
 	protected int currHealth;
 	private int attackLvl;
 	private int defenseLvl;
 	private int attackType = 0;
 	
-	protected Vector2f aim;
-	
-	protected ACreature(APcObject3D creatureMesh, int maxHealth, int attackLvl, int defenseLvl, int attackType) {
-		super(creatureMesh, new Vector2f());
-		this.aim = new Vector2f();
-		this.maxHealth = maxHealth;
-		this.attackLvl = attackLvl;
-		this.defenseLvl = defenseLvl;
-		this.attackType = attackType;
-		this.currHealth = maxHealth;
-		
-	}
-	
 	protected ACreature(List<APcObject3D> creatureMesh, int maxHealth, int attackLvl, int defenseLvl, int attackType) {
         super(creatureMesh, new Vector2f());
-		this.aim = new Vector2f();
         this.maxHealth = maxHealth;
         this.attackLvl = attackLvl;
         this.defenseLvl = defenseLvl;
@@ -50,8 +38,8 @@ public abstract class ACreature extends AMapElement {
 
     @Override
 	public void setPosition(Vector2f position){
-    	Vector2f minb = containingMap.getMinBoundary();
-    	Vector2f maxb = containingMap.getMaxBoundary();
+    	Vector2f minb = getMinBoundary();
+    	Vector2f maxb = getMaxBoundary();
     	super.setPosition(new Vector2f(
     			Math.min(maxb.x, Math.max(minb.x, position.x)),
     			Math.min(maxb.y, Math.max(minb.y, position.y))

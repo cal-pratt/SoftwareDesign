@@ -13,49 +13,43 @@ import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import silvertiger.tutorial.lwjgl.math.Vector2f;
 
 public class Player extends ACreature {
-	private PlayerEventPublisher eventPublisher;
+	private PlayerEventPublisher eventPublisher = new PlayerEventPublisher();
+	private Vector2f velocity = new Vector2f();
 	
 	private UserInput input;
-	private IKeyEventListener velocityKeyCallback;
-	private IKeyEventListener aimKeyCallback;
-    private IJoystickEventListener joystickCallback;
 	
 	private float rotationAngle = 0;
 	
 	private float flightSpeed = 100f;
     private float laserSpeed = 200f;
-	private Vector2f velocity;
 	private float lastFire = 0;
 	private float fireIncrement = 40;
 	
+	private int experience;
+	private int skillPoints;
+
+	private IKeyEventListener velocityKeyCallback  = new IKeyEventListener(){
+        @Override 
+        public void actionPerformed(KeyEventPublisher event, Key action){ 
+            updateKeyVelocity();
+        }
+    };
+	private IKeyEventListener aimKeyCallback = new IKeyEventListener(){
+        @Override 
+        public void actionPerformed(KeyEventPublisher event, Key action){ 
+            updateKeyAim();
+        }
+    };
+    private IJoystickEventListener joystickCallback = new IJoystickEventListener(){
+        @Override 
+        public void actionPerformed(JoystickEventPublisher event, Joystick action){
+            updateJoystickDir();
+        }
+    };
+	
 	public Player(UserInput input) {
 		super(Arrays.asList(Object3DFactory.getSpaceShipTop(), Object3DFactory.getSpaceShipBottom()), 10, 2, 2, 0);
-		eventPublisher = new PlayerEventPublisher();
-		this.velocity = new Vector2f();
 		this.input = input;
-		
-		velocityKeyCallback = new IKeyEventListener(){
-            @Override 
-            public void actionPerformed(KeyEventPublisher event, Key action) 
-            { 
-                updateKeyVelocity();
-            }
-	    };
-	    aimKeyCallback = new IKeyEventListener(){
-            @Override 
-            public void actionPerformed(KeyEventPublisher event, Key action) 
-            { 
-                updateKeyAim();
-            }
-	    };
-
-	    joystickCallback = new IJoystickEventListener(){
-            @Override 
-            public void actionPerformed(JoystickEventPublisher event, Joystick action) 
-            {
-                updateJoystickDir();
-            }
-        };
         
         input.getKeyInputEvent(GLFW_KEY_A).subscribe(velocityKeyCallback);
         input.getKeyInputEvent(GLFW_KEY_D).subscribe(velocityKeyCallback);
@@ -71,13 +65,11 @@ public class Player extends ACreature {
         if(input.JoystickFound(GLFW_JOYSTICK_1)){
             input.getJoystickInputEvent(GLFW_JOYSTICK_1).subscribe(joystickCallback);
         }
-        
-        
 	}
 	
 	@Override 
-	public void delete(){
-		super.delete();
+	public void delete(IGameMap map){
+		super.delete(map);
         input.getKeyInputEvent(GLFW_KEY_A).unsubscribe(velocityKeyCallback);
         input.getKeyInputEvent(GLFW_KEY_D).unsubscribe(velocityKeyCallback);
         input.getKeyInputEvent(GLFW_KEY_S).unsubscribe(velocityKeyCallback);
@@ -155,17 +147,17 @@ public class Player extends ACreature {
 	    }
 	}
 	
-	public void updateActions(float timepassed){
+	public void updateActions(IGameMap map, float timepassed){
 	    
         lastFire += timepassed;
 		
 		if(velocity.x != 0 || velocity.y != 0 ){
-		    if(velocity.x == 0){
-		        if(velocity.y > 0){
-		            rotationAngle = 0;
+		    if(velocity.y == 0){
+		        if(velocity.x > 0){
+		            rotationAngle = -90;
 		        }
 		        else{
-		            rotationAngle = 180;
+		            rotationAngle = 90;
 		        }
 		    }
 		    else{
@@ -185,12 +177,12 @@ public class Player extends ACreature {
 						3*(float)Math.sin(Math.toRadians(-rotationAngle + 10)),
 						3*(float)Math.cos(Math.toRadians(rotationAngle - 10))
 					));
-                containingMap.addMapElement(new Projectile(this, shipTip, aim));
+				map.addMapElement(new Projectile(this, shipTip, aim));
                 shipTip = getPosition().add(new Vector2f(
 						3*(float)Math.sin(Math.toRadians(-rotationAngle - 10)),
 						3*(float)Math.cos(Math.toRadians(rotationAngle + 10))
 					));
-                containingMap.addMapElement(new Projectile(this, shipTip, aim));
+                map.addMapElement(new Projectile(this, shipTip, aim));
 				lastFire = 0;
 			}
 		}
@@ -202,27 +194,11 @@ public class Player extends ACreature {
         super.updateModel(Matrix4f.rotate(rotationAngle, 0, 0, 1).multiply(Matrix4f.rotate(90, 1, 0, 0)));
 	}
     
-    public void doDamage(float dmg){
-        currHealth -= dmg;
-        if (currHealth < 0){
-            currHealth = 0;
-        }
-
-        if (currHealth > maxHealth){
-            currHealth = maxHealth;
-        }
-        eventPublisher.publish(this);
-    }
-    
     @Override
     public void setDead(){
         eventPublisher.publish(this);
         super.setDead();
     }
-
-	//Player variables
-	private int experience, skillPoints;
-	
 	
 	//Getters and Setters
 	public int getExperience() {

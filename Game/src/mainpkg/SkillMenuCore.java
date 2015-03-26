@@ -97,7 +97,6 @@ public class SkillMenuCore extends ACore {
     @Override
     protected void updateActions(long timePassed) {
         
-        //player.updateActions(timePassed);
         // If our close button event got fired then we hide the skill menu
         if(closePressed){
             skillMenu.hide();

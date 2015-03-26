@@ -1,5 +1,7 @@
 package creaturepkg;
 
+import java.util.Arrays;
+
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import silvertiger.tutorial.lwjgl.math.Vector2f;
@@ -10,7 +12,7 @@ public class Projectile extends AMapElement{
 	private ACreature owner;
 	
 	public Projectile(ACreature owner, Vector2f position, Vector2f velocity) {
-		super(Object3DFactory.getLaser(), position);
+		super(Arrays.asList(Object3DFactory.getLaser()), position);
 		this.owner = owner;
 		
 		this.velocity = new Vector2f(velocity.x, velocity.y);
@@ -31,7 +33,7 @@ public class Projectile extends AMapElement{
 	}
 
     @Override
-	public void updateActions(float timepassed){
+	public void updateActions(IGameMap map, float timepassed){
     	setPosition(getPosition().add(velocity.scale(timepassed/1000f)));
 
         if(owner.getPosition().subtract(getPosition()).length() > 2000){
