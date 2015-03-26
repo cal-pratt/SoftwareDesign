@@ -30,12 +30,13 @@ public class SkillMenu extends AMenu {
     //private IPlayerEventListener callBack;
     
     //TODO add local variables for current player info to avoid constant gets
-    int skillPoints = player.getSkillPoints();
+    private int skillPoints;
         
     public SkillMenu(GraphicsManager gm, UserInput input, Player player) {
         super(gm);
         this.player = player;
         this.input = input;
+        skillPoints = player.getSkillPoints();
         
 //        callBack = new IPlayerEventListener(){
 //            @Override

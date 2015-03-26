@@ -1,9 +1,13 @@
 package mainpkg;
 
+import creaturepkg.ACreature;
+import creaturepkg.GameMapManager;
 import creaturepkg.IGameMap;
 import creaturepkg.GameMap;
 import creaturepkg.MonkeyEnemy;
 import creaturepkg.Player;
+import creaturepkg.Portal;
+import creaturepkg.UfoEnemy;
 import inputpkg.Key;
 import menupkg.PauseMenu;
 import menupkg.PlayerOverlay;
@@ -25,31 +29,21 @@ import static org.lwjgl.glfw.GLFW.*;
 // Class definition ---------------------------------------------------------------------------- //
 public class MainCore extends ACore {
     
+	SkillMenu skillMenu;
     StartMenu startMenu;
     PauseMenu pauseMenu;
     PlayerOverlay overlay;
     
-    IGameMap gameMap;
-    IGameMap[] gameMaps = new IGameMap[2];
-    int gameMapIndex = 0;
+    GameMapManager gmm;
     
     private IKeyEventListener testCallback2 = new IKeyEventListener(){
         @Override 
         public void actionPerformed(KeyEventPublisher event, Key action){
-            if(action.getAction() == GLFW_PRESS){
-	        	gameMaps[gameMapIndex].detachMapElements();
-	        	gameMaps[gameMapIndex].removeMapElement(player);
-	        	gameMapIndex = gameMapIndex == 0? 1: 0;
-	        	gameMaps[gameMapIndex].addMapElement(player);
-	        	gameMaps[gameMapIndex].attachMapElements();
-	        	gameMaps[gameMapIndex].updateActions(0);
-	        	player.setPosition(new Vector2f(0, -10));
-            }
         }
     };
     
-    MonkeyEnemy monkey;
-    MonkeyEnemy monkey2;
+    ACreature ufo;
+    ACreature monkey2;
     APcObject3D floor;
     
     GraphicsManager gm;
@@ -93,9 +87,28 @@ public class MainCore extends ACore {
             continuePressed = true;
         }
     };
+    
+    IButtonEventListener closeSkillCallBack = new IButtonEventListener(){
+        @Override
+        public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
+        	skillPressed = true;
+        }
+    };
+    IKeyEventListener openSkillCallBack = new IKeyEventListener(){
+        @Override
+        public void actionPerformed(KeyEventPublisher sender, Key e) {
+        	if(e.getAction() == GLFW_PRESS){
+        		skillPressed = true;
+        	}
+        }
+    };
+    
+    
     private boolean newGamePressed = false; 
     private boolean continuePressed = false;
     private boolean allowUpdates = false;
+    private boolean skillPressed = false;
+    private boolean skillopen = false;
     
     
     // Customize core setup -------------------------------------------------------------------- //
@@ -125,25 +138,54 @@ public class MainCore extends ACore {
         gm = new GraphicsManager(windowWidth, windowHeight);
         gm.add(floor = Object3DFactory.getSquare());
         
-        gameMaps[0] = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
-        gameMaps[1] = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
+        GameMap gameMaps0 = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
+        GameMap gameMaps1 = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
+        GameMap gameMaps2 = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
         
-        gameMaps[0].addMapElement(player = new Player(input));
-        gameMaps[0].addMapElement(monkey = new MonkeyEnemy(player));
-        gameMaps[1].addMapElement(monkey2 = new MonkeyEnemy(player));
-
-        gameMaps[0].updateActions(0);
-        gameMaps[1].updateActions(0);
+        Portal portal0 = new Portal(gameMaps0);
+        Portal portal1 = new Portal(gameMaps1);
+        portal0.setExit(portal1);
+        portal1.setExit(portal0);
+        portal0.setPosition(new Vector2f(50, 0));
+        portal1.setPosition(new Vector2f(-50, 0));
         
-        monkey2.setPosition(new Vector2f(-5, 0));
-        player.setPosition(new Vector2f(0, -10));
+        Portal portal2 = new Portal(gameMaps0);
+        Portal portal3 = new Portal(gameMaps2);
+        portal2.setExit(portal3);
+        portal3.setExit(portal2);
+        portal2.setPosition(new Vector2f(0, 50));
+        portal3.setPosition(new Vector2f(-50, 0));
+        
+        gameMaps0.addMapElement(portal0);
+        gameMaps0.addMapElement(portal2);
+        gameMaps2.addMapElement(portal3);
+        gameMaps0.addMapElement(player = new Player(input));
+        gameMaps0.addMapElement(ufo = new UfoEnemy(player));
+        gameMaps0.addMapElement(new UfoEnemy(player));
+        gameMaps1.addMapElement(portal1);
+        gameMaps1.addMapElement(monkey2 = new MonkeyEnemy(player));
+        
+        gmm = new GameMapManager(player, gameMaps0);
+        gmm.addMap(gameMaps1);
+        gmm.addMap(gameMaps2);
+        
+        ufo.setPosition(new Vector2f(20, -5));
+        player.setPosition(new Vector2f(0, -50));
         
         startMenu = new StartMenu(gm, input);
         startMenu.getNewgameButtonEvent().subscribe(newCallback);
         startMenu.show();
+        
         pauseMenu = new PauseMenu(gm, input);
         pauseMenu.getContinueButtonEvent().subscribe(continueCallback);
+
+        skillMenu = new SkillMenu(gm, input, player);
+        skillMenu.getReturnToGameButtonEvent().subscribe(closeSkillCallBack);
+        input.getKeyInputEvent(GLFW_KEY_M).subscribe(openSkillCallBack);
+        
         overlay = new PlayerOverlay(gm, player);
+        
+        
     }
 
     @Override
@@ -162,7 +204,17 @@ public class MainCore extends ACore {
     protected void updateActions(long timePassed) {
         
         if(allowUpdates){
-            gameMaps[gameMapIndex].updateActions(timePassed);
+        	gmm.updateActions(timePassed);
+            if(skillPressed){
+            	skillPressed = false;
+            	if (skillopen){
+            		skillMenu.hide();
+            	}
+            	else{
+            		skillMenu.show();
+            	}
+            	skillopen = !skillopen;
+            }
         }
         
         if(newGamePressed){
@@ -191,18 +243,19 @@ public class MainCore extends ACore {
         
         Matrix4f projection = Matrix4f.perspective(35, windowRatio, 1, 1000);
         projection = projection.multiply(Matrix4f.rotate(-45, 1, 0, 0).multiply(
-                Matrix4f.translate(-player.getPosition().x, 50 - player.getPosition().y, -50)));
+                Matrix4f.translate(-player.getPosition().x, 60 - player.getPosition().y, -70)));
         
         gm.setPcProjection(projection);
         
         startMenu.updateView(new Matrix4f());
         pauseMenu.updateView(new Matrix4f());
         overlay.updateView(new Matrix4f());
+        skillMenu.updateView(new Matrix4f());
         
         floor.updateModel(Matrix4f.translate(0, 0, -2).multiply(
                 Matrix4f.scale(100, 100, 100)));
         
-        gameMaps[gameMapIndex].updateModel();
+        gmm.updateModel();
         
         gm.draw();
     }

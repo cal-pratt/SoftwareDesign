@@ -18,7 +18,7 @@ abstract class AMapElement implements IMapElement{
     private Vector2f maxBound;
     private Vector2f minBound;
 	
-	public boolean attached = false;
+	protected boolean attached = false;
 
 	protected AMapElement(List<APcObject3D> mesh, Vector2f position) {
 		this.state = MapElementState.IDLE;

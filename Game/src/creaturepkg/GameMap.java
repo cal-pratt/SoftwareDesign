@@ -10,10 +10,11 @@ import silvertiger.tutorial.lwjgl.math.Vector2f;
 
 public class GameMap implements IGameMap {
 
-    private List<IMapElement> mapElements = new ArrayList<IMapElement>();
-    private List<ACreature> mapCreatures = new ArrayList<ACreature>();
-    private List<Projectile> mapProjectiles = new ArrayList<Projectile>();
-    private List<IMapElement> mapQueue = new LinkedList<IMapElement>();
+    private List<IMapElement> mapElements = new ArrayList<>();
+    private List<ACreature> mapCreatures = new ArrayList<>();
+    private List<Projectile> mapProjectiles = new ArrayList<>();
+    private List<Portal> mapPortals = new ArrayList<>();
+    private List<IMapElement> mapQueue = new LinkedList<>();
     private GraphicsManager gm;
     
     private Vector2f maxBound;
@@ -41,6 +42,12 @@ public class GameMap implements IGameMap {
 		mapProjectiles.add(ele);
 	}
     
+    @Override
+	public void addMapElement(Portal ele){
+		addMapElement((IMapElement)ele);
+		mapPortals.add(ele);
+	}
+    
 	private void removeMapElement(IMapElement ele){
     	mapElements.remove(ele);
 	}
@@ -56,9 +63,15 @@ public class GameMap implements IGameMap {
     	removeMapElement((IMapElement)ele);
 		mapProjectiles.remove(ele);
 	}
-	
+
+    @Override
+	public void removeMapElement(Portal ele){
+    	removeMapElement((IMapElement)ele);
+		mapPortals.remove(ele);
+	}
+    
 	@Override
-    public void updateActions(float timepassed){
+    public void updateActions(Player player, float timepassed){
 		// Update all elements in the map
         for (IMapElement ele : mapElements){
             ele.updateActions(this, timepassed);
@@ -72,13 +85,21 @@ public class GameMap implements IGameMap {
         
         // update projectile collisions
         for(ACreature creature : mapCreatures){
-        	if(creature.getState() != MapElementState.DEAD)
-        	for(Projectile proj : mapProjectiles){
-            	if(proj.getState() != MapElementState.DEAD){
-            		proj.updateCollision(creature);
-            	}
-            }
+        	if(creature.getState() != MapElementState.DEAD){
+	        	for(Projectile proj : mapProjectiles){
+	            	if(proj.getState() != MapElementState.DEAD){
+	            		proj.updateCollision(creature);
+	            	}
+	            }
+        	}
         }
+        
+        for (Portal portal : mapPortals){
+        	if(player.getState() != MapElementState.DEAD){
+        		portal.updateCollision(player);
+        	}
+        }
+        
         // Remove dead elements
         for (ACreature creature : new ArrayList<>(mapCreatures)){
             if(creature.getState() == MapElementState.DEAD){
@@ -94,7 +115,37 @@ public class GameMap implements IGameMap {
                 proj.removeMap(this);
             }
         }
+        for (Portal portal : new ArrayList<>(mapPortals)){
+            if(portal.getState() == MapElementState.DEAD){
+            	mapPortals.remove(portal);
+                mapElements.remove(portal);
+                portal.removeMap(this);
+            }
+        }
     }
+
+	@Override
+	public boolean worpPossible(){
+
+        for (Portal portal : mapPortals){
+        	if(portal.isWorping()){
+        		return true;
+        	}
+        }
+        return false;
+	}
+
+	@Override
+	public Portal getExitPortal(){
+		for (Portal portal : mapPortals){
+        	if(portal.isWorping()){
+        		portal.setWorpingDone();
+        		return portal.getExit();
+        	}
+        }
+		return null;
+	}
+	
 	
 	public void attachMapElements(){
 		for (IMapElement ele : mapElements){

@@ -11,11 +11,14 @@ import eventpkg.GameEvents.PlayerEventPublisher;
 public class UfoEnemy extends ACreature{
 	private Player player;
 	private IPlayerEventListener callback;
+	private Vector2f velocity = new Vector2f();
 
     private float laserSpeed = 120f;
 	private float aggroRange = 40;
 	private float lastFire;
 	private float fireIncrement = 200;
+	
+	private float flightSpeed = 100f;
 	
 	public UfoEnemy(Player player) {
 		super(Arrays.asList(Object3DFactory.getUfo()), 10, 2, 2, 0);
@@ -28,6 +31,7 @@ public class UfoEnemy extends ACreature{
 			}
 		};
 		player.getEventPublisher().subscribe(callback);
+		velocity = new Vector2f(flightSpeed*.9f, flightSpeed);
 	}
 	
 	@Override 
@@ -46,9 +50,22 @@ public class UfoEnemy extends ACreature{
 			aim = new Vector2f();
 		}
 	}
-
-    @Override 
-	public void updateActions(IGameMap map, float timepassed) {
+    
+    @Override
+	public void updateActions(IGameMap map, float timepassed){
+    	Vector2f minb = getMinBoundary();
+    	Vector2f maxb = getMaxBoundary();
+    	
+    	Vector2f tempVelocity = velocity.scale(timepassed/1000);
+    	if (getPosition().x + tempVelocity.x > maxb.x || getPosition().x + tempVelocity.x < minb.x){
+    		velocity.x = -velocity.x;
+    	}
+    	if (getPosition().y + tempVelocity.y > maxb.y || getPosition().y + tempVelocity.y < minb.y){
+    		velocity.y = -velocity.y;
+    	}
+    	setPosition(getPosition().add(velocity.scale(timepassed/1000)));
+    	
+    	
 		lastFire += timepassed;
 		if(aim.x != 0 || aim.y != 0 ){
 			if(lastFire > fireIncrement ){
@@ -62,11 +79,10 @@ public class UfoEnemy extends ACreature{
 
 	public void updateModel() {
         Matrix4f model = Matrix4f.translate( 0, 0, 1).multiply(
-                Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1f, 1f, 1f)));
+                Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1.5f, 1.5f, 1.5f)));
 	    super.updateModel(model);
 	}
-    
-    //Getters and Setters
+	
     public float getAggroRange() {
         return aggroRange;
     }
