@@ -144,15 +144,15 @@ public class MainCore extends ACore {
         gm.add(floor = Object3DFactory.getStarsphere(), false);
         gm.add(border = Object3DFactory.getBorder(), true);
         
-        GameMap gameMaps[] = new GameMap[10];
-        for(int i = 0; i < 10 ; i++){
+        GameMap gameMaps[] = new GameMap[11];
+        for(int i = 0; i < 11 ; i++){
         	gameMaps[i] = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
         }
         
         gameMaps[0].addMapElement(player = new Player(input));
         player.setPosition(new Vector2f(0, -50));
         
-        for(int i = 0; i < 9 ; i++){
+        for(int i = 0; i < 10 ; i++){
         	Portal portalA = new Portal(gameMaps[i]);
             Portal portalB = new Portal(gameMaps[i+1]);
             portalA.setExit(portalB);
@@ -164,18 +164,18 @@ public class MainCore extends ACore {
         }
         
         ThirdBoss fb = new ThirdBoss(player);
-        gameMaps[0].addMapElement(fb);
+        gameMaps[10].addMapElement(fb);
         
         
         for(int i = 1; i < 4; i++){
-        	for(int j = 1; j < i + 2; j++){
+        	for(int j = 1; j < i + 4; j++){
         		MonkeyEnemy monkey = new MonkeyEnemy(player);
         		gameMaps[i].addMapElement(monkey);
         		monkey.setPosition(new Vector2f(((float)j)/2*-20 + ((float)j - ((float)i)/2)*20, 0));
         	}
         }
         for(int i = 0; i < 4; i++){
-        	for(int j = 1; j < i + 2; j++){
+        	for(int j = 1; j < i*2 + 4; j++){
         		UfoEnemy ufo = new UfoEnemy(player);
         		gameMaps[4+i].addMapElement(ufo);
         		ufo.setPosition(new Vector2f(((float)j)/2*-20 + ((float)j - ((float)i)/2)*20, 0));
@@ -184,7 +184,7 @@ public class MainCore extends ACore {
         
 
         for(int i = 1; i < 2; i++){
-        	for(int j = 1; j < i*10 + 2; j++){
+        	for(int j = 1; j < i*10 + 4; j++){
         		UfoEnemy ufo = new UfoEnemy(player);
         		gameMaps[8+i].addMapElement(ufo);
         		ufo.setPosition(new Vector2f(((float)j)/2*-20 + ((float)j - ((float)i*10)/2)*20, 0));
@@ -196,7 +196,7 @@ public class MainCore extends ACore {
 		ufo.fireIncrement = 0;
         
         gmm = new GameMapManager(player, gameMaps[0]);
-        for(int i = 1; i < 10 ; i++){
+        for(int i = 1; i < 11 ; i++){
             gmm.addMap(gameMaps[i]);
         }
         
@@ -274,6 +274,7 @@ public class MainCore extends ACore {
         }
         
         if(newGamePressed){
+        	skills = new Skills(skillMenu, player);
             allowUpdates = true;
             newGamePressed = false;
             startMenu.hide();

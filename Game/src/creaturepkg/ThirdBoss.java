@@ -40,7 +40,7 @@ public class ThirdBoss extends ACreature {
 	};
 	
 	public ThirdBoss(Player player) {
-		super(Arrays.asList(Object3DFactory.getCoolShip()), 100, 5, 3, 0);
+		super(Arrays.asList(Object3DFactory.getCoolShip()), 100, 4, 2, 0);
 		this.player = player;
 		player.getEventPublisher().subscribe(callback);
 		for(int i = 0; i <multiShotCount; i++){
@@ -102,7 +102,7 @@ public class ThirdBoss extends ACreature {
 		if(aim.x != 0 || aim.y != 0 ){
 			if(lastFire > fireIncrement ){
 				map.addMapElement(
-			    		new Projectile(this, getPosition(), aim)
+			    		new NormProjectile(this, getPosition(), aim)
 			    	);
 				lastFire = 0;
 			}
@@ -111,7 +111,7 @@ public class ThirdBoss extends ACreature {
 			for(Vector2f shot: shots){
 				if(shot.x != 0 || shot.y != 0 ){
 						map.addMapElement(
-					    		new Projectile(this, getPosition(), shot)
+					    		new NormProjectile(this, getPosition(), shot)
 					    	);
 						lastFire = 0;
 				}

@@ -78,7 +78,7 @@ public class FirstBoss extends ACreature {
 		if(aim.x != 0 || aim.y != 0 ){
 			if(lastFire > fireIncrement ){
 				map.addMapElement(
-			    		new Projectile(this, getPosition(), aim)
+			    		new NormProjectile(this, getPosition(), aim)
 			    	);
 				lastFire = 0;
 			}

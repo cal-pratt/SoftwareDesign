@@ -19,6 +19,8 @@ import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import silvertiger.tutorial.lwjgl.math.Vector2f;
 
+
+
 public class Player extends ACreature {
 	private PlayerEventPublisher eventPublisher = new PlayerEventPublisher();
 	private Vector2f velocity = new Vector2f();
@@ -36,6 +38,15 @@ public class Player extends ACreature {
 	private int expToLevel = 4;
 	private int skillPoints;
 	private int level = 1;
+	
+	private enum ProjType{
+		FIRE,
+		ICE,
+		STAR,
+		NORM
+	}
+	private ProjType projType = ProjType.NORM;
+	private int projCount = 1;
 	
 	private IKeyEventListener velocityKeyCallback  = new IKeyEventListener(){
         @Override 
@@ -55,6 +66,8 @@ public class Player extends ACreature {
             updateJoystickDir();
         }
     };
+    
+    
 	
 	public Player(UserInput input) {
 		super(Arrays.asList(Object3DFactory.getPlayerShip()), 10, 2, 2, 0);
@@ -97,6 +110,8 @@ public class Player extends ACreature {
 	public PlayerEventPublisher getEventPublisher(){
 		return eventPublisher;
 	}
+	
+	
 	
 	private void updateKeyVelocity(){
         float dx = 0;
@@ -180,16 +195,40 @@ public class Player extends ACreature {
 		
 		if(aim.x != 0 || aim.y != 0 ){
 			if(lastFire > fireIncrement ){
-				Vector2f shipTip = getPosition().add(new Vector2f(
-						3*(float)Math.sin(Math.toRadians(-rotationAngle + 10)),
-						3*(float)Math.cos(Math.toRadians(rotationAngle - 10))
-					));
-				map.addMapElement(new Projectile(this, shipTip, aim));
-                shipTip = getPosition().add(new Vector2f(
-						3*(float)Math.sin(Math.toRadians(-rotationAngle - 10)),
-						3*(float)Math.cos(Math.toRadians(rotationAngle + 10))
-					));
-                map.addMapElement(new Projectile(this, shipTip, aim));
+				if(projCount >= 1){
+					Vector2f shipTip = getPosition().add(new Vector2f(
+							3*(float)Math.sin(Math.toRadians(-rotationAngle + 10)),
+							3*(float)Math.cos(Math.toRadians(rotationAngle - 10))
+						));
+	                if(projCount == 2 || projCount == 3){
+	                	Vector2f a = aim.add(new Vector2f(
+								30*(float)Math.sin(Math.toRadians(-rotationAngle + 10)) - .2f,
+								30*(float)Math.cos(Math.toRadians(rotationAngle - 10))
+							)).normalize().scale(laserSpeed);
+
+	                	if(projType == ProjType.NORM) map.addMapElement(new NormProjectile(this, shipTip, a));
+	                	else if(projType == ProjType.FIRE) map.addMapElement(new FireProjectile(this, shipTip, a));
+	                	else if(projType == ProjType.ICE) map.addMapElement(new IceProjectile(this, shipTip, a));
+	                	else if(projType == ProjType.STAR) map.addMapElement(new StarProjectile(this, shipTip, a));
+	                }
+	                if(projCount == 1 || projCount == 3){
+	                	if(projType == ProjType.NORM) map.addMapElement(new NormProjectile(this, shipTip, aim));
+	                	else if(projType == ProjType.FIRE) map.addMapElement(new FireProjectile(this, shipTip, aim));
+	                	else if(projType == ProjType.ICE) map.addMapElement(new IceProjectile(this, shipTip, aim));
+	                	else if(projType == ProjType.STAR) map.addMapElement(new StarProjectile(this, shipTip, aim));
+	                }
+	                if(projCount == 2 || projCount == 3){
+	                	Vector2f a = aim.subtract(new Vector2f(
+							30*(float)Math.sin(Math.toRadians(-rotationAngle + 10))- .2f,
+							30*(float)Math.cos(Math.toRadians(rotationAngle - 10))
+						)).normalize().scale(laserSpeed);
+
+	                	if(projType == ProjType.NORM) map.addMapElement(new NormProjectile(this, shipTip, a));
+	                	else if(projType == ProjType.FIRE) map.addMapElement(new FireProjectile(this, shipTip, a));
+	                	else if(projType == ProjType.ICE) map.addMapElement(new IceProjectile(this, shipTip, a));
+	                	else if(projType == ProjType.STAR) map.addMapElement(new StarProjectile(this, shipTip, a));
+	                }
+				}
 				lastFire = 0;
 			}
 		}
@@ -202,6 +241,59 @@ public class Player extends ACreature {
         		Matrix4f.rotate(0, 0, 0, 1).multiply(Matrix4f.scale(1.5f,1.5f,1.5f).multiply(
                 		Matrix4f.rotate(90, 0, 0, 1)))));
 	}
+ 
+    public void setFirePressed(){
+    	projType = ProjType.FIRE;
+    	projCount = 1;
+    	setAttackLvl(3);
+    }
+    
+    public void setIcePressed(){
+    	projType = ProjType.ICE;
+    	projCount = 1;
+    	setAttackLvl(3);
+    }
+    
+    public void setStrongFirePressed(){
+    	projType = ProjType.FIRE;
+    	projCount = 1;
+    	setAttackLvl(4);
+    }
+    
+    public void setStrongIcePressed(){
+    	projType = ProjType.ICE;
+    	projCount = 1;
+    	setAttackLvl(4);
+    }
+    
+    public void setDoubleFirePressed(){
+    	projType = ProjType.FIRE;
+    	projCount = 2;
+    	setAttackLvl(3);
+    }
+    
+    public void setDoubleIcePressed(){
+    	projType = ProjType.ICE;
+    	projCount = 2;
+    	setAttackLvl(3);
+    }
+    
+    public void setTripleFirePressed(){
+    	projType = ProjType.FIRE;
+    	projCount = 3;
+    	setAttackLvl(3);
+    }
+    
+    public void setTripleIcePressed(){
+    	projType = ProjType.ICE;
+    	projCount = 3;
+    	setAttackLvl(3);
+    }
+    public void setStarPressed(){
+    	projType = ProjType.STAR;
+    	projCount = 3;
+    	setAttackLvl(4);
+    }
     
     @Override
     public void setDead(){
@@ -227,7 +319,7 @@ public class Player extends ACreature {
 	public void setExperience(int experience) {
 		this.experience = experience;
 		if(this.experience >= this.expToLevel){
-			this.level = 1;
+			this.level += 1;
 			this.experience -= this.expToLevel;
 			this.expToLevel *= 2;
 			this.skillPoints += 5;

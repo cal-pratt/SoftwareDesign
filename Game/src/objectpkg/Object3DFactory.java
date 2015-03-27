@@ -84,6 +84,38 @@ public class Object3DFactory {
             }
         };
     }
+    public static APcObject3D getFireLaser() {
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/fireLaser.ply";
+            }
+        };
+    }
+    public static APcObject3D getSimpleLaser() {
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/simpleLaser.ply";
+            }
+        };
+    }
+    public static APcObject3D getIceLaser() {
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/iceLaser.ply";
+            }
+        };
+    }
+    public static APcObject3D getStarLaser() {
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/star.ply";
+            }
+        };
+    }
     public static APcObject3D getUfo() {
         return new APcObject3D(){
             @Override

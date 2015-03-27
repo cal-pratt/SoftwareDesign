@@ -35,6 +35,7 @@ public class Skills {
     	
     	else if(player.getSkillPoints() >= 5) {
     		if(firePressed == false){
+    			player.setFirePressed();
         		player.setSkillPoints(player.getSkillPoints() - 5);
         		firePressed = true;
     		}
@@ -50,6 +51,7 @@ public class Skills {
     	
     	else if(player.getSkillPoints() >= 5) {
     		if(icePressed == false){
+    			player.setIcePressed();
         		player.setSkillPoints(player.getSkillPoints() - 5);
         		icePressed = true;
     		}
@@ -63,6 +65,7 @@ public class Skills {
     	if(firePressed == true){
     		if(strongFirePressed == false){
     			if(player.getSkillPoints() >= 5) {
+        			player.setStrongFirePressed();
             		player.setSkillPoints(player.getSkillPoints() - 5);
             		strongFirePressed = true;
             	}
@@ -77,6 +80,7 @@ public class Skills {
     	if(icePressed == true){
     		if(strongIcePressed == false){
     			if(player.getSkillPoints() >= 5) {
+        			player.setStrongIcePressed();
             		player.setSkillPoints(player.getSkillPoints() - 5);
             		strongIcePressed = true;
             	}
@@ -91,6 +95,7 @@ public class Skills {
     	if(strongFirePressed == true){
     		if(doubleFirePressed == false){
     			if(player.getSkillPoints() >= 10) {
+        			player.setDoubleFirePressed();
             		player.setSkillPoints(player.getSkillPoints() - 10);
             		doubleFirePressed = true;
             	}
@@ -105,6 +110,7 @@ public class Skills {
     	if(strongIcePressed == true){
     		if(doubleIcePressed == false){
     			if(player.getSkillPoints() >= 10) {
+        			player.setDoubleIcePressed();
             		player.setSkillPoints(player.getSkillPoints() - 10);
             		doubleIcePressed = true;
             	}
@@ -119,6 +125,7 @@ public class Skills {
     	if(doubleFirePressed == true){
     		if(tripleFirePressed == false){
     			if(player.getSkillPoints() >= 15) {
+        			player.setTripleFirePressed();
             		player.setSkillPoints(player.getSkillPoints() - 15);
             		tripleFirePressed = true;
             	}
@@ -133,6 +140,7 @@ public class Skills {
     	if(doubleIcePressed == true){
     		if(tripleIcePressed == false){
     			if(player.getSkillPoints() >= 15) {
+        			player.setTripleIcePressed();
             		player.setSkillPoints(player.getSkillPoints() - 15);
             		tripleIcePressed = true;
             	}
@@ -147,6 +155,7 @@ public class Skills {
     	if(tripleFirePressed == true || tripleIcePressed == true){
     		if(starPressed == false){
     			if(player.getSkillPoints() >= 25){
+        			player.setStarPressed();
     				player.setSkillPoints(player.getSkillPoints() - 15);
     				starPressed = true;
     			}

@@ -8,18 +8,22 @@
 package creaturepkg;
 
 import java.util.Arrays;
+import java.util.List;
 
+import objectpkg.APcObject3D;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import silvertiger.tutorial.lwjgl.math.Vector2f;
+
+
 
 public class Projectile extends AMapElement{
 	private Vector2f velocity;
 	private Matrix4f rot;
 	private ACreature owner;
 	
-	public Projectile(ACreature owner, Vector2f position, Vector2f velocity) {
-		super(Arrays.asList(Object3DFactory.getLaser()), position);
+	public Projectile(List<APcObject3D> mesh, ACreature owner, Vector2f position, Vector2f velocity) {
+		super(mesh, position);
 		this.owner = owner;
 		
 		this.velocity = new Vector2f(velocity.x, velocity.y);
@@ -43,14 +47,16 @@ public class Projectile extends AMapElement{
 	public void updateActions(IGameMap map, float timepassed){
     	setPosition(getPosition().add(velocity.scale(timepassed/1000f)));
 
-        if(owner.getPosition().subtract(getPosition()).length() > 2000){
+        if(owner.getPosition().subtract(getPosition()).length() > 100){
             setDead();
         }
 	}
 	
 	@Override
 	public void updateModel(){
-        super.updateModel(Matrix4f.scale(.5f, .5f, .5f).multiply(rot).multiply(Matrix4f.rotate(90, 0, 0, 1)));
+        super.updateModel(Matrix4f.scale(.5f, .5f, .5f).multiply(
+        		rot).multiply(Matrix4f.rotate(90, 0, 0, 1).multiply(
+        				Matrix4f.rotate(90, 1, 0, 0))));
 	}
 	
 	public void updateCollision(IGameMap map, ACreature creature){
