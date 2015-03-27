@@ -1,3 +1,11 @@
+/** SkillNames
+ * An enumeration of the different skills
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
+
 package creaturepkg;
 
 public enum SkillNames {
