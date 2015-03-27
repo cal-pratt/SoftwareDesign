@@ -1,3 +1,10 @@
+/** Portal
+ * A portal to transport the Player between maps
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import java.util.Arrays;

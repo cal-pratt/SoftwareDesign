@@ -1,3 +1,10 @@
+/** FirstBoss
+ * The first boss the player encounters
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import java.util.ArrayList;
@@ -19,6 +26,7 @@ public class FirstBoss extends ACreature {
 	private float fireIncrement = 200;
 	private Vector2f velocity = new Vector2f();
 	private List<Vector2f> shots = new ArrayList<Vector2f>();
+	private int multiShotCount = 6;
 
 	private float flightSpeed = 60f;
 	
@@ -33,6 +41,9 @@ public class FirstBoss extends ACreature {
 		super(Arrays.asList(Object3DFactory.getCoolShip()), 50, 2, 2, 0);
 		this.player = player;
 		player.getEventPublisher().subscribe(callback);
+		for(int i = 0; i <multiShotCount; i++){
+			shots.set(i, new Vector2f(0, 0));
+		}
 	}
 
     @Override 
@@ -52,8 +63,9 @@ public class FirstBoss extends ACreature {
 			}
 			
 			else {
-				for(int i = 0; i <6; i++){
-					shots.set(i, new Vector2f((float)Math.cos(i*Math.PI/3), (float)Math.sin(i*Math.PI/3)));
+				for(int i = 0; i <multiShotCount; i++){
+					shots.set(i, new Vector2f((float)Math.cos(i*2*Math.PI/multiShotCount), 
+							(float)Math.sin(i*2*Math.PI/multiShotCount)));
 				}
 				aim = new Vector2f();
 				

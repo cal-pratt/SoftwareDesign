@@ -1,3 +1,10 @@
+/** IMapElement
+ * An interface containing general items contained in maps and how they should be used
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import silvertiger.tutorial.lwjgl.math.Vector2f;

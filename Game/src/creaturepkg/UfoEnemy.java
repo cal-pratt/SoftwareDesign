@@ -1,3 +1,10 @@
+/** UfoEnemy
+ * An enemy with a UFO mesh that moves quickly around the screen
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import java.util.Arrays;

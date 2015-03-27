@@ -1,3 +1,10 @@
+/** Skills
+ * Different skills accessible through the skills menu
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import inputpkg.UserInput;

@@ -1,3 +1,10 @@
+/** IGameMap
+ * An interface outlining what each map should be able to do
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import silvertiger.tutorial.lwjgl.math.Vector2f;

@@ -1,3 +1,10 @@
+/** Projectile
+ * An attack fired by creatures to attack hostile creatures
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import java.util.Arrays;

@@ -1,3 +1,10 @@
+/** Player
+ * The Player controlled by the user
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import static org.lwjgl.glfw.GLFW.*;

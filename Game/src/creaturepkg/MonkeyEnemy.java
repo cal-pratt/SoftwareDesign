@@ -1,3 +1,10 @@
+/** MonkeyEnemy
+ * A simple enemy 
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 

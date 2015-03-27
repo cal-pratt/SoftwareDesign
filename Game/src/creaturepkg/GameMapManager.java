@@ -1,3 +1,10 @@
+/** GameMapManager
+ * Container for Game Maps, which handles their interactions
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import graphicspkg.GraphicsManager;

@@ -1,3 +1,10 @@
+/** AMapElement
+ * Abstract class implementing IMapElement
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import graphicspkg.GraphicsManager;

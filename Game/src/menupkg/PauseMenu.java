@@ -1,3 +1,10 @@
+/** PauseMenu
+ * A menu brought up when the player pauses the game - user can continue, save, or quit
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package menupkg;
 
 import eventpkg.GameEvents.*;
