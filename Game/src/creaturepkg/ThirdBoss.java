@@ -40,7 +40,7 @@ public class ThirdBoss extends ACreature {
 	};
 	
 	public ThirdBoss(Player player) {
-		super(Arrays.asList(Object3DFactory.getCoolShip()), 50, 2, 2, 0);
+		super(Arrays.asList(Object3DFactory.getCoolShip()), 100, 5, 3, 0);
 		this.player = player;
 		player.getEventPublisher().subscribe(callback);
 		for(int i = 0; i <multiShotCount; i++){
