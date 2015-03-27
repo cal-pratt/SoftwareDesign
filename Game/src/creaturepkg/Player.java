@@ -32,8 +32,10 @@ public class Player extends ACreature {
 	private float lastFire = 0;
 	private float fireIncrement = 40;
 	
-	private int experience;
+	private int experience = 0;
+	private int expToLevel = 4;
 	private int skillPoints;
+	private int level = 1;
 
 	private IKeyEventListener velocityKeyCallback  = new IKeyEventListener(){
         @Override 
@@ -55,7 +57,7 @@ public class Player extends ACreature {
     };
 	
 	public Player(UserInput input) {
-		super(Arrays.asList(Object3DFactory.getSpaceShipTop(), Object3DFactory.getSpaceShipBottom()), 10, 2, 2, 0);
+		super(Arrays.asList(Object3DFactory.getSpaceShipBottom(), Object3DFactory.getSpaceShipTop()), 10, 2, 2, 0);
 		this.input = input;
         
         input.getKeyInputEvent(GLFW_KEY_A).subscribe(velocityKeyCallback);
@@ -198,7 +200,9 @@ public class Player extends ACreature {
 	}
 	
 	public void updateModel(){
-        super.updateModel(Matrix4f.rotate(rotationAngle, 0, 0, 1).multiply(Matrix4f.rotate(90, 1, 0, 0)));
+        super.updateModel(Matrix4f.rotate(rotationAngle, 0, 0, 1).multiply(
+        		Matrix4f.rotate(90, 0, 0, 1).multiply(Matrix4f.scale(2,2,2).multiply(
+                		Matrix4f.rotate(90, 1, 0, 0)))));
 	}
     
     @Override
@@ -212,12 +216,25 @@ public class Player extends ACreature {
 		return experience;
 	}
 	
+	public int getExperienceToLevel() {
+		return expToLevel;
+	}
+	
+	
 	public int getSkillPoints() {
 		return skillPoints;
 	}
 	
+	
 	public void setExperience(int experience) {
 		this.experience = experience;
+		if(this.experience >= this.expToLevel){
+			this.level = 1;
+			this.experience -= this.expToLevel;
+			this.expToLevel *= 2;
+			this.skillPoints += 5;
+		}
+		eventPublisher.publish(this);
 	}
 	
 	public void setSkillPoints(int skillPoints) {

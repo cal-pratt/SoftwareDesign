@@ -11,7 +11,7 @@ import silvertiger.tutorial.lwjgl.math.Vector2f;
 import graphicspkg.GraphicsManager;
 
 public interface IGameMap {
-
+	
     public void addMapElement(ACreature creature);
     public void addMapElement(Projectile proj);
     public void addMapElement(Portal portal);

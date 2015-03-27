@@ -22,7 +22,7 @@ public class MonkeyEnemy extends ACreature {
     private float laserSpeed = 100f;
 	private float aggroRange = 30;
 	private float lastFire = 0;
-	private float fireIncrement = 200;
+	private float fireIncrement = 30;
 	
 	private IPlayerEventListener callback = new IPlayerEventListener() {
 		@Override

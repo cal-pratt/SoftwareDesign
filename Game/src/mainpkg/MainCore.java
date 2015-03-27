@@ -19,6 +19,7 @@ import objectpkg.APcObject3D;
 import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import silvertiger.tutorial.lwjgl.math.Vector2f;
+import silvertiger.tutorial.lwjgl.math.Vector3f;
 import graphicspkg.GraphicsManager;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
@@ -45,10 +46,14 @@ public class MainCore extends ACore {
     ACreature ufo;
     ACreature monkey2;
     APcObject3D floor;
+    float floorspin = 0;
     
     GraphicsManager gm;
     
     Player player;
+    
+    
+    float cameraheight;
 
     private IKeyEventListener testCallback3 = new IKeyEventListener(){
         @Override 
@@ -126,8 +131,8 @@ public class MainCore extends ACore {
     protected void startup() {
 
         glEnable(GL_CULL_FACE);
-        glCullFace(GL_FRONT);
-        glFrontFace(GL_CW);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
         glDepthRange(0.0f, 1.0f);
         
         
@@ -136,41 +141,60 @@ public class MainCore extends ACore {
         input.getKeyInputEvent(GLFW_KEY_P).subscribe(testCallback3);
     	
         gm = new GraphicsManager(windowWidth, windowHeight);
-        gm.add(floor = Object3DFactory.getSquare());
+        gm.add(floor = Object3DFactory.getPortal(), false);
         
-        GameMap gameMaps0 = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
-        GameMap gameMaps1 = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
-        GameMap gameMaps2 = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
+        GameMap gameMaps[] = new GameMap[10];
+        for(int i = 0; i < 10 ; i++){
+        	gameMaps[i] = new GameMap(gm, new Vector2f(-50, -50), new Vector2f(50, 50));
+        }
         
-        Portal portal0 = new Portal(gameMaps0);
-        Portal portal1 = new Portal(gameMaps1);
-        portal0.setExit(portal1);
-        portal1.setExit(portal0);
-        portal0.setPosition(new Vector2f(50, 0));
-        portal1.setPosition(new Vector2f(-50, 0));
-        
-        Portal portal2 = new Portal(gameMaps0);
-        Portal portal3 = new Portal(gameMaps2);
-        portal2.setExit(portal3);
-        portal3.setExit(portal2);
-        portal2.setPosition(new Vector2f(0, 50));
-        portal3.setPosition(new Vector2f(-50, 0));
-        
-        gameMaps0.addMapElement(portal0);
-        gameMaps0.addMapElement(portal2);
-        gameMaps2.addMapElement(portal3);
-        gameMaps0.addMapElement(player = new Player(input));
-        gameMaps0.addMapElement(ufo = new UfoEnemy(player));
-        gameMaps0.addMapElement(new UfoEnemy(player));
-        gameMaps1.addMapElement(portal1);
-        gameMaps1.addMapElement(monkey2 = new MonkeyEnemy(player));
-        
-        gmm = new GameMapManager(player, gameMaps0);
-        gmm.addMap(gameMaps1);
-        gmm.addMap(gameMaps2);
-        
-        ufo.setPosition(new Vector2f(20, -5));
+        gameMaps[0].addMapElement(player = new Player(input));
         player.setPosition(new Vector2f(0, -50));
+        
+        for(int i = 0; i < 9 ; i++){
+        	Portal portalA = new Portal(gameMaps[i]);
+            Portal portalB = new Portal(gameMaps[i+1]);
+            portalA.setExit(portalB);
+            portalB.setExit(portalA);
+            portalA.setPosition(new Vector2f(0, 50));
+            portalB.setPosition(new Vector2f(0, -50));
+            gameMaps[i].addMapElement(portalA);
+            gameMaps[i+1].addMapElement(portalB);
+        }
+        
+        
+        for(int i = 0; i < 4; i++){
+        	for(int j = 1; j < i + 2; j++){
+        		MonkeyEnemy monkey = new MonkeyEnemy(player);
+        		gameMaps[i].addMapElement(monkey);
+        		monkey.setPosition(new Vector2f(((float)j)/2*-20 + ((float)j - ((float)i)/2)*20, 0));
+        	}
+        }
+        for(int i = 0; i < 4; i++){
+        	for(int j = 1; j < i + 2; j++){
+        		UfoEnemy ufo = new UfoEnemy(player);
+        		gameMaps[4+i].addMapElement(ufo);
+        		ufo.setPosition(new Vector2f(((float)j)/2*-20 + ((float)j - ((float)i)/2)*20, 0));
+        	}
+        }
+        
+
+        for(int i = 1; i < 2; i++){
+        	for(int j = 1; j < i*10 + 2; j++){
+        		UfoEnemy ufo = new UfoEnemy(player);
+        		gameMaps[8+i].addMapElement(ufo);
+        		ufo.setPosition(new Vector2f(((float)j)/2*-20 + ((float)j - ((float)i*10)/2)*20, 0));
+        	}
+        }
+		UfoEnemy ufo = new UfoEnemy(player);
+		gameMaps[8].addMapElement(ufo);
+		ufo.setPosition(new Vector2f(((float)1)/2*-20 + ((float)1 - ((float)1*10)/2)*20, 0));
+		ufo.fireIncrement = 0;
+        
+        gmm = new GameMapManager(player, gameMaps[0]);
+        for(int i = 1; i < 10 ; i++){
+            gmm.addMap(gameMaps[i]);
+        }
         
         startMenu = new StartMenu(gm, input);
         startMenu.getNewgameButtonEvent().subscribe(newCallback);
@@ -235,6 +259,7 @@ public class MainCore extends ACore {
     @Override
     synchronized protected void draw(long timePassed) {
         glClearColor(0,0,0, 1.0f); 
+        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
@@ -245,18 +270,22 @@ public class MainCore extends ACore {
         projection = projection.multiply(Matrix4f.rotate(-45, 1, 0, 0).multiply(
                 Matrix4f.translate(-player.getPosition().x, 60 - player.getPosition().y, -70)));
         
-        gm.setPcProjection(projection);
+        gm.setCameraProjection(projection);
         
         startMenu.updateView(new Matrix4f());
         pauseMenu.updateView(new Matrix4f());
         overlay.updateView(new Matrix4f());
         skillMenu.updateView(new Matrix4f());
+        floorspin += timePassed*10;
+        floor.updateModel(Matrix4f.translate(0, 10, -80).multiply(
+        		Matrix4f.rotate(floorspin, 0, 0, 1).multiply(
+                Matrix4f.scale(20f + 2.0f*(float)Math.sin(floorspin/1000), 
+                		20+ 2.0f*(float)Math.sin(floorspin/1000), 0))));
         
-        floor.updateModel(Matrix4f.translate(0, 0, -2).multiply(
-                Matrix4f.scale(100, 100, 100)));
+        cameraheight += timePassed;
         
         gmm.updateModel();
-        
+        gm.setLightPos(new Vector3f(100,1000,1000));
         gm.draw();
     }
     

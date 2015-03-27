@@ -1,0 +1,23 @@
+package graphicspkg;
+
+import objectpkg.APcObject3D;
+
+class PcnLightingLinker implements IGraphicLinker {
+	private PcnLightingBuffer mesh;
+	private APcObject3D object;
+	private PcnLightingProgram program;
+	
+	public PcnLightingLinker(APcObject3D object, PcnLightingBuffer mesh, PcnLightingProgram program){
+		this.object = object;
+		this.mesh = mesh;
+		this.program = program;
+	}
+	
+    public void set(){
+    	program.setModel(object.getModel());
+    	mesh.bind();
+    }
+    public void draw(){
+    	mesh.draw();
+    }
+}

@@ -33,6 +33,9 @@ public abstract class ACreature extends AMapElement {
 		if(currHealth <= 0){
 			currHealth = 0;
 			setDead();
+			if(attacker.getClass() == Player.class){
+				((Player)attacker).setExperience(((Player)attacker).getExperience() + 2);
+			}
 		}
 	}
 

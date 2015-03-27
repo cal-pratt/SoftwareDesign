@@ -24,8 +24,10 @@ public class Portal extends AMapElement {
 	private float lastWorp = 0;
 	private float worpInterval = 50;
 	
+	private float spin = 0;
+	
 	public Portal(IGameMap holdingMap) {
-		super(Arrays.asList(Object3DFactory.getUfo()), new Vector2f());
+		super(Arrays.asList(Object3DFactory.getPortal()), new Vector2f());
 		this.holdingMap = holdingMap;
 	}
 	
@@ -63,6 +65,7 @@ public class Portal extends AMapElement {
 	@Override
 	public void updateActions(IGameMap map, float timepassed) {
 		lastWorp += timepassed;
+		spin += timepassed*4;
 		if(lastWorp > worpInterval){
 			lastWorp = 0;
 			canWorp = playerCollision;
@@ -71,7 +74,9 @@ public class Portal extends AMapElement {
 
 	@Override
 	public void updateModel() {
-		super.updateModel(new Matrix4f());
+		super.updateModel(Matrix4f.rotate(-spin,0,1,0).multiply(
+				Matrix4f.rotate(90,1,0,0).multiply(
+						Matrix4f.scale(.5f, .5f, .5f))));
 
 	}
 
