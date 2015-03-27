@@ -123,7 +123,7 @@ public class SkillMenuCore extends ACore {
         projection = projection.multiply(Matrix4f.rotate(-45, 1, 0, 0).multiply(
                 Matrix4f.translate(0, 50 - 0, -50)));
         
-        gm.setPcProjection(projection);
+        gm.setCameraProjection(projection);
         
         // The view matrix scales images into a box in-front of the screen. 
         // An identity is used because we don't want to scale, rotate or move the menu

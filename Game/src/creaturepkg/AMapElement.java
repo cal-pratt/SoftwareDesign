@@ -43,7 +43,7 @@ abstract class AMapElement implements IMapElement{
 	public void attachMap(IGameMap map){
     	if(!attached){
             for(APcObject3D m : meshList){
-            	map.getGraphicsManager().add(m);
+            	map.getGraphicsManager().add(m, true);
             }
             this.maxBound = map.getMaxBoundary();
             this.minBound = map.getMinBoundary();

@@ -23,7 +23,7 @@ public class UfoEnemy extends ACreature{
     private float laserSpeed = 120f;
 	private float aggroRange = 40;
 	private float lastFire;
-	private float fireIncrement = 200;
+	public float fireIncrement = 200;
 	
 	private float flightSpeed = 100f;
 	
@@ -38,7 +38,8 @@ public class UfoEnemy extends ACreature{
 			}
 		};
 		player.getEventPublisher().subscribe(callback);
-		velocity = new Vector2f(flightSpeed*.9f, flightSpeed);
+		velocity = new Vector2f(((float)Math.random()*2) - 1, ((float)Math.random()*2) - 1);
+		velocity = velocity.normalize().scale(flightSpeed);
 	}
 	
 	@Override 
