@@ -23,15 +23,6 @@ public class PlayerOverlay extends AMenu {
 	public PlayerOverlay(GraphicsManager gm, Player player) {
 		super(gm);
 		this.player = player;
-
-		exp = new MenuSprite(gm, Object2DFactory.getHealth(), 
-				width*57/100, height*93/100f, 0, height*7/100f);
-		
-		noexp = new MenuSprite(gm, Object2DFactory.getNoHealth(), 
-		        width*57/100, height*93/100f, expWidth(), height*7/100f);
-		
-		add(exp);
-		add(noexp);
 		
         add(new MenuSprite(
                 gm, Object2DFactory.getBanner(), 
@@ -42,17 +33,24 @@ public class PlayerOverlay extends AMenu {
 		
 		nohealth = new MenuSprite(gm, Object2DFactory.getNoHealth(), 
 		        width/100, height*9/10f, healthWidth(), height/10f);
-		
 
+		exp = new MenuSprite(gm, Object2DFactory.getHealth(), 
+				width*58/100, height*93/100f, 0, height*1f/10f);
+		
+		noexp = new MenuSprite(gm, Object2DFactory.getNoHealth(), 
+		        width*58/100, height*93/100f, expWidth(), height*1f/10f);
+		
 		add(nohealth);
 		add(health);
+		add(exp);
+		add(noexp);
 	}
 	
 	private float healthWidth(){
 		return width/2.15f;
 	}
 	private float expWidth(){
-		return width/3.5f;
+		return width/3.2f;
 	}
 	
 	private void updateHealthBar(){

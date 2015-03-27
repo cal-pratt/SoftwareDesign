@@ -17,6 +17,14 @@ public class Object3DFactory {
             }
         };
 	}
+	public static APcObject3D getStarsphere(){
+		return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/starsphere.ply";
+            }
+        };
+	}
 	public static APcObject3D getSquare(){
 		return new APcObject3D(){
             @Override

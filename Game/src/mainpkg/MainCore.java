@@ -1,6 +1,7 @@
 package mainpkg;
 
 import creaturepkg.ACreature;
+import creaturepkg.FirstBoss;
 import creaturepkg.GameMapManager;
 import creaturepkg.IGameMap;
 import creaturepkg.GameMap;
@@ -47,7 +48,6 @@ public class MainCore extends ACore {
     ACreature monkey2;
     APcObject3D floor;
     float floorspin = 0;
-    
     GraphicsManager gm;
     
     Player player;
@@ -141,7 +141,7 @@ public class MainCore extends ACore {
         input.getKeyInputEvent(GLFW_KEY_P).subscribe(testCallback3);
     	
         gm = new GraphicsManager(windowWidth, windowHeight);
-        gm.add(floor = Object3DFactory.getPortal(), false);
+        gm.add(floor = Object3DFactory.getStarsphere(), false);
         
         GameMap gameMaps[] = new GameMap[10];
         for(int i = 0; i < 10 ; i++){
@@ -162,8 +162,11 @@ public class MainCore extends ACore {
             gameMaps[i+1].addMapElement(portalB);
         }
         
+        FirstBoss fb = new FirstBoss(player);
+        gameMaps[0].addMapElement(fb);
         
-        for(int i = 0; i < 4; i++){
+        
+        for(int i = 1; i < 4; i++){
         	for(int j = 1; j < i + 2; j++){
         		MonkeyEnemy monkey = new MonkeyEnemy(player);
         		gameMaps[i].addMapElement(monkey);
@@ -208,6 +211,9 @@ public class MainCore extends ACore {
         input.getKeyInputEvent(GLFW_KEY_M).subscribe(openSkillCallBack);
         
         overlay = new PlayerOverlay(gm, player);
+        
+        
+        
         
         
     }
@@ -276,11 +282,12 @@ public class MainCore extends ACore {
         pauseMenu.updateView(new Matrix4f());
         overlay.updateView(new Matrix4f());
         skillMenu.updateView(new Matrix4f());
-        floorspin += timePassed*10;
-        floor.updateModel(Matrix4f.translate(0, 10, -80).multiply(
-        		Matrix4f.rotate(floorspin, 0, 0, 1).multiply(
-                Matrix4f.scale(20f + 2.0f*(float)Math.sin(floorspin/1000), 
-                		20+ 2.0f*(float)Math.sin(floorspin/1000), 0))));
+        floorspin += timePassed*.1f;
+        
+        floor.updateModel(Matrix4f.translate(0, 10, -50).multiply(
+                Matrix4f.scale(20f + 2.0f*(float)Math.sin(floorspin/1000f), 
+                		20+ 2.0f*(float)Math.sin(floorspin/1000f), 0).multiply(
+                        		Matrix4f.rotate(floorspin, 1,0, 0))));
         
         cameraheight += timePassed;
         

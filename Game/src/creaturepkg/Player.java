@@ -57,7 +57,7 @@ public class Player extends ACreature {
     };
 	
 	public Player(UserInput input) {
-		super(Arrays.asList(Object3DFactory.getSpaceShipBottom(), Object3DFactory.getSpaceShipTop()), 10, 2, 2, 0);
+		super(Arrays.asList(Object3DFactory.getPlayerShip()), 10, 2, 2, 0);
 		this.input = input;
         
         input.getKeyInputEvent(GLFW_KEY_A).subscribe(velocityKeyCallback);
@@ -175,8 +175,6 @@ public class Player extends ACreature {
 		    }
 
 	    	setPosition(getPosition().add(velocity.scale(timepassed/1000f)));
-
-            System.out.println(timepassed);
 	        
 		}
 		
@@ -201,8 +199,8 @@ public class Player extends ACreature {
 	
 	public void updateModel(){
         super.updateModel(Matrix4f.rotate(rotationAngle, 0, 0, 1).multiply(
-        		Matrix4f.rotate(90, 0, 0, 1).multiply(Matrix4f.scale(2,2,2).multiply(
-                		Matrix4f.rotate(90, 1, 0, 0)))));
+        		Matrix4f.rotate(0, 0, 0, 1).multiply(Matrix4f.scale(1.5f,1.5f,1.5f).multiply(
+                		Matrix4f.rotate(90, 0, 0, 1)))));
 	}
     
     @Override
