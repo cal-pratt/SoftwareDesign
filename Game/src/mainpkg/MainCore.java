@@ -117,10 +117,10 @@ public class MainCore extends ACore {
     
     // Customize core setup -------------------------------------------------------------------- //
     public MainCore(){
-        windowWidth = 1800;
-        windowHeight = 900;
+        windowWidth = 1024;
+        windowHeight = 768;
         windowFullscreen = GL_FALSE;
-        windowTitle = "Komputers r kewl";
+        windowTitle = "Orbit";
         exitKey = GLFW_KEY_ESCAPE;
         threadSleepDuration = 5l;
     }

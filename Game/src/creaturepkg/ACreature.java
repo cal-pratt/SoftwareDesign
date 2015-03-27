@@ -35,9 +35,11 @@ public abstract class ACreature extends AMapElement {
 			setDead();
 			if(attacker.getClass() == Player.class){
 				((Player)attacker).setExperience(((Player)attacker).getExperience() + 2);
-				HealthItem healthItem = new HealthItem();
-				healthItem.setPosition(getPosition());
-				map.addMapElement(healthItem);
+				if (Math.random() > 0.5){
+					HealthItem healthItem = new HealthItem();
+					healthItem.setPosition(getPosition());
+					map.addMapElement(healthItem);
+				}
 			}
 		}
 	}
