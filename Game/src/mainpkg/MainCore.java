@@ -1,6 +1,7 @@
 package mainpkg;
 
 import creaturepkg.ACreature;
+import creaturepkg.Skills;
 import creaturepkg.ThirdBoss;
 import creaturepkg.GameMapManager;
 import creaturepkg.IGameMap;
@@ -22,6 +23,7 @@ import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import silvertiger.tutorial.lwjgl.math.Vector2f;
 import silvertiger.tutorial.lwjgl.math.Vector3f;
+import utilpkg.FileInterpreter;
 import graphicspkg.GraphicsManager;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //
@@ -44,12 +46,14 @@ public class MainCore extends ACore {
     float floorspin = 0;
     
     Player player;
+    Skills skills;
 
     private boolean newGamePressed = false; 
     private boolean continuePressed = false;
     private boolean allowUpdates = false;
     private boolean skillPressed = false;
     private boolean skillopen = false;
+    private boolean contGamePressed  = false;
     
     private IKeyEventListener testCallback2 = new IKeyEventListener(){
         @Override 
@@ -76,16 +80,22 @@ public class MainCore extends ACore {
             overlay.hide();
         }
     };
-    private IButtonEventListener continueCallback = new IButtonEventListener(){
+    private IButtonEventListener pauseContCallback = new IButtonEventListener(){
         @Override
         public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
         	continuePressed = true;
         }
     };
-    private IButtonEventListener newCallback  = new IButtonEventListener(){
+    private IButtonEventListener newGameCallback  = new IButtonEventListener(){
         @Override
         public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
         	newGamePressed  = true;
+        }
+    };
+    private IButtonEventListener contGameCallback  = new IButtonEventListener(){
+        @Override
+        public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
+        	contGamePressed  = true;
         }
     };
     
@@ -201,8 +211,9 @@ public class MainCore extends ACore {
         input.getKeyInputEvent(GLFW_KEY_P).subscribe(testCallback3);
         skillMenu.getReturnToGameButtonEvent().subscribe(closeSkillCallBack);
         input.getKeyInputEvent(GLFW_KEY_M).subscribe(openSkillCallBack);
-        pauseMenu.getContinueButtonEvent().subscribe(continueCallback);
-        startMenu.getNewgameButtonEvent().subscribe(newCallback);
+        pauseMenu.getContinueButtonEvent().subscribe(pauseContCallback);
+        startMenu.getNewgameButtonEvent().subscribe(newGameCallback);
+        startMenu.getContinueButtonEvent().subscribe(contGameCallback);
 
         startMenu.show();
 
@@ -217,8 +228,9 @@ public class MainCore extends ACore {
         input.getKeyInputEvent(GLFW_KEY_P).unsubscribe(testCallback3);
         skillMenu.getReturnToGameButtonEvent().unsubscribe(closeSkillCallBack);
         input.getKeyInputEvent(GLFW_KEY_M).unsubscribe(openSkillCallBack);
-        pauseMenu.getContinueButtonEvent().unsubscribe(continueCallback);
-        startMenu.getNewgameButtonEvent().unsubscribe(newCallback);
+        pauseMenu.getContinueButtonEvent().unsubscribe(pauseContCallback);
+        startMenu.getNewgameButtonEvent().unsubscribe(newGameCallback);
+        startMenu.getContinueButtonEvent().unsubscribe(contGameCallback);
     	startMenu.delete();
     	pauseMenu.delete();
     	skillMenu.delete();
@@ -249,6 +261,16 @@ public class MainCore extends ACore {
             	}
             	skillopen = !skillopen;
             }
+            
+            if(player.getState() == MapElementState.DEAD){
+            	Player player = new Player(input);
+                FileInterpreter.savePlayerData(player, (skills = new Skills(skillMenu, player)));
+            	resetGame();
+            	player.delete();
+            }
+            else{
+                FileInterpreter.savePlayerData(player, skills);
+            }
         }
         
         if(newGamePressed){
@@ -257,16 +279,21 @@ public class MainCore extends ACore {
             startMenu.hide();
             pauseMenu.hide();
             overlay.show();
-        }else if(continuePressed){
+        }
+        else if(contGamePressed){
+            FileInterpreter.loadPlayerData(player, (skills = new Skills(skillMenu, player)));
+            allowUpdates = true;
+            contGamePressed = false;
+            startMenu.hide();
+            pauseMenu.hide();
+            overlay.show();
+        }
+        else if(continuePressed){
             allowUpdates = true;
             continuePressed = false;
             startMenu.hide();
             pauseMenu.hide();
             overlay.show();
-        }
-        
-        if(player.getState() == MapElementState.DEAD){
-        	resetGame();
         }
     }
 

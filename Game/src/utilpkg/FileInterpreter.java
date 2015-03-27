@@ -1,16 +1,93 @@
 package utilpkg;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import silvertiger.tutorial.lwjgl.math.*;
-//
-//import com.joml.vector.Vector4f;
+import silvertiger.tutorial.lwjgl.math.Vector4f;
+import creaturepkg.Player;
+import creaturepkg.Skills;
 
 public class FileInterpreter {
+	public static void loadPlayerData(Player player, Skills skills){
+		String filename = "save/save.txt";
+		try {
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
+            String line;
+            player.setSkillPoints(100000);
+            if((line = reader.readLine()) == null) throw new Exception();
+            player.setExperience(Integer.parseInt(line));
+            if((line = reader.readLine()) == null) throw new Exception();
+            if(Boolean.parseBoolean(line)) skills.setFirePressed();
+            if((line = reader.readLine()) == null) throw new Exception();
+            if(Boolean.parseBoolean(line)) skills.setIcePressed();
+            if((line = reader.readLine()) == null) throw new Exception();
+            if(Boolean.parseBoolean(line)) skills.setStrongFirePressed();
+            if((line = reader.readLine()) == null) throw new Exception();
+            if(Boolean.parseBoolean(line)) skills.setStrongIcePressed();
+            if((line = reader.readLine()) == null) throw new Exception();
+            if(Boolean.parseBoolean(line)) skills.setDoubleFirePressed();
+            if((line = reader.readLine()) == null) throw new Exception();
+            if(Boolean.parseBoolean(line)) skills.setDoubleIcePressed();
+            if((line = reader.readLine()) == null) throw new Exception();
+            if(Boolean.parseBoolean(line)) skills.setTripleFirePressed();
+            if((line = reader.readLine()) == null) throw new Exception();
+            if(Boolean.parseBoolean(line)) skills.setTripleIcePressed();
+            if((line = reader.readLine()) == null) throw new Exception();
+            if(Boolean.parseBoolean(line)) skills.setStarPressed();
+            if((line = reader.readLine()) == null) throw new Exception();
+            player.setCurrentHealth(Integer.parseInt(line));
+            if((line = reader.readLine()) == null) throw new Exception();
+            player.setSkillPoints(Integer.parseInt(line));
+            
+            reader.close();
+        } catch (Exception e) {
+            System.err.println("Could not read file: " + filename);
+            e.printStackTrace();
+        }
+	}
+	
+	public static void savePlayerData(Player player, Skills skills){
+        BufferedWriter writer = null;
+		String filename = "save/save.txt";
+        try {
+            File file = new File(filename);
+            
+            System.out.println(file.getCanonicalPath());
+
+            writer = new BufferedWriter(new FileWriter(file));
+            writer.write(String.valueOf(player.getExperience()) + "\n");
+            writer.write(String.valueOf(skills.getFirePressed()) + "\n");
+            writer.write(String.valueOf(skills.getIcePressed()) + "\n");
+            writer.write(String.valueOf(skills.getStrongFirePressed()) + "\n");
+            writer.write(String.valueOf(skills.getStrongIcePressed()) + "\n");
+            writer.write(String.valueOf(skills.getDoubleFirePressed()) + "\n");
+            writer.write(String.valueOf(skills.getDoubleIcePressed()) + "\n");
+            writer.write(String.valueOf(skills.getTripleFirePressed()) + "\n");
+            writer.write(String.valueOf(skills.getTripleIcePressed()) + "\n");
+            writer.write(String.valueOf(skills.getStarPressed()) + "\n");
+            writer.write(String.valueOf(player.getCurrentHealth()) + "\n");
+            writer.write(String.valueOf(player.getSkillPoints()) + "\n");
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } 
+            catch (Exception e) {
+            	
+            }
+        }
+    }
+	
+	
     public static StringBuilder fileToString(String filename) {
         StringBuilder stringBuilder = new StringBuilder();
          

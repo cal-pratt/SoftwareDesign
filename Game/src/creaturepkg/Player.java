@@ -36,7 +36,7 @@ public class Player extends ACreature {
 	private int expToLevel = 4;
 	private int skillPoints;
 	private int level = 1;
-
+	
 	private IKeyEventListener velocityKeyCallback  = new IKeyEventListener(){
         @Override 
         public void actionPerformed(KeyEventPublisher event, Key action){ 

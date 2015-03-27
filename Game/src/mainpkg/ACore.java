@@ -193,6 +193,8 @@ public abstract class ACore {
                 Thread.sleep(threadSleepDuration - (long)(glfwGetTime() - reference)/1000L);
             } catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
+                running = false;
+                
             }
             reference = glfwGetTime();
         }

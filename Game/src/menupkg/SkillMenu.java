@@ -78,6 +78,7 @@ public class SkillMenu extends AMenu {
         		width/1.13f, height - height/3.99f, width/9f, height/5.75f);
         
         add(new MenuSprite(gm, Object2DFactory.getSkillMenu(), 0, height - height/3f, width, height/3f));
+        
         add(returnToGame);
         add(fireSkill);
         add(iceSkill);

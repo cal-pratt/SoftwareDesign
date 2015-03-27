@@ -16,7 +16,16 @@ public class Object2DFactory {
                 return "sprites/banner.png";
             }
         };
-    } 
+    }
+    public static ATexObject2D getNumber(final int i){
+        return new ATexObject2D(){
+            @Override
+            public String getFilename() {
+                return "sprites/number" + String.valueOf(i) + ".png";
+            }
+        };
+    }
+    
     public static ATexObject2D getNewgameReleased(){
         return new ATexObject2D(){
             @Override
