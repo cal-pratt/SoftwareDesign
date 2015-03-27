@@ -310,6 +310,10 @@ public class Player extends ACreature {
 		return expToLevel;
 	}
 	
+	public int getLevel() {
+		return level;
+	}
+	
 	
 	public int getSkillPoints() {
 		return skillPoints;

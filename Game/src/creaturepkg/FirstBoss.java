@@ -89,7 +89,7 @@ public class FirstBoss extends ACreature {
 	public void updateModel() {
         Matrix4f model = Matrix4f.translate( 0, 0, 1).multiply(
         		Matrix4f.rotate(0,0,0,1).multiply(
-                Matrix4f.rotate(180, 1, 0, 0).multiply(Matrix4f.scale(.8f, .8f, .8f))));
+                Matrix4f.rotate(90, 0, 0, 1).multiply(Matrix4f.scale(.8f, .8f, .8f))));
 	    super.updateModel(model);
 	}
 

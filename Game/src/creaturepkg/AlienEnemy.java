@@ -16,7 +16,7 @@ import objectpkg.Object3DFactory;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import silvertiger.tutorial.lwjgl.math.Vector2f;
 
-public class MonkeyEnemy extends ACreature {
+public class AlienEnemy extends ACreature {
 	private Player player;
 
     private float laserSpeed = 100f;
@@ -31,8 +31,8 @@ public class MonkeyEnemy extends ACreature {
 		}
 	};
 	
-	public MonkeyEnemy(Player player) {
-		super(Arrays.asList(Object3DFactory.getMonkey()), 10, 2, 2, 0);
+	public AlienEnemy(Player player) {
+		super(Arrays.asList(Object3DFactory.getAlien()), 10, 2, 2, 0);
 		this.player = player;
 		player.getEventPublisher().subscribe(callback);
 	}
@@ -69,7 +69,7 @@ public class MonkeyEnemy extends ACreature {
 
 	public void updateModel() {
         Matrix4f model = Matrix4f.translate( 0, 0, 1).multiply(
-                Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1f, 1f, 1f)));
+                Matrix4f.rotate(90, 0, 0, 1).multiply(Matrix4f.scale(1f, 1f, 1f)));
 	    super.updateModel(model);
 	}
     

@@ -7,7 +7,7 @@ import creaturepkg.GameMapManager;
 import creaturepkg.IGameMap;
 import creaturepkg.GameMap;
 import creaturepkg.MapElementState;
-import creaturepkg.MonkeyEnemy;
+import creaturepkg.AlienEnemy;
 import creaturepkg.Player;
 import creaturepkg.Portal;
 import creaturepkg.GreenUfoEnemy;
@@ -169,7 +169,7 @@ public class MainCore extends ACore {
         
         for(int i = 1; i < 4; i++){
         	for(int j = 1; j < i + 4; j++){
-        		MonkeyEnemy monkey = new MonkeyEnemy(player);
+        		AlienEnemy monkey = new AlienEnemy(player);
         		gameMaps[i].addMapElement(monkey);
         		monkey.setPosition(new Vector2f(((float)j)/2*-20 + ((float)j - ((float)i)/2)*20, 0));
         	}

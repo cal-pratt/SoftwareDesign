@@ -1,5 +1,8 @@
 package menupkg;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import objectpkg.Object2DFactory;
 import creaturepkg.Player;
 import eventpkg.GameEvents.*;
@@ -11,22 +14,26 @@ public class PlayerOverlay extends AMenu {
 		public void actionPerformed(PlayerEventPublisher sender, Player e) {
 			updateHealthBar();
 			updateExpBar();
+			updateLevelNumber();
 		}
 	};
 	
     private Player player;
+    private MenuSprite banner;
     private MenuSprite health;
     private MenuSprite nohealth;
     private MenuSprite exp;
     private MenuSprite noexp;
+    private List<MenuSprite> tensDigit = new ArrayList<MenuSprite>();
+    private List<MenuSprite> onesDigit = new ArrayList<MenuSprite>();
 		
 	public PlayerOverlay(GraphicsManager gm, Player player) {
 		super(gm);
 		this.player = player;
 		
-        add(new MenuSprite(
+        banner = new MenuSprite(
                 gm, Object2DFactory.getBanner(), 
-                0,0, width, height));
+                0,0, width, height);
         
 		health = new MenuSprite(gm, Object2DFactory.getHealth(), 
 		        width/100, height*9/10f, healthWidth(), height/10f);
@@ -39,11 +46,22 @@ public class PlayerOverlay extends AMenu {
 		
 		noexp = new MenuSprite(gm, Object2DFactory.getNoHealth(), 
 		        width*58/100, height*93/100f, expWidth(), height*1f/10f);
-		
+        
+		add(banner);
 		add(nohealth);
 		add(health);
 		add(exp);
 		add(noexp);
+		
+		for (int i = 0; i < 10; i++){
+        	tensDigit.add(new MenuSprite(gm, Object2DFactory.getNumber(i), width/1.875f, height/1.07315f, width/31, height/15));
+        	add(tensDigit.get(i));
+        }
+        for (int i = 0; i < 10; i++){
+        	onesDigit.add(new MenuSprite(gm, Object2DFactory.getNumber(i), width/1.81f, height/1.07315f, width/31, height/15));
+        	add(onesDigit.get(i));
+        }
+		
 	}
 	
 	private float healthWidth(){
@@ -59,6 +77,17 @@ public class PlayerOverlay extends AMenu {
 	
 	private void updateExpBar(){
 		exp.setSize(expWidth() * player.getExperience()/ (float) player.getExperienceToLevel(), exp.getHeight());
+	}
+	
+	private void updateLevelNumber(){
+		for (int i = 0; i < 10; i++){
+        	tensDigit.get(i).hide();
+        }
+        for (int i = 0; i < 10; i++){
+        	onesDigit.get(i).hide();
+        }
+        onesDigit.get(player.getLevel()%10).show();
+        tensDigit.get(player.getLevel()/10).show();
 	}
 	
 	@Override

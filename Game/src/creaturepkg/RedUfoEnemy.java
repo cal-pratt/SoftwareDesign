@@ -77,7 +77,7 @@ public class RedUfoEnemy extends ACreature{
 		if(aim.x != 0 || aim.y != 0 ){
 			if(lastFire > fireIncrement ){
 				map.addMapElement(
-			    		new Projectile(this, getPosition().add(new Vector2f(-.4f,+.4f)), aim)
+			    		new FireProjectile(this, getPosition().add(new Vector2f(-.4f,+.4f)), aim)
 			    	);
 				lastFire = 0;
 			}

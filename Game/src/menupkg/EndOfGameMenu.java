@@ -23,11 +23,11 @@ public class EndOfGameMenu extends AMenu {
                 width/2f - height/7f, height/3f, width/5f, height/5f);
         
         add(new MenuSprite(gm, Object2DFactory.getPause(), width*1f/3.8f, height*2f/3.8f, width/2f, height*1f/3f));
-        add(continuegame);
+        add(newGame);
     }
     
     public ButtonEventPublisher getContinueButtonEvent(){
-        return continuegame.getEventPublisher();
+        return newGame.getEventPublisher();
     }
     
     public void reset(){
