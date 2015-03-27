@@ -177,4 +177,84 @@ public class Object2DFactory {
 			}
 		};
     }
+    public static ATexObject2D getSkillFireClicked(){
+    	return new ATexObject2D() {
+			@Override
+			public String getFilename() {
+				return "sprites/skillsfireclicked.png";
+			}
+		};
+    }
+    
+    public static ATexObject2D getSkillIceClicked(){
+    	return new ATexObject2D() {
+			@Override
+			public String getFilename() {
+				return "sprites/skillsiceclicked.png";
+			}
+		};
+    }
+    
+    public static ATexObject2D getSkillArrowRedClicked(){
+    	return new ATexObject2D() {
+			@Override
+			public String getFilename() {
+				return "sprites/skillsarrowredclicked.png";
+			}
+		};
+    }
+    
+    public static ATexObject2D getSkillArrowBlueClicked(){
+    	return new ATexObject2D() {
+			@Override
+			public String getFilename() {
+				return "sprites/skillsarrowblueclicked.png";
+			}
+		};
+    }
+    
+    public static ATexObject2D getSkillDoubleRedClicked(){
+    	return new ATexObject2D() {
+			@Override
+			public String getFilename() {
+				return "sprites/skillsdoubleredclicked.png";
+			}
+		};
+    }
+    
+    public static ATexObject2D getSkillDoubleBlueClicked(){
+    	return new ATexObject2D() {
+			@Override
+			public String getFilename() {
+				return "sprites/skillsdoubleblueclicked.png";
+			}
+		};
+    }
+    
+    public static ATexObject2D getSkillThreeRedClicked(){
+    	return new ATexObject2D() {
+			@Override
+			public String getFilename() {
+				return "sprites/skillsthreeredclicked.png";
+			}
+		};
+    }
+    
+    public static ATexObject2D getSkillThreeBlueClicked(){
+    	return new ATexObject2D() {
+			@Override
+			public String getFilename() {
+				return "sprites/skillsthreeblueclicked.png";
+			}
+		};
+    }
+    
+    public static ATexObject2D getSkillStarClicked(){
+    	return new ATexObject2D() {
+			@Override
+			public String getFilename() {
+				return "sprites/skillsstarclicked.png";
+			}
+		};
+    }
 }
