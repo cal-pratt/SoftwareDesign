@@ -14,13 +14,13 @@ public class StartMenu extends AMenu {
         
         newgame = new MenuButton(gm, input,
                 Object2DFactory.getNewgameReleased(), Object2DFactory.getNewgameClicked(),
-                width/2 - height/7, height/2, width/5, height/5);
+                width/3.9f, height/2.2f, width/5f, height/5f);
         
         continuegame = new MenuButton(gm, input,
                 Object2DFactory.getContinueReleased(), Object2DFactory.getContinueClicked(),
-                width/2 - height/7, height/2 - height/5, width/5, height/5);
+                width/1.9f, height/2.2f, width/5f, height/5f);
 		
-		//add(new MenuSprite(gm, Object2DFactory.getSpace(), 0f, 0f, width, height));
+		add(new MenuSprite(gm, Object2DFactory.getSpace(), 0f, 0f, width, height));
 		add(newgame);
 		add(continuegame);
 	}

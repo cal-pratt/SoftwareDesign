@@ -30,7 +30,7 @@ public class Object2DFactory {
         return new ATexObject2D(){
             @Override
             public String getFilename() {
-                return "sprites/space.png";
+                return "sprites/space5.png";
             }
         };
     }

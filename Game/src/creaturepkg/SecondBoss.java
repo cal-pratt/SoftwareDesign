@@ -23,14 +23,12 @@ public class SecondBoss extends ACreature {
     private float laserSpeed = 50f;
 	private float minDist = 35;
 	private float lastFire = 0;
-	private float fireIncrement = 75;
+	private float fireIncrement = 20;
 	private Vector2f velocity = new Vector2f();
-	private List<Vector2f> shots = new ArrayList<Vector2f>();
-	private int multiShotCount = 12;
 
 	private float spin = 0;
 	
-	private float flightSpeed = 60f;
+	private float flightSpeed = 75f;
 	
 	private IPlayerEventListener callback = new IPlayerEventListener() {
 		@Override
@@ -40,12 +38,9 @@ public class SecondBoss extends ACreature {
 	};
 	
 	public SecondBoss(Player player) {
-		super(Arrays.asList(Object3DFactory.getSecondBossShip()), 50, 2, 2, 0);
+		super(Arrays.asList(Object3DFactory.getSecondBossShip()), 75, 5, 2, 0);
 		this.player = player;
 		player.getEventPublisher().subscribe(callback);
-		for(int i = 0; i <multiShotCount; i++){
-			shots.add(new Vector2f(0, 0));
-		}
 	}
 
     @Override 
@@ -57,10 +52,9 @@ public class SecondBoss extends ACreature {
 	private void updateAim(){
 		
 		if (currHealth < maxHealth){
-			
+
+			Vector2f delta = player.getPosition().subtract(this.getPosition());
 			if (currHealth > maxHealth/2){
-				Vector2f delta = player.getPosition().subtract(this.getPosition());
-			
 		        aim = delta.normalize().scale(laserSpeed);
 		        
 		        if (delta.length() > minDist){
@@ -72,20 +66,12 @@ public class SecondBoss extends ACreature {
 			}
 			
 			else {
-				fireIncrement = 80;
-				laserSpeed = 40f;
-				Vector2f delta = new Vector2f().subtract(this.getPosition());
+				fireIncrement = 10;
+				laserSpeed = 60f;
 		        if (delta.length() > 1){
 		        	velocity = delta.normalize().scale(flightSpeed);
 		        }
-		        else {
-		        	velocity = new Vector2f();
-					for(int i = 0; i < multiShotCount; i++){
-						shots.set(i, new Vector2f((float)Math.cos(spin/7000 + i*2*Math.PI/multiShotCount), 
-								(float)Math.sin(spin/7000 + i*2*Math.PI/multiShotCount)).normalize().scale(laserSpeed));
-					}
-		        }
-				aim = new Vector2f();
+				aim = delta.normalize().scale(laserSpeed);
 			}
 		}
 		else {
@@ -107,17 +93,6 @@ public class SecondBoss extends ACreature {
 				lastFire = 0;
 			}
 		}
-		if(lastFire > fireIncrement ){
-			for(Vector2f shot: shots){
-				if(shot.x != 0 || shot.y != 0 ){
-						map.addMapElement(
-					    		new Projectile(this, getPosition(), shot)
-					    	);
-						lastFire = 0;
-				}
-			}
-		}
-		
 		setPosition(getPosition().add(velocity.scale(timepassed/1000)));
 	}
 
