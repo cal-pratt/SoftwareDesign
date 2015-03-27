@@ -132,7 +132,7 @@ public class MainCore extends ACore {
         
         gm = new GraphicsManager(windowWidth, windowHeight);
         gm.add(floor = Object3DFactory.getStarsphere(), false);
-        gm.add(border = Object3DFactory.getBorderSquare(), true);
+        gm.add(border = Object3DFactory.getBorder(), true);
         
         GameMap gameMaps[] = new GameMap[10];
         for(int i = 0; i < 10 ; i++){
@@ -297,7 +297,7 @@ public class MainCore extends ACore {
                 		20+ 2.0f*(float)Math.sin(floorspin/1000f), 0).multiply(
                         		Matrix4f.rotate(floorspin, 1,0, 0))));
         border.updateModel(Matrix4f.translate(0, 0,0).multiply(
-                Matrix4f.scale(12,12,12).multiply(Matrix4f.rotate(0, 1,0, 0))));
+                Matrix4f.scale(52,52,52).multiply(Matrix4f.rotate(0, 1,0, 0))));
         
         gmm.updateModel();
         gm.setLightPos(new Vector3f(100,1000,1000));

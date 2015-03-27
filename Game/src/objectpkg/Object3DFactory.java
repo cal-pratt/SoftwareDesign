@@ -26,11 +26,11 @@ public class Object3DFactory {
         };
 	}
 
-	public static APcObject3D getBorderSquare(){
+	public static APcObject3D getBorder(){
 		return new APcObject3D(){
             @Override
             public String getFilename() {
-                return "meshdata/redsquare.ply";
+                return "meshdata/border.ply";
             }
         };
 	}
