@@ -17,7 +17,7 @@ import silvertiger.tutorial.lwjgl.math.Vector2f;
 import eventpkg.GameEvents.IPlayerEventListener;
 import eventpkg.GameEvents.PlayerEventPublisher;
 
-public class FirstBoss extends ACreature {
+public class SecondBoss extends ACreature {
 	private Player player;
 
     private float laserSpeed = 50f;
@@ -39,8 +39,8 @@ public class FirstBoss extends ACreature {
 		}
 	};
 	
-	public FirstBoss(Player player) {
-		super(Arrays.asList(Object3DFactory.getAlien()), 50, 2, 2, 0);
+	public SecondBoss(Player player) {
+		super(Arrays.asList(Object3DFactory.getSecondBossShip()), 50, 2, 2, 0);
 		this.player = player;
 		player.getEventPublisher().subscribe(callback);
 		for(int i = 0; i <multiShotCount; i++){

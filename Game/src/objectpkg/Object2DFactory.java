@@ -88,6 +88,15 @@ public class Object2DFactory {
 		};
     }
     
+    public static ATexObject2D getSkillsButton(){
+    	return new ATexObject2D() {
+			@Override
+			public String getFilename() {
+				return "sprites/skillsbutton.png";
+			}
+		};
+    }
+    
     public static ATexObject2D getSkillFire(){
     	return new ATexObject2D() {
 			@Override

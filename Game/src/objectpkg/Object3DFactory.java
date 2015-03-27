@@ -108,6 +108,22 @@ public class Object3DFactory {
             }
         };
     }
+    public static APcObject3D getSecondBossShip() {
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/bossShip2.ply";
+            }
+        };
+    }
+    public static APcObject3D getAlien() {
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/alien.ply";
+            }
+        };
+    }
     public static APcObject3D getPortal() {
         return new APcObject3D(){
             @Override

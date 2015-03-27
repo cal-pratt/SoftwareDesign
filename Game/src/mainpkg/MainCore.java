@@ -1,7 +1,7 @@
 package mainpkg;
 
 import creaturepkg.ACreature;
-import creaturepkg.FirstBoss;
+import creaturepkg.ThirdBoss;
 import creaturepkg.GameMapManager;
 import creaturepkg.IGameMap;
 import creaturepkg.GameMap;
@@ -153,7 +153,7 @@ public class MainCore extends ACore {
             gameMaps[i+1].addMapElement(portalB);
         }
         
-        FirstBoss fb = new FirstBoss(player);
+        ThirdBoss fb = new ThirdBoss(player);
         gameMaps[0].addMapElement(fb);
         
         
