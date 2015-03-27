@@ -61,6 +61,12 @@ public class GameMapManager {
     	
 	}
 	
+	public void delete(){
+		for(IGameMap map : maps){
+			map.delete();
+		}
+	}
+	
 	
 }
 

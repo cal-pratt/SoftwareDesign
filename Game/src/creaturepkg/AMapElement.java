@@ -36,8 +36,7 @@ abstract class AMapElement implements IMapElement{
 	}
 	
 	@Override
-	public void delete(IGameMap map) {
-		removeMap(map);
+	public void delete() {
 	}
 	
 	public void attachMap(IGameMap map){

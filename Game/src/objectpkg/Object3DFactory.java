@@ -17,6 +17,24 @@ public class Object3DFactory {
             }
         };
 	}
+	public static APcObject3D getHeart(){
+		return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/heart.ply";
+            }
+        };
+	}
+
+	public static APcObject3D getBorderSquare(){
+		return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/redsquare.ply";
+            }
+        };
+	}
+	
 	public static APcObject3D getStarsphere(){
 		return new APcObject3D(){
             @Override

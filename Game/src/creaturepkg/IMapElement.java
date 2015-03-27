@@ -18,7 +18,7 @@ public interface IMapElement {
 	public void setPosition(Vector2f position);
 
 	public MapElementState getState();
-	public void delete(IGameMap map);
+	public void delete();
 	
 	public void attachMap(IGameMap map);
     public void removeMap(IGameMap map);

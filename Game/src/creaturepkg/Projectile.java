@@ -53,10 +53,10 @@ public class Projectile extends AMapElement{
         super.updateModel(Matrix4f.scale(.5f, .5f, .5f).multiply(rot).multiply(Matrix4f.rotate(90, 0, 0, 1)));
 	}
 	
-	public void updateCollision(ACreature creature){
+	public void updateCollision(IGameMap map, ACreature creature){
 		if(this.owner == creature) return;
 		if(creature.getPosition().subtract(getPosition()).length() < 2){
-			creature.applyDamage(owner);
+			creature.applyDamage(map, owner);
 			setDead();
 		}
 	}

@@ -25,7 +25,7 @@ public abstract class ACreature extends AMapElement {
         this.currHealth = maxHealth;
     }
 	
-	public void applyDamage(ACreature attacker){
+	public void applyDamage(IGameMap map, ACreature attacker){
 		int attack = attacker.attackLvl - this.defenseLvl + 1;
 		if(attack > 0){
 			currHealth -= attack;
@@ -35,6 +35,9 @@ public abstract class ACreature extends AMapElement {
 			setDead();
 			if(attacker.getClass() == Player.class){
 				((Player)attacker).setExperience(((Player)attacker).getExperience() + 2);
+				HealthItem healthItem = new HealthItem();
+				healthItem.setPosition(getPosition());
+				map.addMapElement(healthItem);
 			}
 		}
 	}
@@ -80,6 +83,12 @@ public abstract class ACreature extends AMapElement {
 	
 	public void setCurrentHealth(int currHealth) {
 		this.currHealth = currHealth;
+		if (this.currHealth > this.maxHealth){
+			this.currHealth = this.maxHealth;
+		}
+		else if(this.currHealth < 0){
+			this.currHealth = 0;
+		}
 	}
 	
 	public void setAttackLvl(int attackLvl) {

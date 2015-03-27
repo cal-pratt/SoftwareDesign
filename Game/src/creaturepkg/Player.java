@@ -77,8 +77,8 @@ public class Player extends ACreature {
 	}
 	
 	@Override 
-	public void delete(IGameMap map){
-		super.delete(map);
+	public void delete(){
+		super.delete();
         input.getKeyInputEvent(GLFW_KEY_A).unsubscribe(velocityKeyCallback);
         input.getKeyInputEvent(GLFW_KEY_D).unsubscribe(velocityKeyCallback);
         input.getKeyInputEvent(GLFW_KEY_S).unsubscribe(velocityKeyCallback);

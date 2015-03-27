@@ -5,6 +5,7 @@ import creaturepkg.FirstBoss;
 import creaturepkg.GameMapManager;
 import creaturepkg.IGameMap;
 import creaturepkg.GameMap;
+import creaturepkg.MapElementState;
 import creaturepkg.MonkeyEnemy;
 import creaturepkg.Player;
 import creaturepkg.Portal;
@@ -37,6 +38,18 @@ public class MainCore extends ACore {
     PlayerOverlay overlay;
     
     GameMapManager gmm;
+    GraphicsManager gm;
+    APcObject3D floor;
+    APcObject3D border;
+    float floorspin = 0;
+    
+    Player player;
+
+    private boolean newGamePressed = false; 
+    private boolean continuePressed = false;
+    private boolean allowUpdates = false;
+    private boolean skillPressed = false;
+    private boolean skillopen = false;
     
     private IKeyEventListener testCallback2 = new IKeyEventListener(){
         @Override 
@@ -44,30 +57,13 @@ public class MainCore extends ACore {
         }
     };
     
-    ACreature ufo;
-    ACreature monkey2;
-    APcObject3D floor;
-    float floorspin = 0;
-    GraphicsManager gm;
     
-    Player player;
-    
-    
-    float cameraheight;
-
     private IKeyEventListener testCallback3 = new IKeyEventListener(){
         @Override 
         public void actionPerformed(KeyEventPublisher event, Key action) 
         { 
             allowUpdates = false;
             pauseMenu.show();
-        }
-    };
-    
-    private IKeyEventListener testCallback4 = new IKeyEventListener(){
-        @Override 
-        public void actionPerformed(KeyEventPublisher event, Key action) 
-        { 
         }
     };
     
@@ -83,13 +79,13 @@ public class MainCore extends ACore {
     private IButtonEventListener continueCallback = new IButtonEventListener(){
         @Override
         public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
-            newGamePressed = true;
+        	continuePressed = true;
         }
     };
     private IButtonEventListener newCallback  = new IButtonEventListener(){
         @Override
         public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
-            continuePressed = true;
+        	newGamePressed  = true;
         }
     };
     
@@ -99,6 +95,7 @@ public class MainCore extends ACore {
         	skillPressed = true;
         }
     };
+    
     IKeyEventListener openSkillCallBack = new IKeyEventListener(){
         @Override
         public void actionPerformed(KeyEventPublisher sender, Key e) {
@@ -107,14 +104,6 @@ public class MainCore extends ACore {
         	}
         }
     };
-    
-    
-    private boolean newGamePressed = false; 
-    private boolean continuePressed = false;
-    private boolean allowUpdates = false;
-    private boolean skillPressed = false;
-    private boolean skillopen = false;
-    
     
     // Customize core setup -------------------------------------------------------------------- //
     public MainCore(){
@@ -134,14 +123,16 @@ public class MainCore extends ACore {
         glCullFace(GL_BACK);
         glFrontFace(GL_CCW);
         glDepthRange(0.0f, 1.0f);
+
+        newGamePressed = false; 
+        continuePressed = false;
+        allowUpdates = false;
+        skillPressed = false;
+        skillopen = false;
         
-        
-        input.getKeyInputEvent(GLFW_KEY_X).subscribe(testCallback1);
-        input.getKeyInputEvent(GLFW_KEY_1).subscribe(testCallback2);
-        input.getKeyInputEvent(GLFW_KEY_P).subscribe(testCallback3);
-    	
         gm = new GraphicsManager(windowWidth, windowHeight);
         gm.add(floor = Object3DFactory.getStarsphere(), false);
+        gm.add(border = Object3DFactory.getBorderSquare(), true);
         
         GameMap gameMaps[] = new GameMap[10];
         for(int i = 0; i < 10 ; i++){
@@ -200,28 +191,41 @@ public class MainCore extends ACore {
         }
         
         startMenu = new StartMenu(gm, input);
-        startMenu.getNewgameButtonEvent().subscribe(newCallback);
-        startMenu.show();
-        
         pauseMenu = new PauseMenu(gm, input);
-        pauseMenu.getContinueButtonEvent().subscribe(continueCallback);
-
         skillMenu = new SkillMenu(gm, input, player);
-        skillMenu.getReturnToGameButtonEvent().subscribe(closeSkillCallBack);
-        input.getKeyInputEvent(GLFW_KEY_M).subscribe(openSkillCallBack);
-        
         overlay = new PlayerOverlay(gm, player);
         
-        
-        
-        
+
+        input.getKeyInputEvent(GLFW_KEY_X).subscribe(testCallback1);
+        input.getKeyInputEvent(GLFW_KEY_1).subscribe(testCallback2);
+        input.getKeyInputEvent(GLFW_KEY_P).subscribe(testCallback3);
+        skillMenu.getReturnToGameButtonEvent().subscribe(closeSkillCallBack);
+        input.getKeyInputEvent(GLFW_KEY_M).subscribe(openSkillCallBack);
+        pauseMenu.getContinueButtonEvent().subscribe(continueCallback);
+        startMenu.getNewgameButtonEvent().subscribe(newCallback);
+
+        startMenu.show();
+
+
         
     }
 
     @Override
     protected void teardown() {
-    	startMenu.delete();
         input.getKeyInputEvent(GLFW_KEY_X).unsubscribe(testCallback1);
+        input.getKeyInputEvent(GLFW_KEY_1).unsubscribe(testCallback2);
+        input.getKeyInputEvent(GLFW_KEY_P).unsubscribe(testCallback3);
+        skillMenu.getReturnToGameButtonEvent().unsubscribe(closeSkillCallBack);
+        input.getKeyInputEvent(GLFW_KEY_M).unsubscribe(openSkillCallBack);
+        pauseMenu.getContinueButtonEvent().unsubscribe(continueCallback);
+        startMenu.getNewgameButtonEvent().unsubscribe(newCallback);
+    	startMenu.delete();
+    	pauseMenu.delete();
+    	skillMenu.delete();
+    	overlay.delete();
+    	gmm.delete();
+    	gm.delete();
+    	player.delete();
     }
 
     @Override
@@ -260,10 +264,14 @@ public class MainCore extends ACore {
             pauseMenu.hide();
             overlay.show();
         }
+        
+        if(player.getState() == MapElementState.DEAD){
+        	resetGame();
+        }
     }
 
     @Override
-    synchronized protected void draw(long timePassed) {
+    protected void draw(long timePassed) {
         glClearColor(0,0,0, 1.0f); 
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -288,8 +296,8 @@ public class MainCore extends ACore {
                 Matrix4f.scale(20f + 2.0f*(float)Math.sin(floorspin/1000f), 
                 		20+ 2.0f*(float)Math.sin(floorspin/1000f), 0).multiply(
                         		Matrix4f.rotate(floorspin, 1,0, 0))));
-        
-        cameraheight += timePassed;
+        border.updateModel(Matrix4f.translate(0, 0,0).multiply(
+                Matrix4f.scale(12,12,12).multiply(Matrix4f.rotate(0, 1,0, 0))));
         
         gmm.updateModel();
         gm.setLightPos(new Vector3f(100,1000,1000));

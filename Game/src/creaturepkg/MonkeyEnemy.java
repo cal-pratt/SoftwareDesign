@@ -38,9 +38,9 @@ public class MonkeyEnemy extends ACreature {
 	}
 
     @Override 
-    public void delete(IGameMap map){
+    public void delete(){
         player.getEventPublisher().unsubscribe(callback);
-        super.delete(map);
+        super.delete();
     }
 	
 	private void updateAim(){

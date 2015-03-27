@@ -21,6 +21,7 @@ public class GameMap implements IGameMap {
     private List<ACreature> mapCreatures = new ArrayList<>();
     private List<Projectile> mapProjectiles = new ArrayList<>();
     private List<Portal> mapPortals = new ArrayList<>();
+    private List<HealthItem> healthItems = new ArrayList<>();
     private List<IMapElement> mapQueue = new LinkedList<>();
     private GraphicsManager gm;
     
@@ -55,6 +56,12 @@ public class GameMap implements IGameMap {
 		mapPortals.add(ele);
 	}
     
+    @Override
+	public void addMapElement(HealthItem ele){
+		addMapElement((IMapElement)ele);
+		healthItems.add(ele);
+	}
+    
 	private void removeMapElement(IMapElement ele){
     	mapElements.remove(ele);
 	}
@@ -76,6 +83,12 @@ public class GameMap implements IGameMap {
     	removeMapElement((IMapElement)ele);
 		mapPortals.remove(ele);
 	}
+
+    @Override
+	public void removeMapElement(HealthItem ele){
+    	removeMapElement((IMapElement)ele);
+    	healthItems.remove(ele);
+	}
     
 	@Override
     public void updateActions(Player player, float timepassed){
@@ -95,7 +108,7 @@ public class GameMap implements IGameMap {
         	if(creature.getState() != MapElementState.DEAD){
 	        	for(Projectile proj : mapProjectiles){
 	            	if(proj.getState() != MapElementState.DEAD){
-	            		proj.updateCollision(creature);
+	            		proj.updateCollision(this, creature);
 	            	}
 	            }
         	}
@@ -104,6 +117,12 @@ public class GameMap implements IGameMap {
         for (Portal portal : mapPortals){
         	if(player.getState() != MapElementState.DEAD){
         		portal.updateCollision(player);
+        	}
+        }
+        
+        for (HealthItem healthItem : healthItems){
+        	if(player.getState() != MapElementState.DEAD){
+        		healthItem.updateCollision(player);
         	}
         }
         
@@ -127,6 +146,13 @@ public class GameMap implements IGameMap {
             	mapPortals.remove(portal);
                 mapElements.remove(portal);
                 portal.removeMap(this);
+            }
+        }
+        for (HealthItem healthItem : new ArrayList<>(healthItems)){
+            if(healthItem.getState() == MapElementState.DEAD){
+            	healthItems.remove(healthItem);
+                mapElements.remove(healthItem);
+                healthItem.removeMap(this);
             }
         }
     }
@@ -187,6 +213,11 @@ public class GameMap implements IGameMap {
     public Vector2f getMinBoundary() {
         return new Vector2f(minBound.x, minBound.y);
     }
+
+	@Override
+	public void delete() {
+		detachMapElements();
+	}
     
     
 }

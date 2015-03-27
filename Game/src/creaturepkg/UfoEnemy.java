@@ -17,7 +17,13 @@ import eventpkg.GameEvents.PlayerEventPublisher;
 
 public class UfoEnemy extends ACreature{
 	private Player player;
-	private IPlayerEventListener callback;
+	private IPlayerEventListener callback= new IPlayerEventListener() {
+		
+		@Override
+		public void actionPerformed(PlayerEventPublisher sender, Player e) {
+		    updateAim();
+		}
+	};;
 	private Vector2f velocity = new Vector2f();
 
     private float laserSpeed = 120f;
@@ -30,22 +36,15 @@ public class UfoEnemy extends ACreature{
 	public UfoEnemy(Player player) {
 		super(Arrays.asList(Object3DFactory.getUfo()), 10, 2, 2, 0);
 		this.player = player;
-		callback = new IPlayerEventListener() {
-			
-			@Override
-			public void actionPerformed(PlayerEventPublisher sender, Player e) {
-			    updateAim();
-			}
-		};
 		player.getEventPublisher().subscribe(callback);
 		velocity = new Vector2f(((float)Math.random()*2) - 1, ((float)Math.random()*2) - 1);
 		velocity = velocity.normalize().scale(flightSpeed);
 	}
 	
 	@Override 
-    public void delete(IGameMap map){
+    public void delete(){
         player.getEventPublisher().unsubscribe(callback);
-        super.delete(map);
+        super.delete();
     }
 	
 	private void updateAim(){

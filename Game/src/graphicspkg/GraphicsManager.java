@@ -147,6 +147,9 @@ public class GraphicsManager {
 		for(APcObject3D pcObject : new HashSet<APcObject3D>(graphicPcLinkers.keySet())){
 			remove(pcObject);
 		}
+		for(APcObject3D pcObject : new HashSet<APcObject3D>(pcnLightingLinkers.keySet())){
+			remove(pcObject);
+		}
         for(ATexObject2D texObject : new HashSet<ATexObject2D>(graphicTexLinkers.keySet())){
             remove(texObject);
         }

@@ -45,6 +45,7 @@ public abstract class ACore {
 
     // State ----------------------------------------------------------------------------------- //
     private boolean running = true;
+    private boolean reset = false;
     
     // Abstract functions ---------------------------------------------------------------------- //
     protected abstract void startup();
@@ -61,7 +62,10 @@ public abstract class ACore {
             createInput();
             GLContext.createFromCurrent();
             
-            mainLoop();
+            while(isRunning()){
+            	reset = false;
+            	mainLoop();
+            }
             
             System.out.println("Exiting window: " + windowTitle);
             glfwDestroyWindow(windowIdentifier);
@@ -74,6 +78,7 @@ public abstract class ACore {
             glfwTerminate();
             errorCallback.release();
         }
+        
     }
 
     // Load OpenGl and populate window --------------------------------------------------------- //
@@ -133,6 +138,7 @@ public abstract class ACore {
             public void invoke(long window, int key, int scancode, int action, int mods) {
                 if ( key == exitKey && action == GLFW_RELEASE ){
                     glfwSetWindowShouldClose(window, GL_TRUE);
+                    quit();
                 }
                 else if (window == windowIdentifier) {
                     input.keyInvoke(key, scancode, action, mods);
@@ -174,7 +180,9 @@ public abstract class ACore {
 
             
             updateActions(threadSleepDuration);
-            
+            if(reset){
+            	break;
+            }
             draw(threadSleepDuration);
             
             glfwSwapBuffers(windowIdentifier);
@@ -193,10 +201,13 @@ public abstract class ACore {
     }
 
     // Status and control hooks ---------------------------------------------------------------- //
-    synchronized public void quit() {
+    public void quit() {
         running = false;
     }
-    synchronized public boolean isRunning(){
+    public void resetGame() {
+        reset = true;
+    }
+    public boolean isRunning(){
         return running;
     }
 }
