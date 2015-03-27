@@ -124,6 +124,14 @@ public class Object3DFactory {
             }
         };
     }
+    public static APcObject3D getRedUfo() {
+        return new APcObject3D(){
+            @Override
+            public String getFilename() {
+                return "meshdata/redufo.ply";
+            }
+        };
+    }
     public static APcObject3D getPlayerShip() {
         return new APcObject3D(){
             @Override

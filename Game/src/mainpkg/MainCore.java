@@ -10,7 +10,7 @@ import creaturepkg.MapElementState;
 import creaturepkg.MonkeyEnemy;
 import creaturepkg.Player;
 import creaturepkg.Portal;
-import creaturepkg.UfoEnemy;
+import creaturepkg.GreenUfoEnemy;
 import inputpkg.Key;
 import menupkg.PauseMenu;
 import menupkg.PlayerOverlay;
@@ -175,8 +175,8 @@ public class MainCore extends ACore {
         	}
         }
         for(int i = 0; i < 4; i++){
-        	for(int j = 1; j < i*2 + 4; j++){
-        		UfoEnemy ufo = new UfoEnemy(player);
+        	for(int j = 1; j < i + 2; j++){
+        		GreenUfoEnemy ufo = new GreenUfoEnemy(player);
         		gameMaps[4+i].addMapElement(ufo);
         		ufo.setPosition(new Vector2f(((float)j)/2*-20 + ((float)j - ((float)i)/2)*20, 0));
         	}
@@ -184,13 +184,13 @@ public class MainCore extends ACore {
         
 
         for(int i = 1; i < 2; i++){
-        	for(int j = 1; j < i*10 + 4; j++){
-        		UfoEnemy ufo = new UfoEnemy(player);
+        	for(int j = 1; j < i*10 + 2; j++){
+        		GreenUfoEnemy ufo = new GreenUfoEnemy(player);
         		gameMaps[8+i].addMapElement(ufo);
         		ufo.setPosition(new Vector2f(((float)j)/2*-20 + ((float)j - ((float)i*10)/2)*20, 0));
         	}
         }
-		UfoEnemy ufo = new UfoEnemy(player);
+		GreenUfoEnemy ufo = new GreenUfoEnemy(player);
 		gameMaps[8].addMapElement(ufo);
 		ufo.setPosition(new Vector2f(((float)1)/2*-20 + ((float)1 - ((float)1*10)/2)*20, 0));
 		ufo.fireIncrement = 0;

@@ -15,7 +15,7 @@ import silvertiger.tutorial.lwjgl.math.Vector2f;
 import eventpkg.GameEvents.IPlayerEventListener;
 import eventpkg.GameEvents.PlayerEventPublisher;
 
-public class UfoEnemy extends ACreature{
+public class GreenUfoEnemy extends ACreature{
 	private Player player;
 	private IPlayerEventListener callback= new IPlayerEventListener() {
 		
@@ -33,7 +33,7 @@ public class UfoEnemy extends ACreature{
 	
 	private float flightSpeed = 100f;
 	
-	public UfoEnemy(Player player) {
+	public GreenUfoEnemy(Player player) {
 		super(Arrays.asList(Object3DFactory.getUfo()), 10, 2, 2, 0);
 		this.player = player;
 		player.getEventPublisher().subscribe(callback);
