@@ -20,14 +20,16 @@ import eventpkg.GameEvents.PlayerEventPublisher;
 public class FirstBoss extends ACreature {
 	private Player player;
 
-    private float laserSpeed = 100f;
-	private float minDist = 5;
+    private float laserSpeed = 50f;
+	private float minDist = 35;
 	private float lastFire = 0;
-	private float fireIncrement = 200;
+	private float fireIncrement = 75;
 	private Vector2f velocity = new Vector2f();
 	private List<Vector2f> shots = new ArrayList<Vector2f>();
-	private int multiShotCount = 6;
+	private int multiShotCount = 12;
 
+	private float spin = 0;
+	
 	private float flightSpeed = 60f;
 	
 	private IPlayerEventListener callback = new IPlayerEventListener() {
@@ -42,7 +44,7 @@ public class FirstBoss extends ACreature {
 		this.player = player;
 		player.getEventPublisher().subscribe(callback);
 		for(int i = 0; i <multiShotCount; i++){
-			shots.set(i, new Vector2f(0, 0));
+			shots.add(new Vector2f(0, 0));
 		}
 	}
 
@@ -54,42 +56,53 @@ public class FirstBoss extends ACreature {
 	
 	private void updateAim(){
 		
-		Vector2f delta = player.getPosition().subtract(this.getPosition());
 		if (currHealth < maxHealth){
 			
 			if (currHealth > maxHealth/2){
+				Vector2f delta = player.getPosition().subtract(this.getPosition());
 			
 		        aim = delta.normalize().scale(laserSpeed);
+		        
+		        if (delta.length() > minDist){
+		        	velocity = delta.normalize().scale(flightSpeed);
+		        }
+		        else {
+		        	velocity = new Vector2f();
+		        }
 			}
 			
 			else {
-				for(int i = 0; i <multiShotCount; i++){
-					shots.set(i, new Vector2f((float)Math.cos(i*2*Math.PI/multiShotCount), 
-							(float)Math.sin(i*2*Math.PI/multiShotCount)));
-				}
+				fireIncrement = 80;
+				laserSpeed = 40f;
+				Vector2f delta = new Vector2f().subtract(this.getPosition());
+		        if (delta.length() > 1){
+		        	velocity = delta.normalize().scale(flightSpeed);
+		        }
+		        else {
+		        	velocity = new Vector2f();
+					for(int i = 0; i < multiShotCount; i++){
+						shots.set(i, new Vector2f((float)Math.cos(spin/7000 + i*2*Math.PI/multiShotCount), 
+								(float)Math.sin(spin/7000 + i*2*Math.PI/multiShotCount)).normalize().scale(laserSpeed));
+					}
+		        }
 				aim = new Vector2f();
-				
 			}
-	        
-	        if (delta.length() > minDist){
-	        	velocity = delta.normalize().scale(flightSpeed);
-	        }
-	        else {
-	        	velocity = new Vector2f();
-	        }
 		}
 		else {
 			aim = new Vector2f();
+        	velocity = new Vector2f();
 		}
 	}
 
     @Override 
 	public void updateActions(IGameMap map, float timepassed) {
+		spin += timepassed*4;
+		
 		lastFire += timepassed;
 		if(aim.x != 0 || aim.y != 0 ){
 			if(lastFire > fireIncrement ){
 				map.addMapElement(
-			    		new Projectile(this, getPosition().add(new Vector2f(-.4f,+.4f)), aim)
+			    		new Projectile(this, getPosition(), aim)
 			    	);
 				lastFire = 0;
 			}
@@ -98,7 +111,7 @@ public class FirstBoss extends ACreature {
 			for(Vector2f shot: shots){
 				if(shot.x != 0 || shot.y != 0 ){
 						map.addMapElement(
-					    		new Projectile(this, getPosition().add(new Vector2f(-.4f,+.4f)), shot)
+					    		new Projectile(this, getPosition(), shot)
 					    	);
 						lastFire = 0;
 				}
@@ -110,7 +123,8 @@ public class FirstBoss extends ACreature {
 
 	public void updateModel() {
         Matrix4f model = Matrix4f.translate( 0, 0, 1).multiply(
-                Matrix4f.rotate(0, 0, 1, 0).multiply(Matrix4f.scale(1f, 1f, 1f)));
+        		Matrix4f.rotate(-spin,0,0,1).multiply(
+                Matrix4f.rotate(180, 1, 0, 0).multiply(Matrix4f.scale(.8f, .8f, .8f))));
 	    super.updateModel(model);
 	}
 
