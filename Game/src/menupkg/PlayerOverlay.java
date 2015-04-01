@@ -1,3 +1,10 @@
+/** PlayerOverlay
+ * The overlay on top of the screen while in game-play. Shows health, level, and experience. 
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package menupkg;
 
 import java.util.ArrayList;

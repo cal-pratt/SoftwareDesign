@@ -1,3 +1,10 @@
+/** HealthItem
+ * A map element in the shape of a heart that gives the player some health when the player intersects it
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import java.util.Arrays;

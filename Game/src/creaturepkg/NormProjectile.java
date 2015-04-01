@@ -1,3 +1,10 @@
+/** NormProjectile
+ * The default projectile - yellow in colour and the weakest projectile
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import java.util.Arrays;

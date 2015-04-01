@@ -1,5 +1,5 @@
-/** PauseMenu
- * A menu brought up when the player pauses the game - user can continue, save, or quit
+/** EndOfGameMenu
+ * A menu brought up when the player wins the game (they defeat the final boss)
  * 
  * @author      Halie Murrin
  * @author      Calvert Pratt

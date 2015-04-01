@@ -1,3 +1,10 @@
+/** ACreature
+ * An abstract class describing all creatures. Extended by enemies, bosses, and player
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import java.util.List;

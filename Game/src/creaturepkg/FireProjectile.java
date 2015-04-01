@@ -1,3 +1,10 @@
+/** FireProjectile
+ * A red/orange projectile slightly stronger than the default - obtained by the player when the fire skill is clicked
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package creaturepkg;
 
 import java.util.Arrays;

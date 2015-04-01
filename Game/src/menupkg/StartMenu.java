@@ -1,3 +1,10 @@
+/** StartMenu
+ * The menu that is open when the game is opened - the player can start a new game or continue from here
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package menupkg;
 
 import eventpkg.GameEvents.*;

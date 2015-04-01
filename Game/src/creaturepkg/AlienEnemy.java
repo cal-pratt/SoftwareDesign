@@ -1,4 +1,4 @@
-/** MonkeyEnemy
+/** AlienEnemy
  * A simple enemy 
  * 
  * @author      Halie Murrin

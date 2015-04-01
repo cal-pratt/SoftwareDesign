@@ -1,5 +1,5 @@
-/** FirstBoss
- * The first boss the player encounters
+/** ThirdBoss
+ * The third and final boss the player encounters
  * 
  * @author      Halie Murrin
  * @author      Calvert Pratt

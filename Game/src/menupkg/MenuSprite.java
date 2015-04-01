@@ -1,3 +1,10 @@
+/** MenuSprite
+ * 2D sprites (images which cannot be clicked) and their characteristics
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package menupkg;
 
 import graphicspkg.GraphicsManager;

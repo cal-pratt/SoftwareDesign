@@ -1,3 +1,10 @@
+/** IMenuItem
+ * Contains methods used by the menus
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package menupkg;
 
 import objectpkg.ATexObject2D;

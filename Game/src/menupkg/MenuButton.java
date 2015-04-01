@@ -1,3 +1,10 @@
+/** MenuButton
+ * Buttons (elements which can be clicked) and their characteristics
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package menupkg;
 
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_1;

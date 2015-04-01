@@ -1,3 +1,10 @@
+/** AMenu
+ * The abstract menu class extended by all other menu classes. Contains the essential menu methods.
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package menupkg;
 
 import graphicspkg.GraphicsManager;

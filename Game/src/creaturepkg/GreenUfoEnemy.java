@@ -1,5 +1,5 @@
-/** UfoEnemy
- * An enemy with a UFO mesh that moves quickly around the screen
+/** GreenUfoEnemy
+ * An enemy with a green UFO mesh that moves quickly around the screen - it is the slightly weaker UFO
  * 
  * @author      Halie Murrin
  * @author      Calvert Pratt

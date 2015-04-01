@@ -1,3 +1,10 @@
+/** Object3DFactory
+ * Creates all of the 3D elements (meshes) used in the game
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package objectpkg;
 
 public class Object3DFactory {

@@ -1,3 +1,10 @@
+/** Object2DFactory
+ * Creates all of the 2D elements (sprites) used in the game
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
+
 package objectpkg;
 
 public class Object2DFactory {
