@@ -7,6 +7,8 @@
 
 package menupkg;
 
+import inputpkg.UserInput;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,21 +28,28 @@ public class PlayerOverlay extends AMenu {
 	};
 	
     private Player player;
+    private UserInput input;
     private MenuSprite banner;
     private MenuSprite health;
     private MenuSprite nohealth;
     private MenuSprite exp;
     private MenuSprite noexp;
+    private MenuButton skillsButton;
     private List<MenuSprite> tensDigit = new ArrayList<MenuSprite>();
     private List<MenuSprite> onesDigit = new ArrayList<MenuSprite>();
 		
-	public PlayerOverlay(GraphicsManager gm, Player player) {
+	public PlayerOverlay(GraphicsManager gm, UserInput input, Player player) {
 		super(gm);
 		this.player = player;
+		this.input = input;
 		
         banner = new MenuSprite(
                 gm, Object2DFactory.getBanner(), 
                 0,0, width, height);
+        
+        skillsButton = new MenuButton(gm, input, 
+        		Object2DFactory.getSkillsButton(), Object2DFactory.getSkillsButton(),
+                width/1.13f, height/1.067f, width/10f, height/16f);
         
 		health = new MenuSprite(gm, Object2DFactory.getHealth(), 
 		        width/100, height*9/10f, healthWidth(), height/10f);
@@ -59,6 +68,7 @@ public class PlayerOverlay extends AMenu {
 		add(health);
 		add(exp);
 		add(noexp);
+		add(skillsButton);
 		
 		for (int i = 0; i < 10; i++){
         	tensDigit.add(new MenuSprite(gm, Object2DFactory.getNumber(i), width/1.88f, height/1.07315f, width/35, height/13));
@@ -70,6 +80,10 @@ public class PlayerOverlay extends AMenu {
         }
 		
 	}
+	
+	public ButtonEventPublisher getSkillsButtonEvent(){
+        return skillsButton.getEventPublisher();
+    }
 	
 	private float healthWidth(){
 		return width/2.15f;

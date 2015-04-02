@@ -106,6 +106,13 @@ public class MainCore extends ACore {
         }
     };
     
+    IButtonEventListener openSkillWithButtonCallBack = new IButtonEventListener(){
+        @Override
+        public void actionPerformed(ButtonEventPublisher sender, MenuButton e) {
+        	skillPressed = true;
+        }
+    };
+    
     IKeyEventListener openSkillCallBack = new IKeyEventListener(){
         @Override
         public void actionPerformed(KeyEventPublisher sender, Key e) {
@@ -203,13 +210,14 @@ public class MainCore extends ACore {
         startMenu = new StartMenu(gm, input);
         pauseMenu = new PauseMenu(gm, input);
         skillMenu = new SkillMenu(gm, input, player);
-        overlay = new PlayerOverlay(gm, player);
+        overlay = new PlayerOverlay(gm, input, player);
         
 
         input.getKeyInputEvent(GLFW_KEY_X).subscribe(testCallback1);
         input.getKeyInputEvent(GLFW_KEY_1).subscribe(testCallback2);
         input.getKeyInputEvent(GLFW_KEY_P).subscribe(testCallback3);
         skillMenu.getReturnToGameButtonEvent().subscribe(closeSkillCallBack);
+        overlay.getSkillsButtonEvent().subscribe(openSkillWithButtonCallBack);
         input.getKeyInputEvent(GLFW_KEY_M).subscribe(openSkillCallBack);
         pauseMenu.getContinueButtonEvent().subscribe(pauseContCallback);
         startMenu.getNewgameButtonEvent().subscribe(newGameCallback);
@@ -228,6 +236,7 @@ public class MainCore extends ACore {
         input.getKeyInputEvent(GLFW_KEY_P).unsubscribe(testCallback3);
         skillMenu.getReturnToGameButtonEvent().unsubscribe(closeSkillCallBack);
         input.getKeyInputEvent(GLFW_KEY_M).unsubscribe(openSkillCallBack);
+        overlay.getSkillsButtonEvent().unsubscribe(openSkillWithButtonCallBack);
         pauseMenu.getContinueButtonEvent().unsubscribe(pauseContCallback);
         startMenu.getNewgameButtonEvent().unsubscribe(newGameCallback);
         startMenu.getContinueButtonEvent().unsubscribe(contGameCallback);
