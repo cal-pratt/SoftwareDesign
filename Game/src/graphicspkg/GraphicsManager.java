@@ -6,7 +6,7 @@ import java.util.Map;
 
 import objectpkg.APcObject3D;
 import objectpkg.ATexObject2D;
-import objectpkg.IObject3D;
+import objectpkg.IGraphicsObject;
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 import silvertiger.tutorial.lwjgl.math.Vector3f;
 import silvertiger.tutorial.lwjgl.math.Vector4f;
@@ -160,7 +160,7 @@ public class GraphicsManager {
 		if(pcProgramCount > 0){
 	    	pcProgram.use();
 	    	pcProgram.setProjection(cameraProjection);
-			for(IObject3D object : graphicPcLinkers.keySet()){
+			for(IGraphicsObject object : graphicPcLinkers.keySet()){
 				graphicPcLinkers.get(object).set();
 				graphicPcLinkers.get(object).draw();
 			}
@@ -172,7 +172,7 @@ public class GraphicsManager {
 			pcnLightingProgram.setLightPos(lightPos);
 			pcnLightingProgram.setLightIntensity(lightIntensity);
 			pcnLightingProgram.setAmbientIntensity(ambientIntensity);
-			for(IObject3D object : pcnLightingLinkers.keySet()){
+			for(IGraphicsObject object : pcnLightingLinkers.keySet()){
 				pcnLightingLinkers.get(object).set();
 				pcnLightingLinkers.get(object).draw();
 			}
@@ -180,7 +180,7 @@ public class GraphicsManager {
 
 		if(texProgramCount > 0){
 	    	texProgram.use();
-			for(IObject3D object : graphicTexLinkers.keySet()){
+			for(IGraphicsObject object : graphicTexLinkers.keySet()){
 				graphicTexLinkers.get(object).set();
 				graphicTexLinkers.get(object).draw();
 			}

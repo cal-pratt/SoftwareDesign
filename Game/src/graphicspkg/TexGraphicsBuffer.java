@@ -1,3 +1,9 @@
+/** TexGraphicsBuffer
+ * Implements the loading of data required by Position buffer objects and populates a texture object
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
 package graphicspkg;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;

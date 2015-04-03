@@ -1,3 +1,9 @@
+/** TexGraphicLinker
+ * Handles activity between TexGraphicsBuffer, ATexObject2D and TexProgram objects
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
 package graphicspkg;
 
 import objectpkg.ATexObject2D;

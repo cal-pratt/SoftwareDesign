@@ -3,7 +3,7 @@ package objectpkg;
 
 import silvertiger.tutorial.lwjgl.math.Matrix4f;
 
-public abstract class ATexObject2D implements IObject3D {
+public abstract class ATexObject2D implements IGraphicsObject {
     
     protected Matrix4f projection;
     

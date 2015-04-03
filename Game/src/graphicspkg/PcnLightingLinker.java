@@ -1,4 +1,11 @@
+/** PcnLightingLinker
+ * Handles activity between PcnLightingBuffer, APcObject3D and PcnLightingProgram objects
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
 package graphicspkg;
+ 
 
 import objectpkg.APcObject3D;
 

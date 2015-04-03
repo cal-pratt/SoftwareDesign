@@ -1,5 +1,5 @@
 package objectpkg;
 
-public interface IObject3D {
+public interface IGraphicsObject {
 	public String getFilename();
 }

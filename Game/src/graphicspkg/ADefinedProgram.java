@@ -1,3 +1,9 @@
+/** ADefinedProgram
+ * Abstract class extending basic functions of an openGL shader program.
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
 package graphicspkg;
 
 import silvertiger.tutorial.lwjgl.graphic.Shader;

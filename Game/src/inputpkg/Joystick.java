@@ -1,3 +1,9 @@
+/** Joystick
+ * Asks OpenGL for the status of the currently connected joystick. 
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
 package inputpkg;
 
 import java.nio.FloatBuffer;

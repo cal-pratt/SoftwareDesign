@@ -1,3 +1,9 @@
+/** Key
+ * Handles the models representing user input such as mouse movement, keyboard, and joystick.
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
 package inputpkg;
 
 // 3rd Part Imports ---------------------------------------------------------------------------- //

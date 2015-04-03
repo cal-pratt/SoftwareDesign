@@ -1,3 +1,9 @@
+/** PcnLightingBuffer
+ * Implements the loading of data required by Position color normal buffer objects
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
 package graphicspkg;
 
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;

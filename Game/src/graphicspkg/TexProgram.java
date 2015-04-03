@@ -1,3 +1,9 @@
+/** TexProgram
+ * Loads the custom texprogram program and defines the location for its uniforms
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
 package graphicspkg;
 
 import silvertiger.tutorial.lwjgl.math.Matrix4f;

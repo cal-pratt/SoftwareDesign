@@ -1,3 +1,9 @@
+/** PcGraphicLinker
+ * Handles activity between PcGraphicsBuffer, APcObject3D and PcProgram objects
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
 package graphicspkg;
 
 import objectpkg.APcObject3D;

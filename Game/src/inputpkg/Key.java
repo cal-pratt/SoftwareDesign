@@ -1,3 +1,9 @@
+/** Key
+ * Model representing a Keyboard Key
+ * 
+ * @author      Halie Murrin
+ * @author      Calvert Pratt
+ */
 package inputpkg;
 
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
